@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+ <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создавай Life 2.0</title>
+    <style>
+   
+   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=M+PLUS+Rounded+1c&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Satisfy&display=swap');
+   
+        body {
+           font-family: "Manrope", sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+             font-weight: bold;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #00aa44;
+            color: #fff;
+            padding: 0px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+        .header-slogan {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    img{
+        width: 100%;
+        height: 100%;
+    }
+        .header img {
+            height: 100%;
+            width: 100%;
+        }
+        .unlimited-section {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .unlimited-section .icon {
+            color: #8a2be2;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+        .unlimited-section .text {
+            font-weight: bold;
+            font-size: 14px;
+            flex-grow: 1;
+        }
+        .unlimited-section .infinity-icon {
+            font-size: 14px;
+            color: #00aa44;
+            font-weight: bold;
+        }
+        .tariff-section {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .tariff-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .tariff-section-header .icon {
+            color: #8a2be2;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .tariff-section-header h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .tariff-section-header .info-icon {
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+        .option-button {
+            border: 1px solid #00aa44;
+            color: #00aa44;
+            background-color: #fff;
+            padding: 10px 5px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: none;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .option-button.active {
+            background-color: #00aa44;
+            color: #fff;
+        }
+        .footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        /* Modal styles from the image */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px; /* Rounded corners like in the image */
+            max-width: 80%; /* Adjust width for better mobile view */
+            text-align: center;
+            position: relative;
+        }
+        .modal-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .modal-body {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: center; /* Center-aligned text */
+            padding: 0 10px; /* Some padding for text */
+        }
+        .modal-footer {
+            text-align: center;
+        }
+        .modal-button {
+            background-color: transparent;
+            color: #00aa44;
+            border: none;
+            padding: 12px 24px; /* Larger button */
+            border-radius: 20px; /* Pill-shaped button */
+            cursor: pointer;
+            font-weight: bold;
+            width: 80%; /* Button stretches across the modal */
+        }
+
+        /* Responsive design */
+        @media (max-width: 400px) {
+            .options-grid {
+                grid-template-columns: repeat(auto-fill, minmax(65px, 2fr));
+                gap: 9px;
+              
+            }
+            .option-button {
+                font-size: 14px;
+            }
+        }
+        
+        /* New styles for the additional options card */
+        .options-card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header .info-icon {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            border-radius: 50%;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        #copy-container {
+            margin-top: 15px;
+        }
+
+        #copy-button {
+            background-color: #fff;
+            color: #00aa44;
+            border: 1px solid #00aa44;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            margin: auto;
+        }
+        #copy-button svg {
+            margin-right: 8px;
+        }
+   .text{ 
+      text-align: center;
+   }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="https://shop.megafon.tj/_nuxt/788_ru.DDZlxzsT.jpg" alt="Тариф">
+    </div>
+
+    <div class="unlimited-section">
+        <span class="icon">📞</span>
+        <span class="text">Безлимит внутри сети</span>
+        <span class="infinity-icon">∞</span>
+    </div>
+
+    <div class="tariff-section" id="minutes-section">
+        <div class="tariff-section-header">
+            <span class="icon">📞</span>
+            <h3>Минуты по РТ</h3>
+            <span class="info-icon" onclick="showModal('minutes')">ⓘ</span>
+        </div>
+        <div class="options-grid" id="minutes-options"></div>
+    </div>
+
+    <div id="minutes-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-title">Минуты по РТ</div>
+            <div class="modal-body">
+                <p>Тарификация поминутная. Интервал тарификации голосового вызова равен 60-ти секундам, каждые не полные 60 секунд разговора округляются до полной минуты. Минуты, предоставленные в рамках пакета услуг, распространяются на звонки на другие сети по РТ. После окончания включенных объемов минут на другие сети, тарификация производиться согласно базовым условиям Тарифного плана «Включайся! Создавай Life». Минимальная стоимость звонка составляет 0,25 Сомони (с НДС и акцизом).</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="hideModal('minutes')">ОК</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tariff-section" id="sms-section">
+        <div class="tariff-section-header">
+            <span class="icon">💬</span>
+            <h3>СМС</h3>
+            <span class="info-icon" onclick="showModal('sms')">ⓘ</span>
+        </div>
+        <div class="options-grid" id="sms-options"></div>
+    </div>
+
+    <div id="sms-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-title">СМС</div>
+            <div class="modal-body">
+                <p>Включенный объем SMS доступен исключительно по РТ. После окончания включенных объемов SMS, исходящие SMS по PT тарифицируются согласно базовым условиям Тарифного плана «Включайся! Создавай Life».</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="hideModal('sms')">ОК</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tariff-section" id="internet-section">
+        <div class="tariff-section-header">
+            <span class="icon">🌐</span>
+            <h3>Интернет</h3>
+            <span class="info-icon" onclick="showModal('internet')">ⓘ</span>
+        </div>
+        <div class="options-grid" id="internet-options"></div>
+    </div>
+
+    <div id="internet-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-title">Интернет</div>
+            <div class="modal-body">
+                <p>Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб. яклухт карда мешаванд.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="hideModal('internet')">ОК</button>
+            </div>
+        </div>
+    </div>
+  <span id="total-price" class="text"></span> сомони
+    <div class="options-card">
+        <div class="card-header">
+            Опсияҳои иловагӣ
+            <span class="info-icon">ⓘ</span>
+        </div>
+        <div class="card-item">
+            <div class="item-icon">
+                <img src="internet.png" alt="Night icon" style="width: 50px; height: 50px; border-radius: 20px;">
+            </div>
+            <div class="item-details">
+                <div class="item-title">Безлимити шабона</div>
+                <div class="item-description">
+                    Дар муддати аз с.00:00 то 06:59 шабона трафики бемаҳдуди интернетро бо суръати баландтарин пешниҳод менамояд.
+                </div>
+            </div>
+        </div>
+        <div class="card-item">
+            <div class="item-icon">
+                <img src="call.png" alt="Call icon" style="width: 50px; height: 50px; border-radius: 20px;">
+            </div>
+            <div class="item-details">
+                <div class="item-title">Зангҳои бемаҳдуд дар дохили шабака</div>
+                <div class="item-description">
+                    ҳангоми фаъол будани Тарофа дастрасанд ва танҳо ба рақамҳои шабакаи Ширкат дахл доранд.
+                </div>
+            </div>
+        </div>
+        <div class="card-item">
+            <div class="item-icon">
+                <img src="oilatvicon.png" alt="TV icon" style="width: 50px; height: 50px; border-radius: 20px;">
+            </div>
+            <div class="item-details">
+                <div class="item-title">Оила ТВ</div>
+                <div class="item-description">
+                    Барномаҳои дӯстдоштаи телевизионии худро бо сифати HD тамошо кунед
+                </div>
+            </div>
+        </div>
+        <div class="card-item">
+            <div class="item-icon">
+                <img src="iviicon.png" alt="IVI icon" style="width: 50px; height: 50px; border-radius: 20px;">
+            </div>
+            <div class="item-details">
+                <div class="item-title">Онлайн-кинотеатри ИВИ</div>
+                <div class="item-description">
+                    Беҳтарин филмҳо ва силсилафилмҳоро аз тамоми ҷаҳон тамошо кунед
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <div class="footer">
+          
+            <div id="footer-text-container"></div>
+        </div>
+        <div id="copy-container">
+            <button id="copy-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                Копировать
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const basePrice = 65;
+
+    const minutesData = {
+        values: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500],
+        prices: [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    };
+
+    const smsData = {
+        values: [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300],
+        prices: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    };
+
+    const internetData = {
+        values: [15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150],
+        prices: [0, 1.5, 1.5, 1.5, 1.5, 1.5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+    };
+    
+    let selectedMinutes = minutesData.values[0];
+    let selectedSms = smsData.values[0];
+    let selectedInternet = internetData.values[0];
+
+    function createOptions(containerId, data, selectedValue, unit) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+        data.values.forEach(value => {
+            const btn = document.createElement("div");
+            btn.className = "option-button";
+            if (value === selectedValue) {
+                btn.classList.add("active");
+            }
+            btn.innerHTML = `${value}<br>${unit}`;
+            btn.addEventListener("click", () => {
+                const type = containerId.split('-')[0];
+                if (type === "minutes") selectedMinutes = value;
+                if (type === "sms") selectedSms = value;
+                if (type === "internet") selectedInternet = value;
+
+                document.querySelectorAll(`#${containerId} .option-button`).forEach(el => el.classList.remove("active"));
+                btn.classList.add("active");
+                updateTotal();
+            });
+            container.appendChild(btn);
+        });
+    }
+
+    function getOptionCost(data, selectedValue) {
+        const index = data.values.indexOf(selectedValue);
+        if (index > 0) {
+            let totalCost = 0;
+            for (let i = 1; i <= index; i++) {
+                totalCost += data.prices[i];
+            }
+            return totalCost;
+        }
+        return 0;
+    }
+
+    function copyTextToClipboard() {
+        const textToCopy = document.getElementById('footer-text-container').innerText;
+        const tempTextarea = document.createElement("textarea");
+        tempTextarea.value = textToCopy;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextarea);
+        alert("Текст скопирован!");
+    }
+
+    function updateTotal() {
+        const minCost = getOptionCost(minutesData, selectedMinutes);
+        const smsCost = getOptionCost(smsData, selectedSms);
+        const netCost = getOptionCost(internetData, selectedInternet);
+
+        let total = basePrice + minCost + smsCost + netCost;
+        const maxTotal = 358.5;
+        
+        if (total > maxTotal) {
+            total = maxTotal;
+        }
+
+        document.getElementById("total-price").innerText = total.toFixed(2);
+        
+        const footerText = `Тарофаи "Биё! бисоз Life 2.0" бо нархи ${total.toFixed(2)} сомони огоз шуда дар худ ${selectedMinutes} дакика ба дигар шабакахои ЧТ, ${selectedInternet} Гб, ${selectedSms} смс ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемахдудро ба хама сомонахо пешниход мекунад. Инчунин ба сервисҳои Oila TV ва IVI ройгон пешниҳод мешавад.Барои он ки тарофа ба Шумо дастрас бошад, барномаи Life-ро аз сомонаи Life.tj боргири карда онро насб кунед, бо ин амал Шумо тафсири нави барномаро насб менамоед.`;
+
+        document.getElementById("footer-text-container").innerText = footerText;
+        
+        document.getElementById('copy-button').onclick = copyTextToClipboard;
+    }
+    
+    function showModal(type) {
+        document.getElementById(type + '-modal').style.display = 'flex';
+    }
+
+    function hideModal(type) {
+        document.getElementById(type + '-modal').style.display = 'none';
+    }
+
+    createOptions("minutes-options", minutesData, selectedMinutes, "мин");
+    createOptions("sms-options", smsData, selectedSms, "СМС");
+    createOptions("internet-options", internetData, selectedInternet, "ГБ");
+
+    updateTotal();
+
+    if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered: ', registration);
+      })
+      .catch(err => {
+        console.log('Service Worker registration failed: ', err);
+      });
+  });
+            }
+    
+</script>
+
+</body>
+</html>
