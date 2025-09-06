@@ -1,127 +1,269 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
- <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создавай Life 2.0</title>
+    <title>Создавай Life</title>
+    <meta name="author" content="Komronbek Sharipov">
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Lato:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <style>
-   
-   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=M+PLUS+Rounded+1c&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Satisfy&display=swap');
-   
+        :root {
+            --primary-color: #00aa44;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+            --text-color: #333;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --button-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
         body {
-           font-family: "Manrope", sans-serif;
+            font-family: "Manrope", sans-serif;
             background-color: #f0f2f5;
             margin: 0;
             padding: 0;
-             font-weight: bold;
+            font-weight: bold;
+            color: var(--text-color);
         }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
+
         .header {
-            background-color: #00aa44;
-            color: #fff;
-            padding: 0px;
-            text-align: left;
             position: relative;
-            overflow: hidden;
         }
-        .header-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 0px;
-        }
-        .header-slogan {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-    img{
-        width: 100%;
-        height: 100%;
-    }
+
         .header img {
-            height: 100%;
             width: 100%;
+            height: auto;
+            display: block;
         }
+
+        .lang-switcher {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+            padding: 4px;
+            display: flex;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-btn {
+            background-color: transparent;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 12px;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: #00aa44 1px solid;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .tariff-content {
+            display: none;
+        }
+
+        .tariff-content.active {
+            display: block;
+        }
+
+        .unlimited-section,
+        .tariff-section {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .unlimited-section {
             display: flex;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
         }
-        .unlimited-section .icon {
-            color: #8a2be2;
-            font-size: 14px;
-            margin-right: 15px;
-        }
-        .unlimited-section .text {
-            font-weight: bold;
-            font-size: 14px;
+
+        .unlimited-section .text,
+        .total-price-text {
             flex-grow: 1;
         }
-        .unlimited-section .infinity-icon {
-            font-size: 14px;
-            color: #00aa44;
+
+        .infinity-icon {
+            color: var(--primary-color);
             font-weight: bold;
         }
-        .tariff-section {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+
         .tariff-section-header {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .tariff-section-header .icon {
-            color: #8a2be2;
-            font-size: 14px;
-            margin-right: 10px;
-        }
+
         .tariff-section-header h3 {
-            font-size: 14px;
-            font-weight: bold;
             margin: 0;
             flex-grow: 1;
         }
-        .tariff-section-header .info-icon {
+
+        .info-icon {
             color: #888;
-            font-size: 14px;
             cursor: pointer;
+            margin-left: 10px;
         }
+
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 12px;
         }
+
         .option-button {
-            border: 1px solid #00aa44;
-            color: #00aa44;
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
             background-color: #fff;
-            padding: 10px 5px;
-            border-radius: 15px;
+            padding: 8px 5px;
+            border-radius: 12px;
             text-align: center;
             font-size: 14px;
-            font-weight: none;
             cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
+
+        .option-button:hover {
+            box-shadow: var(--button-shadow);
+            border-color: var(--primary-color);
+        }
+
         .option-button.active {
-            background-color: #00aa44;
+            background-color: var(--primary-color);
             color: #fff;
+            border-color: var(--primary-color);
         }
-        .footer {
-            padding: 15px;
+
+        .total-price-display {
             text-align: center;
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 20px 15px;
+        }
+
+        .options-card {
+            background-color: var(--light-gray);
+            border-radius: 25px;
+            margin: 20px;
+            padding: 15px;
+        }
+
+        .card-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-icon img {
+            width: 50px;
+            height: 50px;
+            border-radius: 20px;
+            margin-right: 15px;
+        }
+
+        .item-title {
             font-weight: bold;
         }
-        /* Modal styles from the image */
+
+        .item-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .footer-container {
+            padding: 10px 20px 20px;
+        }
+
+        .card {
+            background-color: var(--light-gray);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 15px;
+            box-shadow: var(--card-shadow);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .copy-button-card {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .copy-button {
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .copy-button:hover {
+            background-color: #f0fff8;
+            box-shadow: var(--button-shadow);
+        }
+
+        .copy-button svg {
+            margin-right: 8px;
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -134,407 +276,670 @@
             align-items: center;
             z-index: 1000;
         }
+
         .modal {
             background-color: #fff;
             padding: 20px;
-            border-radius: 15px; /* Rounded corners like in the image */
-            max-width: 80%; /* Adjust width for better mobile view */
-            text-align: center;
-            position: relative;
-        }
-        .modal-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .modal-body {
-            font-size: 14px;
-            color: #333;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            text-align: center; /* Center-aligned text */
-            padding: 0 10px; /* Some padding for text */
-        }
-        .modal-footer {
+            border-radius: 15px;
+            max-width: 80%;
             text-align: center;
         }
+
         .modal-button {
             background-color: transparent;
-            color: #00aa44;
+            color: var(--primary-color);
             border: none;
-            padding: 12px 24px; /* Larger button */
-            border-radius: 20px; /* Pill-shaped button */
+            padding: 12px 24px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            width: 80%; /* Button stretches across the modal */
-        }
-
-        /* Responsive design */
-        @media (max-width: 400px) {
-            .options-grid {
-                grid-template-columns: repeat(auto-fill, minmax(65px, 2fr));
-                gap: 9px;
-              
-            }
-            .option-button {
-                font-size: 14px;
-            }
-        }
-        
-        /* New styles for the additional options card */
-        .options-card {
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            margin: 20px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-header {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .card-header .info-icon {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .card-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .card-item:last-child {
-            border-bottom: none;
-        }
-
-        .item-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            border-radius: 50%;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .item-title {
-            font-weight: bold;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .item-description {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.4;
-        }
-        
-        .footer-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        #copy-container {
+            width: 80%;
             margin-top: 15px;
         }
 
-        #copy-button {
-            background-color: #fff;
-            color: #00aa44;
-            border: 1px solid #00aa44;
-            padding: 10px 15px;
+        #toast-notification {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 38px;
+            padding: 16px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            font-size: 15px;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s, bottom 0.5s;
+        }
+
+        #toast-notification.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* New Slider Styles */
+        .view-toggle {
+            text-align: right;
+            padding: 0 15px 10px;
+        }
+
+        #view-toggle-btn {
+            background: var(--light-gray);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
-            font-size: 14px;
+            padding: 8px 15px;
+            font-weight: bold;
             cursor: pointer;
+        }
+
+        .slider-group {
+            padding: 10px 25px 20px;
+        }
+
+        .slider-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            width: fit-content;
-            margin: auto;
+            margin-bottom: 15px;
         }
-        #copy-button svg {
-            margin-right: 8px;
+
+        .slider-label {
+            font-size: 16px;
         }
-   .text{ 
-      text-align: center;
-   }
+
+        .slider-value {
+            font-size: 18px;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            outline: none;
+            border-radius: 4px;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-minmax {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 400px) {
+            .options-grid {
+                grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+            }
+
+            .nav-link {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <img src="https://shop.megafon.tj/_nuxt/788_ru.DDZlxzsT.jpg" alt="Тариф">
-    </div>
-
-    <div class="unlimited-section">
-        <span class="icon">📞</span>
-        <span class="text">Безлимит внутри сети</span>
-        <span class="infinity-icon">∞</span>
-    </div>
-
-    <div class="tariff-section" id="minutes-section">
-        <div class="tariff-section-header">
-            <span class="icon">📞</span>
-            <h3>Минуты по РТ</h3>
-            <span class="info-icon" onclick="showModal('minutes')">ⓘ</span>
+    <div class="container">
+        <div class="header">
+            <img src="https://shop.megafon.tj/_nuxt/788_ru.DDZlxzsT.jpg" alt="Тариф">
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="tj">TJ</button>
+                <button class="lang-btn" data-lang="ru">RU</button>
+            </div>
         </div>
-        <div class="options-grid" id="minutes-options"></div>
+
+        <div class="navigation">
+            <a class="nav-link active" onclick="switchTab('life1')" data-translate-key="nav_life1"></a>
+            <a class="nav-link" onclick="switchTab('life2')" data-translate-key="nav_life2"></a>
+        </div>
+
+        <div id="life1" class="tariff-content active">
+            <div class="unlimited-section"><span>📞</span><span class="text"
+                    data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="tariff-section">
+                <div class="tariff-section-header">
+                    <h3 data-translate-key="minutes_rt"></h3><span class="info-icon"
+                        onclick="showModal('modal-minutes1')">ⓘ</span>
+                </div>
+                <div class="options-grid" id="minutes-options1"></div>
+            </div>
+            <div class="tariff-section">
+                <div class="tariff-section-header">
+                    <h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span>
+                </div>
+                <div class="options-grid" id="sms-options1"></div>
+            </div>
+            <div class="tariff-section">
+                <div class="tariff-section-header">
+                    <h3 data-translate-key="internet"></h3><span class="info-icon"
+                        onclick="showModal('modal-internet1')">ⓘ</span>
+                </div>
+                <div class="options-grid" id="internet-options1"></div>
+            </div>
+            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span>
+            </div>
+            <div class="options-card">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png"
+                            alt="Night icon"></div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="night_unlimited"></div>
+                        <div class="item-description" data-translate-key="night_unlimited_desc"></div>
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon">
+                    </div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="in_network_calls"></div>
+                        <div class="item-description" data-translate-key="in_network_calls_desc"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-container">
+                <div class="card footer-text-card">
+                    <div id="footer-text-container1"></div>
+                </div>
+                <div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-clipboard" viewBox="0 0 16 16">
+                            <path
+                                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z" />
+                        </svg><span data-translate-key="copy_button"></span></button></div>
+            </div>
+        </div>
+
+        <div id="life2" class="tariff-content">
+            <div class="unlimited-section"><span>📞</span><span class="text"
+                    data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+
+            <div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div>
+
+            <div id="grid-view-life2">
+                <div class="tariff-section">
+                    <div class="tariff-section-header">
+                        <h3 data-translate-key="minutes_rt"></h3><span class="info-icon"
+                            onclick="showModal('modal-minutes2')">ⓘ</span>
+                    </div>
+                    <div class="options-grid" id="minutes-options2"></div>
+                </div>
+                <div class="tariff-section">
+                    <div class="tariff-section-header">
+                        <h3 data-translate-key="sms"></h3><span class="info-icon"
+                            onclick="showModal('modal-sms2')">ⓘ</span>
+                    </div>
+                    <div class="options-grid" id="sms-options2"></div>
+                </div>
+                <div class="tariff-section">
+                    <div class="tariff-section-header">
+                        <h3 data-translate-key="internet"></h3><span class="info-icon"
+                            onclick="showModal('modal-internet2')">ⓘ</span>
+                    </div>
+                    <div class="options-grid" id="internet-options2"></div>
+                </div>
+            </div>
+
+            <div id="slider-view-life2" style="display: none;">
+                <div class="slider-group">
+                    <div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span
+                            class="slider-value" id="internet-slider-value"></span></div>
+                    <input type="range" id="internet-slider" class="slider" step="1">
+                    <div class="slider-minmax"><span id="internet-slider-min"></span><span
+                            id="internet-slider-max"></span></div>
+                </div>
+                <div class="slider-group">
+                    <div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span
+                            class="slider-value" id="minutes-slider-value"></span></div>
+                    <input type="range" id="minutes-slider" class="slider" step="1">
+                    <div class="slider-minmax"><span id="minutes-slider-min"></span><span
+                            id="minutes-slider-max"></span></div>
+                </div>
+                <div class="slider-group">
+                    <div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span
+                            class="slider-value" id="sms-slider-value"></span></div>
+                    <input type="range" id="sms-slider" class="slider" step="1">
+                    <div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div>
+                </div>
+            </div>
+
+            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span>
+            </div>
+            <div class="options-card">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png"
+                            alt="Night icon"></div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="night_unlimited"></div>
+                        <div class="item-description" data-translate-key="night_unlimited_desc"></div>
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon">
+                    </div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="in_network_calls"></div>
+                        <div class="item-description" data-translate-key="in_network_calls_desc"></div>
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png"
+                            alt="TV icon"></div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="oila_tv"></div>
+                        <div class="item-description" data-translate-key="oila_tv_desc"></div>
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png"
+                            alt="IVI icon"></div>
+                    <div class="item-details">
+                        <div class="item-title" data-translate-key="ivi_cinema"></div>
+                        <div class="item-description" data-translate-key="ivi_cinema_desc"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-container">
+                <div class="card footer-text-card">
+                    <div id="footer-text-container2"></div>
+                </div>
+                <div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-clipboard" viewBox="0 0 16 16">
+                            <path
+                                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z" />
+                        </svg><span data-translate-key="copy_button"></span></button></div>
+            </div>
+        </div>
     </div>
 
-    <div id="minutes-modal" class="modal-overlay">
+    <div id="modal-minutes1" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal">
-            <div class="modal-title">Минуты по РТ</div>
-            <div class="modal-body">
-                <p>Тарификация поминутная. Интервал тарификации голосового вызова равен 60-ти секундам, каждые не полные 60 секунд разговора округляются до полной минуты. Минуты, предоставленные в рамках пакета услуг, распространяются на звонки на другие сети по РТ. После окончания включенных объемов минут на другие сети, тарификация производиться согласно базовым условиям Тарифного плана «Включайся! Создавай Life». Минимальная стоимость звонка составляет 0,25 Сомони (с НДС и акцизом).</p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button" onclick="hideModal('minutes')">ОК</button>
-            </div>
+            <h3 data-translate-key="minutes_rt"></h3>
+            <p data-translate-key="modal_minutes_body1"></p><button class="modal-button"
+                onclick="hideModal('modal-minutes1')" data-translate-key="modal_ok"></button>
         </div>
     </div>
-
-    <div class="tariff-section" id="sms-section">
-        <div class="tariff-section-header">
-            <span class="icon">💬</span>
-            <h3>СМС</h3>
-            <span class="info-icon" onclick="showModal('sms')">ⓘ</span>
-        </div>
-        <div class="options-grid" id="sms-options"></div>
-    </div>
-
-    <div id="sms-modal" class="modal-overlay">
+    <div id="modal-sms1" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal">
-            <div class="modal-title">СМС</div>
-            <div class="modal-body">
-                <p>Включенный объем SMS доступен исключительно по РТ. После окончания включенных объемов SMS, исходящие SMS по PT тарифицируются согласно базовым условиям Тарифного плана «Включайся! Создавай Life».</p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button" onclick="hideModal('sms')">ОК</button>
-            </div>
+            <h3 data-translate-key="sms"></h3>
+            <p data-translate-key="modal_sms_body1"></p><button class="modal-button" onclick="hideModal('modal-sms1')"
+                data-translate-key="modal_ok"></button>
         </div>
     </div>
-
-    <div class="tariff-section" id="internet-section">
-        <div class="tariff-section-header">
-            <span class="icon">🌐</span>
-            <h3>Интернет</h3>
-            <span class="info-icon" onclick="showModal('internet')">ⓘ</span>
-        </div>
-        <div class="options-grid" id="internet-options"></div>
-    </div>
-
-    <div id="internet-modal" class="modal-overlay">
+    <div id="modal-internet1" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal">
-            <div class="modal-title">Интернет</div>
-            <div class="modal-body">
-                <p>Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб. яклухт карда мешаванд.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button" onclick="hideModal('internet')">ОК</button>
-            </div>
+            <h3 data-translate-key="internet"></h3>
+            <p data-translate-key="modal_internet_body1"></p><button class="modal-button"
+                onclick="hideModal('modal-internet1')" data-translate-key="modal_ok"></button>
         </div>
     </div>
-  <span id="total-price" class="text"></span> сомони
-    <div class="options-card">
-        <div class="card-header">
-            Опсияҳои иловагӣ
-            <span class="info-icon">ⓘ</span>
+    <div id="modal-minutes2" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal">
+            <h3 data-translate-key="minutes_rt"></h3>
+            <p data-translate-key="modal_minutes_body2"></p><button class="modal-button"
+                onclick="hideModal('modal-minutes2')" data-translate-key="modal_ok"></button>
         </div>
-        <div class="card-item">
-            <div class="item-icon">
-                <img src="internet.png" alt="Night icon" style="width: 50px; height: 50px; border-radius: 20px;">
-            </div>
-            <div class="item-details">
-                <div class="item-title">Безлимити шабона</div>
-                <div class="item-description">
-                    Дар муддати аз с.00:00 то 06:59 шабона трафики бемаҳдуди интернетро бо суръати баландтарин пешниҳод менамояд.
-                </div>
-            </div>
+    </div>
+    <div id="modal-sms2" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal">
+            <h3 data-translate-key="sms"></h3>
+            <p data-translate-key="modal_sms_body2"></p><button class="modal-button" onclick="hideModal('modal-sms2')"
+                data-translate-key="modal_ok"></button>
         </div>
-        <div class="card-item">
-            <div class="item-icon">
-                <img src="call.png" alt="Call icon" style="width: 50px; height: 50px; border-radius: 20px;">
-            </div>
-            <div class="item-details">
-                <div class="item-title">Зангҳои бемаҳдуд дар дохили шабака</div>
-                <div class="item-description">
-                    ҳангоми фаъол будани Тарофа дастрасанд ва танҳо ба рақамҳои шабакаи Ширкат дахл доранд.
-                </div>
-            </div>
-        </div>
-        <div class="card-item">
-            <div class="item-icon">
-                <img src="oilatvicon.png" alt="TV icon" style="width: 50px; height: 50px; border-radius: 20px;">
-            </div>
-            <div class="item-details">
-                <div class="item-title">Оила ТВ</div>
-                <div class="item-description">
-                    Барномаҳои дӯстдоштаи телевизионии худро бо сифати HD тамошо кунед
-                </div>
-            </div>
-        </div>
-        <div class="card-item">
-            <div class="item-icon">
-                <img src="iviicon.png" alt="IVI icon" style="width: 50px; height: 50px; border-radius: 20px;">
-            </div>
-            <div class="item-details">
-                <div class="item-title">Онлайн-кинотеатри ИВИ</div>
-                <div class="item-description">
-                    Беҳтарин филмҳо ва силсилафилмҳоро аз тамоми ҷаҳон тамошо кунед
-                </div>
-            </div>
+    </div>
+    <div id="modal-internet2" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal">
+            <h3 data-translate-key="internet"></h3>
+            <p data-translate-key="modal_internet_body2"></p><button class="modal-button"
+                onclick="hideModal('modal-internet2')" data-translate-key="modal_ok"></button>
         </div>
     </div>
 
-    <div class="footer-container">
-        <div class="footer">
-          
-            <div id="footer-text-container"></div>
-        </div>
-        <div id="copy-container">
-            <button id="copy-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
-                </svg>
-                Копировать
-            </button>
-        </div>
-    </div>
+    <div id="toast-notification"></div>
 
-</div>
-
-<script>
-    const basePrice = 65;
-
-    const minutesData = {
-        values: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500],
-        prices: [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    <script>
+        // --- DICTIONARY FOR TRANSLATION ---
+        const translations = {
+            ru: {
+                nav_life1: "Создавай Life",
+                nav_life2: "Создавай Life 2.0",
+                unlimited_in_network: "Безлимит внутри сети",
+                minutes_rt: "Минуты по РТ",
+                sms: "СМС",
+                internet: "Интернет",
+                currency: "сомони",
+                additional_options: "Дополнительные опции",
+                night_unlimited: "Ночной безлимит",
+                night_unlimited_desc: "Предоставляется в период с 00:00 по 06:59 ночи безлимитный интернет трафик, на неограниченной скорости.",
+                in_network_calls: "Безлимитные звонки внутри сети",
+                in_network_calls_desc: "Доступны при активном тарифе и действуют только на номера сети Компании.",
+                oila_tv: "Оила ТВ",
+                oila_tv_desc: "Смотрите свои любимые телевизионные программы в HD качестве.",
+                ivi_cinema: "Онлайн-кинотеатр ИВИ",
+                ivi_cinema_desc: "Смотрите лучшие фильмы и сериалы со всего мира.",
+                copy_button: "Копировать",
+                copied_toast: "Текст скопирован!",
+                modal_ok: "OK",
+                min_unit: "мин",
+                sms_unit: "СМС",
+                gb_unit: "ГБ",
+                view_toggle_grid: "Режим: Кнопки",
+                view_toggle_slider: "Режим: Ползунок",
+                modal_minutes_body1: "Тарификация поминутная. Интервал тарификации голосового вызова равен 60-ти секундам, каждые не полные 60 секунд разговора округляются до полной минуты. Минуты, предоставленные в рамках пакета услуг, распространяются на звонки на другие сети по РТ. После окончания включенных объемов минут на другие сети, тарификация производиться согласно базовым условиям Тарифного плана «Включайся! Создавай Life». Минимальная стоимость звонка составляет 0,25 Сомони (с НДС и акцизом).",
+                modal_sms_body1: "Включенный объем SMS доступен исключительно по РТ. После окончания включенных объемов SMS, исходящие SMS по PT тарифицируются согласно базовым условиям Тарифного плана.",
+                modal_internet_body1: "Интернет-сессии округляются в большую сторону с шагом тарификации в 100 Кб.",
+                modal_minutes_body2: "Тарификация поминутная. Минимальная стоимость звонка составляет 0,25 Сомони (с НДС и акцизом).",
+                modal_sms_body2: "Включенный объем SMS доступен исключительно по РТ.",
+                modal_internet_body2: "Интернет-сессии округляются в большую сторону с шагом тарификации в 100 Кб.",
+                footerTemplate1: (t, m, g, s) => `Тариф "Создавай Life" стоимостью ${t} сомони включает ${m} минут на другие сети РТ, ${g} ГБ, ${s} СМС и ночной безлимит, который предоставляет безлимитный интернет с 00:00 до 6:59. Чтобы тариф стал вам доступен, скачайте и установите приложение Life с сайта Life.tj.`,
+                footerTemplate2: (t, m, g, s) => `Тариф "Создавай Life 2.0" стоимостью ${t} сомони включает ${m} минут на другие сети РТ, ${g} ГБ, ${s} СМС и ночной безлимит (00:00-6:59). Также бесплатно предоставляются сервисы Oila TV и IVI. Чтобы тариф стал вам доступен, скачайте и установите приложение Life с сайта Life.tj.`
+            },
+            tj: {
+                nav_life1: "Биё! бисоз Life",
+                nav_life2: "Биё! бисоз Life 2.0",
+                unlimited_in_network: "Белимит дар дохили шабака",
+                minutes_rt: "Дақиқаҳо ба дигар шабакаҳо",
+                sms: "СМС",
+                internet: "Интернет",
+                currency: "сомонӣ",
+                additional_options: "Опсияҳои иловагӣ",
+                night_unlimited: "Безлимити шабона",
+                night_unlimited_desc: "Дар муддати аз с.00:00 то 06:59 шабона трафики бемаҳдуди интернетро бо суръати баландтарин пешниҳод менамояд.",
+                in_network_calls: "Зангҳои бемаҳдуд дар дохили шабака",
+                in_network_calls_desc: "ҳангоми фаъол будани Тарофа дастрасанд ва танҳо ба рақамҳои шабакаи Ширкат дахл доранд.",
+                oila_tv: "Оила ТВ",
+                oila_tv_desc: "Барномаҳои дӯстдоштаи телевизионии худро бо сифати HD тамошо кунед.",
+                ivi_cinema: "Онлайн-кинотеатри ИВИ",
+                ivi_cinema_desc: "Беҳтарин филмҳо ва силсилафилмҳоро аз тамоми ҷаҳон тамошо кунед.",
+                copy_button: "Нусхабардорӣ",
+                copied_toast: "Матн нусхабардорӣ шуд!",
+                modal_ok: "ХУБ",
+                min_unit: "дақ",
+                sms_unit: "СМС",
+                gb_unit: "ГБ",
+                view_toggle_grid: "Намуд: Тугмачаҳо",
+                view_toggle_slider: "Намуд: Слайдер",
+                modal_minutes_body1: "Нархгузорӣ дақиқавист. Фосилаи нархгузории даъвати овозӣ ба 60 сония баробар аст, ҳар 60 сонияи нопурраи суҳбат то як дақиқаи пурра яклухт карда мешавад. Дақиқаҳои дар доираи бастаи хизматрасониҳо пешниҳодшуда ба зангҳо ба дигар шабакаҳои ҶТ паҳн мешаванд. Баъди ба поён расидани ҳаҷми дақиқаҳои дохилшуда, нархгузории зангҳо ба шабакаҳои дигар мувофиқи шартҳои асосии Тарофаи “Биё! Бисоз” сурат мегирад. Арзиши минималии занг 0,25 Сомониро (бо назардошти ААИ ва аксиз) ташкил медиҳад.",
+                modal_sms_body1: "Ҳаҷми дохилшудаи SMS танҳо дар ҳудуди ҶТ дастрас аст. Пас аз ба охир расидани ҳаҷми SMS-ҳои дохилшуда, SMS-ҳои содиротӣ дар дохили ҶТ мувофиқи шартҳои асосии Нақшаи тарофавӣ нархгузорӣ карда мешаванд.",
+                modal_internet_body1: "Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб яклухт карда мешаванд.",
+                modal_minutes_body2: "• Нархгузорӣ дақиқавист.Фосилаи нархгузории даъвати овозӣ ба 60 сония баробар аст, ҳар 60 сонияи нопурраи суҳбат то як дақиқаи пурра яклухт карда мешавад.Арзиши минималии занг 0, 25 Сомониро(бо назардошти ААИ ва аксиз) ташкил медиҳад.Дақиқаҳои дар доираи бастаи хизматрасониҳо пешниҳодшуда ба зангҳо ба дигар шабакаҳои ҶТ паҳн мешаванд.Баъди ба поён расидани ҳаҷми дақиқаҳои дохилшуда, нархгузории зангҳо ба шабакаҳои дигар мувофиқи шартҳои асосии тарофаи «Биё! Бисоз 2.0» сурат мегирад.",
+        modal_sms_body2: "Ҳаҷми дохилшудаи SMS танҳо дар ҳудуди ҶТ дастрас аст.",
+            modal_internet_body2: "Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб яклухт карда мешаванд.",
+                footerTemplate1: (t, m, g, s) => `Тарофаи "Биё! бисоз Life" бо нархи ${t} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} ГБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро ба ҳама сомонаҳо пешниҳод мекунад. Барои он ки тарофа ба Шумо дастрас бошад, барномаи Life-ро аз сомонаи Life.tj боргирӣ карда, онро насб кунед.`,
+                    footerTemplate2: (t, m, g, s) => `Тарофаи "Биё! бисоз Life 2.0" бо нархи ${t} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} ГБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро пешниҳод мекунад. Инчунин хидматрасониҳои Oila TV ва IVI ройгон пешниҳод мешаванд. Барои дастрас кардани тарофа, барномаи Life-ро аз сомонаи Life.tj боргирӣ ва насб кунед.`
+        }
     };
 
-    const smsData = {
-        values: [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300],
-        prices: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    };
+        // --- Data for Tariffs (Prices and values remain the same) ---
+        const config1 = {
+            basePrice: 49.57, maxTotal: 346.96,
+            minutes: { values: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500], prices: [0, 4.95, 4.96, 4.95, 4.96, 4.96, 4.95, 4.96, 4.96, 4.95, 4.96, 4.96, 4.95, 4.96, 4.96, 4.95, 4.96, 4.96, 4.95] },
+            sms: { values: [0, 50, 100, 150, 200, 250, 300], prices: [0, 1.98, 1.98, 1.98, 1.99, 1.98, 1.98] },
+            internet: { values: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150], prices: [0, 2.97, 2.97, 2.98, 2.97, 2.97, 2.98, 2.97, 2.98, 2.97, 2.97, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.93, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94, 6.94] },
+            state: {}, elements: { minutes: 'minutes-options1', sms: 'sms-options1', internet: 'internet-options1', totalPrice: 'total-price1', footerText: 'footer-text-container1' }
+        };
+        const config2 = {
+            basePrice: 65, maxTotal: 358.5,
+            minutes: { values: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500], prices: [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] },
+            sms: { values: [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300], prices: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+            internet: { values: [15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150], prices: [0, 1.5, 1.5, 1.5, 1.5, 1.5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] },
+            state: {}, elements: { minutes: 'minutes-options2', sms: 'sms-options2', internet: 'internet-options2', totalPrice: 'total-price2', footerText: 'footer-text-container2' }
+        };
 
-    const internetData = {
-        values: [15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150],
-        prices: [0, 1.5, 1.5, 1.5, 1.5, 1.5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
-    };
-    
-    let selectedMinutes = minutesData.values[0];
-    let selectedSms = smsData.values[0];
-    let selectedInternet = internetData.values[0];
+        // --- General Functions ---
+        let currentLang = 'tj';
+        let life2ViewMode = 'grid'; // Can be 'grid' or 'slider'
 
-    function createOptions(containerId, data, selectedValue, unit) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-        data.values.forEach(value => {
-            const btn = document.createElement("div");
-            btn.className = "option-button";
-            if (value === selectedValue) {
-                btn.classList.add("active");
-            }
-            btn.innerHTML = `${value}<br>${unit}`;
-            btn.addEventListener("click", () => {
-                const type = containerId.split('-')[0];
-                if (type === "minutes") selectedMinutes = value;
-                if (type === "sms") selectedSms = value;
-                if (type === "internet") selectedInternet = value;
-
-                document.querySelectorAll(`#${containerId} .option-button`).forEach(el => el.classList.remove("active"));
-                btn.classList.add("active");
-                updateTotal();
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
             });
-            container.appendChild(btn);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            initializeTariff(config1);
+            initializeTariff(config2);
+            initializeSliders();
+        }
+
+        function initializeTariff(config) {
+            config.state.selectedMinutes = config.state.selectedMinutes || config.minutes.values[0];
+            config.state.selectedSms = config.state.selectedSms || config.sms.values[0];
+            config.state.selectedInternet = config.state.selectedInternet || config.internet.values[0];
+            if (config === config1 || (config === config2 && life2ViewMode === 'grid')) {
+                createOptions(config, 'minutes');
+                createOptions(config, 'sms');
+                createOptions(config, 'internet');
+            }
+            updateTotal(config);
+        }
+
+        function createOptions(config, type) {
+            const container = document.getElementById(config.elements[type]);
+            if (!container) return;
+            container.innerHTML = "";
+            const data = config[type];
+            let unitKey;
+            if (type === 'minutes') unitKey = 'min_unit';
+            else if (type === 'sms') unitKey = 'sms_unit';
+            else if (type === 'internet') unitKey = 'gb_unit';
+            const unit = translations[currentLang][unitKey];
+            data.values.forEach(value => {
+                const btn = document.createElement("div");
+                btn.className = "option-button";
+                if (value === config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`]) {
+                    btn.classList.add("active");
+                }
+                btn.innerHTML = `${value}<br><span style="font-size:12px; font-weight:normal;">${unit}</span>`;
+                btn.addEventListener("click", () => {
+                    config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`] = value;
+                    document.querySelectorAll(`#${config.elements[type]} .option-button`).forEach(el => el.classList.remove("active"));
+                    btn.classList.add("active");
+                    updateTotal(config);
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function getOptionCost(data, selectedValue) {
+            const index = data.values.indexOf(selectedValue);
+            if (index <= 0) return 0;
+            return data.prices.slice(1, index + 1).reduce((acc, price) => acc + price, 0);
+        }
+
+        function updateTotal(config) {
+            const minCost = getOptionCost(config.minutes, config.state.selectedMinutes);
+            const smsCost = getOptionCost(config.sms, config.state.selectedSms);
+            const netCost = getOptionCost(config.internet, config.state.selectedInternet);
+            let total = config.basePrice + minCost + smsCost + netCost;
+            if (total > config.maxTotal) {
+                total = config.maxTotal;
+            }
+            total = total.toFixed(2);
+            document.getElementById(config.elements.totalPrice).innerText = total;
+
+            const footerTemplate = (config === config1) ? translations[currentLang].footerTemplate1 : translations[currentLang].footerTemplate2;
+            document.getElementById(config.elements.footerText).innerText = footerTemplate(
+                total, config.state.selectedMinutes, config.state.selectedInternet, config.state.selectedSms
+            );
+        }
+
+        // --- New Slider Functions ---
+        function initializeSliders() {
+            setupSlider('internet', config2);
+            setupSlider('minutes', config2);
+            setupSlider('sms', config2);
+            syncViews();
+        }
+
+        function setupSlider(type, config) {
+            const slider = document.getElementById(`${type}-slider`);
+            const valueDisplay = document.getElementById(`${type}-slider-value`);
+            const minDisplay = document.getElementById(`${type}-slider-min`);
+            const maxDisplay = document.getElementById(`${type}-slider-max`);
+            const data = config[type].values;
+            const unit = translations[currentLang][`${type === 'internet' ? 'gb' : (type === 'minutes' ? 'min' : 'sms')}_unit`];
+
+            slider.min = 0;
+            slider.max = data.length - 1;
+
+            minDisplay.innerText = `${data[0]} ${unit}`;
+            maxDisplay.innerText = `${data[data.length - 1]} ${unit}`;
+
+            slider.oninput = function () {
+                const selectedValue = data[this.value];
+                valueDisplay.innerText = `${selectedValue} ${unit}`;
+                const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                config.state[stateKey] = selectedValue;
+                updateTotal(config);
+            }
+        }
+
+        function syncViews() {
+            // Syncs slider position based on grid selection, and vice-versa
+            Object.keys(config2.elements).forEach(type => {
+                if (type === 'totalPrice' || type === 'footerText') return;
+
+                const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                const selectedValue = config2.state[stateKey];
+                const data = config2[type].values;
+                const index = data.indexOf(selectedValue);
+
+                // Sync Slider
+                const slider = document.getElementById(`${type}-slider`);
+                if (slider) slider.value = index;
+
+                // Sync Slider Label
+                const valueDisplay = document.getElementById(`${type}-slider-value`);
+                if (valueDisplay) {
+                    const unit = translations[currentLang][`${type === 'internet' ? 'gb' : (type === 'minutes' ? 'min' : 'sms')}_unit`];
+                    valueDisplay.innerText = `${selectedValue} ${unit}`;
+                }
+
+                // Sync Grid
+                document.querySelectorAll(`#${config2.elements[type]} .option-button`).forEach((btn, btnIndex) => {
+                    btn.classList.toggle('active', btnIndex === index);
+                });
+            });
+        }
+
+        function toggleLife2View() {
+            const gridView = document.getElementById('grid-view-life2');
+            const sliderView = document.getElementById('slider-view-life2');
+            const toggleBtn = document.getElementById('view-toggle-btn');
+
+            if (life2ViewMode === 'grid') {
+                life2ViewMode = 'slider';
+                gridView.style.display = 'none';
+                sliderView.style.display = 'block';
+                toggleBtn.dataset.translateKey = 'view_toggle_slider';
+            } else {
+                life2ViewMode = 'grid';
+                gridView.style.display = 'block';
+                sliderView.style.display = 'none';
+                toggleBtn.dataset.translateKey = 'view_toggle_grid';
+            }
+            syncViews();
+            // Update button text after toggle
+            toggleBtn.innerText = translations[currentLang][toggleBtn.dataset.translateKey];
+        }
+
+        // --- UI Functions ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tariff-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+
+        function showToast() {
+            const toast = document.getElementById('toast-notification');
+            toast.innerText = translations[currentLang].copied_toast;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function copyText(containerId) {
+            const textToCopy = document.getElementById(containerId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(showToast);
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => setLanguage(e.target.dataset.lang));
+            });
+
+            document.getElementById('view-toggle-btn').addEventListener('click', toggleLife2View);
+
+            const savedLang = localStorage.getItem('language') || 'tj';
+            setLanguage(savedLang);
+
+            document.getElementById('copy-button1').addEventListener('click', () => copyText('footer-text-container1'));
+            document.getElementById('copy-button2').addEventListener('click', () => copyText('footer-text-container2'));
         });
-    }
 
-    function getOptionCost(data, selectedValue) {
-        const index = data.values.indexOf(selectedValue);
-        if (index > 0) {
-            let totalCost = 0;
-            for (let i = 1; i <= index; i++) {
-                totalCost += data.prices[i];
-            }
-            return totalCost;
-        }
-        return 0;
-    }
-
-    function copyTextToClipboard() {
-        const textToCopy = document.getElementById('footer-text-container').innerText;
-        const tempTextarea = document.createElement("textarea");
-        tempTextarea.value = textToCopy;
-        document.body.appendChild(tempTextarea);
-        tempTextarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempTextarea);
-        alert("Текст скопирован!");
-    }
-
-    function updateTotal() {
-        const minCost = getOptionCost(minutesData, selectedMinutes);
-        const smsCost = getOptionCost(smsData, selectedSms);
-        const netCost = getOptionCost(internetData, selectedInternet);
-
-        let total = basePrice + minCost + smsCost + netCost;
-        const maxTotal = 358.5;
-        
-        if (total > maxTotal) {
-            total = maxTotal;
-        }
-
-        document.getElementById("total-price").innerText = total.toFixed(2);
-        
-        const footerText = `Тарофаи "Биё! бисоз Life 2.0" бо нархи ${total.toFixed(2)} сомони огоз шуда дар худ ${selectedMinutes} дакика ба дигар шабакахои ЧТ, ${selectedInternet} Гб, ${selectedSms} смс ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемахдудро ба хама сомонахо пешниход мекунад. Инчунин ба сервисҳои Oila TV ва IVI ройгон пешниҳод мешавад.Барои он ки тарофа ба Шумо дастрас бошад, барномаи Life-ро аз сомонаи Life.tj боргири карда онро насб кунед, бо ин амал Шумо тафсири нави барномаро насб менамоед.`;
-
-        document.getElementById("footer-text-container").innerText = footerText;
-        
-        document.getElementById('copy-button').onclick = copyTextToClipboard;
-    }
-    
-    function showModal(type) {
-        document.getElementById(type + '-modal').style.display = 'flex';
-    }
-
-    function hideModal(type) {
-        document.getElementById(type + '-modal').style.display = 'none';
-    }
-
-    createOptions("minutes-options", minutesData, selectedMinutes, "мин");
-    createOptions("sms-options", smsData, selectedSms, "СМС");
-    createOptions("internet-options", internetData, selectedInternet, "ГБ");
-
-    updateTotal();
-
-    if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('Service Worker registered: ', registration);
-      })
-      .catch(err => {
-        console.log('Service Worker registration failed: ', err);
-      });
-  });
-            }
-    
-</script>
+     if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('Service Worker успешно зарегистрирован:', registration);
+                        })
+                        .catch(err => {
+                            console.log('Ошибка регистрации Service Worker:', err);
+                        });
+                });
+             }
+    </script>
 
 </body>
+
 </html>
