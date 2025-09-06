@@ -10,17 +10,17 @@
   "description": "Создайте свой идеальный тариф Life.",
   "icons": [
     {
-      "src": "https://shop.megafon.tj/favicon.ico",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "https://play-lh.googleusercontent.com/4l-R2Vlp2a6CHI52-Q2BOL2d-wBM32l623mdST3-lZ361e2NO2v25175AS_E8GVOcaY=w240-h480-rw",
-      "type": "image/png",
+      "src": "favicon.ico",
+      "type": "image/ico",
       "sizes": "192x192"
     },
     {
-      "src": "https://play-lh.googleusercontent.com/4l-R2Vlp2a6CHI52-Q2BOL2d-wBM32l623mdST3-lZ361e2NO2v25175AS_E8GVOcaY=w240-h480-rw",
+      "src": "favicon.ico",
       "type": "image/png",
       "sizes": "512x512"
     }
