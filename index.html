@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создавай Life</title>
+    <title>Создавай Life & Персональный</title>
     <meta name="author" content="Komronbek Sharipov">
     <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
-  <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Lato:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
+        /* --- General and Life Tariff Styles --- */
         :root {
             --primary-color: #00aa44;
             --light-gray: #f8f9fa;
@@ -30,6 +31,14 @@
             --slider-bg: #ddd;
             --header-bg: rgba(255, 255, 255, 0.8);
             --shadow-color: rgba(0, 0, 0, 0.2);
+
+            /* Personal Tariff Colors */
+            --brand-green: #00B956;
+            --brand-purple: #7A00B9;
+            --personal-card-bg: #ffffff;
+            --personal-border: #e0e0e0;
+            --personal-text-primary: #1a1a1a;
+            --personal-text-secondary: #6b6b6b;
         }
 
         body.dark {
@@ -38,20 +47,28 @@
             --text-color: #eee;
             --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             --button-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            --background-color: #000000;
-            --container-bg: #333;
-            --modal-bg: #444;
+            --background-color: #121212;
+            --container-bg: #1e1e1e;
+            --modal-bg: #2a2a2a;
             --toast-bg: #333;
             --toast-text: #eee;
-            --nav-bg: #333;
-            --option-bg: #444;
-            --option-border: #555;
+            --nav-bg: #1e1e1e;
+            --option-bg: #2c2c2c;
+            --option-border: #444;
             --option-text: #00cc55;
             --active-bg: #00cc55;
             --active-text: #000;
             --slider-bg: #555;
             --header-bg: rgba(50, 50, 50, 0.8);
             --shadow-color: rgba(255, 255, 255, 0.1);
+
+            /* Personal Tariff Dark Colors */
+            --brand-green: #00D162;
+            --brand-purple: #9D27E6;
+            --personal-card-bg: #2a2a2a;
+            --personal-border: #444;
+            --personal-text-primary: #f0f0f0;
+            --personal-text-secondary: #a0a0a0;
         }
 
         body {
@@ -70,96 +87,12 @@
             box-shadow: 0 0 20px var(--shadow-color);
         }
 
-        .header {
-            position: relative;
-        }
+        .header { position: relative; }
+        .header img { width: 100%; height: auto; display: block; }
 
-        .header img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-.lang-switcher {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--header-bg);
-    border-radius: 20px;
-    border: 1px solid var(--primary-color);
-    padding: 4px;
-    display: flex;
-    box-shadow: 0 2px 5px var(--shadow-color);
-}
-
-.theme-switcher {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: var(--header-bg);
-    border-radius: 20px;
-    border: 1px solid var(--primary-color);
-    padding: 4px;
-    display: flex;
-    box-shadow: 0 2px 5px var(--shadow-color);
-}
-
-.lang-btn, .theme-btn {
-    background-color: transparent;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-    font-size: 12px;
-    position: relative;
-}
-
-.lang-btn:hover, .theme-btn:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transform: scale(1.05);
-}
-
-.lang-btn.active, .theme-btn.active {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.lang-btn::after, .theme-btn::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--toast-bg);
-    color: var(--toast-text);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.lang-btn:hover::after, .theme-btn:hover::after {
-    opacity: 1;
-}
-
-@media (max-width: 400px) {
-    .lang-switcher, .theme-switcher {
-        padding: 2px;
-    }
-    .lang-btn, .theme-btn {
-        padding: 6px 10px;
-        font-size: 11px;
-    }
-}
-       .lang-switcher, .theme-switcher {
+        .lang-switcher, .theme-switcher {
             position: absolute;
             top: 10px;
-            right: 10px;
             background-color: var(--header-bg);
             border-radius: 20px;
             border: 1px solid var(--primary-color);
@@ -167,30 +100,16 @@
             display: flex;
             box-shadow: 0 2px 5px var(--shadow-color);
         }
-
-       .theme-switcher{
-           right: 170px;
-           position: none;
-           width: 80px;
-       }
-    /* Position next to lang-switcher */
-        
+        .lang-switcher { right: 10px; }
+        .theme-switcher { left: 10px; }
 
         .lang-btn, .theme-btn {
-            background-color: transparent;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: transparent; border: none; padding: 8px 16px; border-radius: 16px;
+            font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease;
             font-size: 12px;
         }
 
-        .lang-btn.active, .theme-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
+        .lang-btn.active, .theme-btn.active { background-color: var(--primary-color); color: white; }
 
         .navigation {
             display: flex;
@@ -201,339 +120,160 @@
         }
 
         .nav-link {
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            padding: 8px 18px;
-            border-radius: 20px;
-            border: #00aa44 1px solid;
-            transition: background-color 0.3s, color 0.3s;
-            cursor: pointer;
-            color: var(--text-color);
+            text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 18px;
+            border-radius: 20px; border: #00aa44 1px solid; transition: background-color 0.3s, color 0.3s;
+            cursor: pointer; color: var(--text-color);
         }
-
-        .nav-link.active {
-            background-color: var(--active-bg);
-            color: var(--active-text);
-        }
-
-        .tariff-content {
-            display: none;
-        }
-
-        .tariff-content.active {
-            display: block;
-        }
-
-        .unlimited-section,
-        .tariff-section {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .unlimited-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .unlimited-section .text,
-        .total-price-text {
-            flex-grow: 1;
-        }
-
-        .infinity-icon {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .tariff-section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .tariff-section-header h3 {
-            margin: 0;
-            flex-grow: 1;
-        }
-
-        .info-icon {
-            color: #888;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            gap: 12px;
-        }
-
+        .nav-link.active { background-color: var(--active-bg); color: var(--active-text); }
+        .tariff-content { display: none; }
+        .tariff-content.active { display: block; }
+        .unlimited-section { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; }
+        .unlimited-section .text, .total-price-text { flex-grow: 1; }
+        .infinity-icon { color: var(--primary-color); font-weight: bold; }
+        .tariff-section { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .tariff-section-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .tariff-section-header h3 { margin: 0; flex-grow: 1; }
+        .info-icon { color: #888; cursor: pointer; margin-left: 10px; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; }
         .option-button {
-            border: 1px solid var(--option-border);
-            color: var(--option-text);
-            background-color: var(--option-bg);
-            padding: 8px 5px;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
+            border: 1px solid var(--option-border); color: var(--option-text); background-color: var(--option-bg);
+            padding: 8px 5px; border-radius: 12px; text-align: center; font-size: 14px; cursor: pointer;
             transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
-
-        .option-button:hover {
-            box-shadow: var(--button-shadow);
-            border-color: var(--primary-color);
-        }
-
-        .option-button.active {
-            background-color: var(--active-bg);
-            color: var(--active-text);
-            border-color: var(--primary-color);
-        }
-
-        .total-price-display {
-            text-align: center;
-            font-size: 15px;
-            font-weight: bold;
-            padding: 20px 15px;
-        }
-
-        .options-card {
-            background-color: var(--light-gray);
-            border-radius: 25px;
-            margin: 20px;
-            padding: 15px;
-        }
-
-        .card-header {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .card-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .card-item:last-child {
-            border-bottom: none;
-        }
-
-        .item-icon img {
-            width: 50px;
-            height: 50px;
-            border-radius: 20px;
-            margin-right: 15px;
-        }
-
-        .item-title {
-            font-weight: bold;
-        }
-
-        .item-description {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .footer-container {
-            padding: 10px 20px 20px;
-        }
-
-        .card {
-            background-color: var(--light-gray);
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 15px;
-            box-shadow: var(--card-shadow);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .copy-button-card {
-            padding: 15px;
-            text-align: center;
-        }
-
+        .option-button:hover { box-shadow: var(--button-shadow); border-color: var(--primary-color); }
+        .option-button.active { background-color: var(--active-bg); color: var(--active-text); border-color: var(--primary-color); }
+        .total-price-display { text-align: center; font-size: 15px; font-weight: bold; padding: 20px 15px; }
+        .options-card { background-color: var(--light-gray); border-radius: 25px; margin: 20px; padding: 15px; }
+        .card-header { font-weight: bold; margin-bottom: 15px; }
+        .card-item { display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .card-item:last-child { border-bottom: none; }
+        .item-icon img { width: 50px; height: 50px; border-radius: 20px; margin-right: 15px; }
+        .item-title { font-weight: bold; }
+        .item-description { font-size: 14px; color: #666; line-height: 1.4; }
+        .footer-container { padding: 10px 20px 20px; }
+        .card { background-color: var(--light-gray); border-radius: 20px; padding: 20px; margin-top: 15px; box-shadow: var(--card-shadow); font-size: 14px; line-height: 1.5; }
+        .copy-button-card { padding: 15px; text-align: center; }
         .copy-button {
-            background-color: var(--option-bg);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            transition: background-color 0.2s, box-shadow 0.2s;
+            background-color: var(--option-bg); color: var(--primary-color); border: 1px solid var(--primary-color);
+            padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer;
+            display: inline-flex; align-items: center; transition: background-color 0.2s, box-shadow 0.2s;
         }
-
-        .copy-button:hover {
-            background-color: #f0fff8;
-            box-shadow: var(--button-shadow);
-        }
-
-        .copy-button svg {
-            margin-right: 8px;
-        }
-
+        .copy-button:hover { background-color: #f0fff8; box-shadow: var(--button-shadow); }
+        .copy-button svg { margin-right: 8px; }
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
         }
-
-        .modal {
-            background-color: var(--modal-bg);
-            padding: 20px;
-            border-radius: 15px;
-            max-width: 80%;
-            text-align: center;
-        }
-
+        .modal { background-color: var(--modal-bg); padding: 20px; border-radius: 15px; max-width: 80%; text-align: center; }
         .modal-button {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 80%;
-            margin-top: 15px;
+            background-color: transparent; color: var(--primary-color); border: none; padding: 12px 24px;
+            border-radius: 20px; cursor: pointer; font-weight: bold; width: 80%; margin-top: 15px;
         }
-
         #toast-notification {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--toast-bg);
-            color: var(--toast-text);
-            text-align: center;
-            border-radius: 38px;
-            padding: 16px;
-            position: fixed;
-            z-index: 2000;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 30px;
-            font-size: 15px;
-            opacity: 0;
+            visibility: hidden; min-width: 250px; background-color: var(--toast-bg); color: var(--toast-text);
+            text-align: center; border-radius: 38px; padding: 16px; position: fixed; z-index: 2000;
+            left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 15px; opacity: 0;
             transition: opacity 0.5s, visibility 0.5s, bottom 0.5s;
         }
+        #toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        #toast-notification.show {
-            visibility: visible;
-            opacity: 1;
-            bottom: 50px;
-        }
-
-        /* New Slider Styles */
-        .view-toggle {
-            text-align: right;
-            padding: 0 15px 10px;
-        }
-
-        #view-toggle-btn {
-            background: var(--light-gray);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .slider-group {
-            padding: 10px 25px 20px;
-        }
-
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .slider-label {
-            font-size: 16px;
-        }
-
-        .slider-value {
-            font-size: 18px;
-            color: var(--primary-color);
-            font-weight: 800;
-        }
-
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            background: var(--slider-bg);
-            outline: none;
-            border-radius: 4px;
-            opacity: 0.7;
-            transition: opacity .2s;
-        }
-
-        .slider:hover {
-            opacity: 1;
-        }
-
+        /* --- Slider Styles --- */
+        .view-toggle { text-align: right; padding: 0 15px 10px; }
+        #view-toggle-btn { background: var(--light-gray); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 15px; font-weight: bold; cursor: pointer; }
+        .slider-group { padding: 10px 25px 20px; }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .slider-label { font-size: 16px; }
+        .slider-value { font-size: 18px; color: var(--primary-color); font-weight: 800; }
+        .slider { -webkit-appearance: none; width: 100%; height: 8px; background: var(--slider-bg); outline: none; border-radius: 4px; opacity: 0.7; transition: opacity .2s; }
+        .slider:hover { opacity: 1; }
         .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            background: var(--primary-color);
-            cursor: pointer;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: var(--primary-color);
+            cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
-
         .slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            background: var(--primary-color);
-            cursor: pointer;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%;
+            border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
-
-        .slider-minmax {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
-        }
+        .slider-minmax { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 5px; }
 
         @media (max-width: 400px) {
-            .options-grid {
-                grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-            }
-
-            .nav-link {
-                font-size: 12px;
-                padding: 8px 10px;
-            }
+            .lang-switcher, .theme-switcher { padding: 2px; }
+            .lang-btn, .theme-btn { padding: 6px 10px; font-size: 11px; }
+            .options-grid { grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); }
+            .nav-link { font-size: 12px; padding: 8px 10px; }
         }
+
+        /* --- Personal Tariff Styles --- */
+        #personal { padding: 15px; }
+        #personal .container-personal { max-width: 600px; margin: 0 auto; display: grid; gap: 25px; }
+        #personal .card {
+            background-color: var(--personal-card-bg); border-radius: 16px; padding: 25px;
+            border: 1px solid var(--personal-border); transition: box-shadow 0.3s ease;
+            color: var(--personal-text-primary); margin-top: 0;
+        }
+        #personal .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        #personal .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--personal-border);
+        }
+        #personal .card-title { font-size: 20px; font-weight: 700; margin: 0; color: var(--brand-purple); }
+        #personal .configurator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        #personal .input-group { position: relative; display: flex; flex-direction: column; }
+        #personal .input-group label {
+            font-size: 14px; font-weight: 600; color: var(--personal-text-secondary); margin-bottom: 8px;
+        }
+        #personal .input-group input {
+            width: 80%; padding: 12px 60px 12px 12px; border: 1px solid var(--personal-border); border-radius: 25px;
+            font-size: 16px; font-family: 'Manrope', sans-serif; font-weight: 600;
+            transition: all 0.2s ease; background-color: var(--personal-card-bg); color: var(--personal-text-primary);
+        }
+        #personal .input-group input:focus {
+            outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.15);
+        }
+        #personal .input-unit {
+            position: absolute; right: 15px; top: 42px; color: var(--personal-text-secondary);
+            font-size: 14px; font-weight: 600; pointer-events: none;
+        }
+        #personal .tariff-preview-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 15px; }
+        #personal .tariff-item {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 16px; padding: 10px 0;
+        }
+        #personal .tariff-item:not(:last-child){ border-bottom: 1px solid var(--personal-border); }
+        #personal .tariff-label { color: var(--personal-text-secondary); }
+        #personal .tariff-value { font-weight: 700; font-size: 17px; }
+        #personal #historyList { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+        #personal .history-item {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+            padding: 12px; border-radius: 10px; background-color: var(--light-gray);
+            border: 1px solid var(--personal-border);
+        }
+        #personal .history-details { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--personal-text-secondary); }
+        #personal .history-values { font-weight: 600; color: var(--personal-text-primary); }
+        #personal .btn {
+            display: flex; align-items: center; justify-content: center; width: 100%; border: none;
+            padding: 14px; border-radius: 22px; cursor: pointer; font-size: 15px; font-weight: 700;
+            font-family: 'Manrope', sans-serif; transition: all 0.2s ease; margin-top: 25px;
+        }
+        #personal .btn-primary { background-color: var(--brand-green); color: white; }
+        #personal .btn-primary:hover { background-color: #00a34c; }
+        #personal .btn-history { padding: 8px 12px; font-size: 12px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; }
+        #personal .btn-load { background-color: var(--brand-purple); color: white; }
+        #personal .btn-delete { background-color: var(--light-gray); color: var(--personal-text-primary); }
+        #personal .clear-all-btn { font-size: 13px; color: #999; background: none; border: none; cursor: pointer; padding: 0; }
+        #personal .clear-all-btn:hover { color: var(--brand-purple); }
+        #personal-toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background-color: var(--brand-purple); color: white; padding: 12px 25px; border-radius: 10px;
+            font-size: 14px; font-weight: 600; opacity: 0; visibility: hidden;
+            transition: all 0.4s ease; z-index: 1000;
+        }
+        #personal-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px); }
+        @media (max-width: 480px) { #personal .configurator-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 
 <body>
-
     <div class="container">
         <div class="header">
             <img src="https://shop.megafon.tj/_nuxt/788_ru.DDZlxzsT.jpg" alt="Тариф">
@@ -550,15 +290,14 @@
         <div class="navigation">
             <a class="nav-link active" onclick="switchTab('life1')" data-translate-key="nav_life1"></a>
             <a class="nav-link" onclick="switchTab('life2')" data-translate-key="nav_life2"></a>
+            <a class="nav-link" onclick="switchTab('personal')" data-translate-key="nav_personal"></a>
         </div>
 
         <div id="life1" class="tariff-content active">
-            <div class="unlimited-section"><span>📞</span><span class="text"
-                    data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
             <div class="tariff-section">
                 <div class="tariff-section-header">
-                    <h3 data-translate-key="minutes_rt"></h3><span class="info-icon"
-                        onclick="showModal('modal-minutes1')">ⓘ</span>
+                    <h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span>
                 </div>
                 <div class="options-grid" id="minutes-options1"></div>
             </div>
@@ -570,26 +309,22 @@
             </div>
             <div class="tariff-section">
                 <div class="tariff-section-header">
-                    <h3 data-translate-key="internet"></h3><span class="info-icon"
-                        onclick="showModal('modal-internet1')">ⓘ</span>
+                    <h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span>
                 </div>
                 <div class="options-grid" id="internet-options1"></div>
             </div>
-            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span>
-            </div>
+            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div>
             <div class="options-card">
                 <div class="card-header" data-translate-key="additional_options"></div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png"
-                            alt="Night icon"></div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="night_unlimited"></div>
                         <div class="item-description" data-translate-key="night_unlimited_desc"></div>
                     </div>
                 </div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon">
-                    </div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="in_network_calls"></div>
                         <div class="item-description" data-translate-key="in_network_calls_desc"></div>
@@ -600,99 +335,76 @@
                 <div class="card footer-text-card">
                     <div id="footer-text-container1"></div>
                 </div>
-                <div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-clipboard" viewBox="0 0 16 16">
-                            <path
-                                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z" />
-                        </svg><span data-translate-key="copy_button"></span></button></div>
+                <div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
             </div>
         </div>
 
         <div id="life2" class="tariff-content">
-            <div class="unlimited-section"><span>📞</span><span class="text"
-                    data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
-
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
             <div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div>
-
             <div id="grid-view-life2">
                 <div class="tariff-section">
                     <div class="tariff-section-header">
-                        <h3 data-translate-key="minutes_rt"></h3><span class="info-icon"
-                            onclick="showModal('modal-minutes2')">ⓘ</span>
+                        <h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span>
                     </div>
                     <div class="options-grid" id="minutes-options2"></div>
                 </div>
                 <div class="tariff-section">
                     <div class="tariff-section-header">
-                        <h3 data-translate-key="sms"></h3><span class="info-icon"
-                            onclick="showModal('modal-sms2')">ⓘ</span>
+                        <h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span>
                     </div>
                     <div class="options-grid" id="sms-options2"></div>
                 </div>
                 <div class="tariff-section">
                     <div class="tariff-section-header">
-                        <h3 data-translate-key="internet"></h3><span class="info-icon"
-                            onclick="showModal('modal-internet2')">ⓘ</span>
+                        <h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span>
                     </div>
                     <div class="options-grid" id="internet-options2"></div>
                 </div>
             </div>
-
             <div id="slider-view-life2" style="display: none;">
                 <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span
-                            class="slider-value" id="internet-slider-value"></span></div>
+                    <div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div>
                     <input type="range" id="internet-slider" class="slider" step="1">
-                    <div class="slider-minmax"><span id="internet-slider-min"></span><span
-                            id="internet-slider-max"></span></div>
+                    <div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div>
                 </div>
                 <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span
-                            class="slider-value" id="minutes-slider-value"></span></div>
+                    <div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div>
                     <input type="range" id="minutes-slider" class="slider" step="1">
-                    <div class="slider-minmax"><span id="minutes-slider-min"></span><span
-                            id="minutes-slider-max"></span></div>
+                    <div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div>
                 </div>
                 <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span
-                            class="slider-value" id="sms-slider-value"></span></div>
+                    <div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div>
                     <input type="range" id="sms-slider" class="slider" step="1">
                     <div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div>
                 </div>
             </div>
-
-            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span>
-            </div>
+            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div>
             <div class="options-card">
                 <div class="card-header" data-translate-key="additional_options"></div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png"
-                            alt="Night icon"></div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="night_unlimited"></div>
                         <div class="item-description" data-translate-key="night_unlimited_desc"></div>
                     </div>
                 </div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon">
-                    </div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="in_network_calls"></div>
                         <div class="item-description" data-translate-key="in_network_calls_desc"></div>
                     </div>
                 </div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png"
-                            alt="TV icon"></div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="oila_tv"></div>
                         <div class="item-description" data-translate-key="oila_tv_desc"></div>
                     </div>
                 </div>
                 <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png"
-                            alt="IVI icon"></div>
+                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div>
                     <div class="item-details">
                         <div class="item-title" data-translate-key="ivi_cinema"></div>
                         <div class="item-description" data-translate-key="ivi_cinema_desc"></div>
@@ -703,60 +415,89 @@
                 <div class="card footer-text-card">
                     <div id="footer-text-container2"></div>
                 </div>
-                <div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-clipboard" viewBox="0 0 16 16">
-                            <path
-                                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z" />
-                        </svg><span data-translate-key="copy_button"></span></button></div>
+                <div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
             </div>
         </div>
+
+        <div id="personal" class="tariff-content">
+             <div class="container-personal">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="personal_config_title"></h2>
+                    </div>
+                    <div class="configurator-grid">
+                        <div class="input-group">
+                            <label for="price" data-translate-key="personal_price_label"></label>
+                            <input type="number" id="price" value="" step="0.01" placeholder="Нархи тарофа">
+                            <span class="input-unit" data-translate-key="personal_price_unit"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="minutes" data-translate-key="personal_minutes_label"></label>
+                            <input type="number" id="minutes" value="" placeholder="Миқдори дақиқаҳо">
+                            <span class="input-unit" data-translate-key="personal_minutes_unit"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="gigabytes" data-translate-key="personal_gb_label"></label>
+                            <input type="number" id="gigabytes" value="" placeholder="Миқдори интернет">
+                            <span class="input-unit" data-translate-key="personal_gb_unit"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="sms" data-translate-key="personal_sms_label"></label>
+                            <input type="number" id="sms" value="" placeholder="Миқдори смсҳо">
+                            <span class="input-unit" data-translate-key="personal_sms_unit"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="personal_preview_title"></h2>
+                        <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/icon.jpg" alt="Megafon Logo" style="height: 30px; border-radius: 50%;">
+                    </div>
+                    <ul class="tariff-preview-list">
+                        <li class="tariff-item">
+                            <span class="tariff-label" data-translate-key="personal_preview_price"></span>
+                            <span class="tariff-value"><span id="price-display">0</span> <span data-translate-key="personal_price_unit"></span></span>
+                        </li>
+                        <li class="tariff-item">
+                            <span class="tariff-label" data-translate-key="personal_preview_minutes"></span>
+                            <span class="tariff-value"><span id="minutes-display">0</span> <span data-translate-key="personal_minutes_unit"></span></span>
+                        </li>
+                        <li class="tariff-item">
+                            <span class="tariff-label" data-translate-key="personal_preview_gb"></span>
+                            <span class="tariff-value"><span id="gb-display">0</span> <span data-translate-key="personal_gb_unit"></span></span>
+                        </li>
+                        <li class="tariff-item">
+                            <span class="tariff-label" data-translate-key="personal_preview_sms"></span>
+                            <span class="tariff-value"><span id="sms-display">0</span> <span data-translate-key="personal_sms_unit_plural"></span></span>
+                        </li>
+                         <li class="tariff-item">
+                            <span class="tariff-label" data-translate-key="personal_preview_night"></span>
+                            <span class="tariff-value" data-translate-key="personal_preview_unlimited"></span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary" id="copyAndSaveBtn" data-translate-key="personal_copy_save_btn"></button>
+                </div>
+                <div class="card" id="historyCard" style="display: none;">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="personal_history_title"></h2>
+                        <button class="clear-all-btn" id="clearAllHistoryBtn" data-translate-key="personal_history_clear"></button>
+                    </div>
+                    <ul id="historyList"></ul>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div id="modal-minutes1" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="minutes_rt"></h3>
-            <p data-translate-key="modal_minutes_body1"></p><button class="modal-button"
-                onclick="hideModal('modal-minutes1')" data-translate-key="modal_ok"></button>
-        </div>
-    </div>
-    <div id="modal-sms1" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="sms"></h3>
-            <p data-translate-key="modal_sms_body1"></p><button class="modal-button" onclick="hideModal('modal-sms1')"
-                data-translate-key="modal_ok"></button>
-        </div>
-    </div>
-    <div id="modal-internet1" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="internet"></h3>
-            <p data-translate-key="modal_internet_body1"></p><button class="modal-button"
-                onclick="hideModal('modal-internet1')" data-translate-key="modal_ok"></button>
-        </div>
-    </div>
-    <div id="modal-minutes2" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="minutes_rt"></h3>
-            <p data-translate-key="modal_minutes_body2"></p><button class="modal-button"
-                onclick="hideModal('modal-minutes2')" data-translate-key="modal_ok"></button>
-        </div>
-    </div>
-    <div id="modal-sms2" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="sms"></h3>
-            <p data-translate-key="modal_sms_body2"></p><button class="modal-button" onclick="hideModal('modal-sms2')"
-                data-translate-key="modal_ok"></button>
-        </div>
-    </div>
-    <div id="modal-internet2" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal">
-            <h3 data-translate-key="internet"></h3>
-            <p data-translate-key="modal_internet_body2"></p><button class="modal-button"
-                onclick="hideModal('modal-internet2')" data-translate-key="modal_ok"></button>
-        </div>
-    </div>
+    <div id="modal-minutes1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="minutes_rt"></h3><p data-translate-key="modal_minutes_body1"></p><button class="modal-button" onclick="hideModal('modal-minutes1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-sms1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="sms"></h3><p data-translate-key="modal_sms_body1"></p><button class="modal-button" onclick="hideModal('modal-sms1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-internet1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="internet"></h3><p data-translate-key="modal_internet_body1"></p><button class="modal-button" onclick="hideModal('modal-internet1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-minutes2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="minutes_rt"></h3><p data-translate-key="modal_minutes_body2"></p><button class="modal-button" onclick="hideModal('modal-minutes2')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-sms2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="sms"></h3><p data-translate-key="modal_sms_body2"></p><button class="modal-button" onclick="hideModal('modal-sms2')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-internet2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="internet"></h3><p data-translate-key="modal_internet_body2"></p><button class="modal-button" onclick="hideModal('modal-internet2')" data-translate-key="modal_ok"></button></div></div>
 
     <div id="toast-notification"></div>
+    <div class="toast" id="personal-toast"></div>
 
     <script>
         // --- DICTIONARY FOR TRANSLATION ---
@@ -764,6 +505,7 @@
             ru: {
                 nav_life1: "Создавай Life",
                 nav_life2: "Создавай Life 2.0",
+                nav_personal: "Персональный",
                 unlimited_in_network: "Безлимит внутри сети",
                 minutes_rt: "Минуты по РТ",
                 sms: "СМС",
@@ -793,11 +535,38 @@
                 modal_sms_body2: "Включенный объем SMS доступен исключительно по РТ.",
                 modal_internet_body2: "Интернет-сессии округляются в большую сторону с шагом тарификации в 100 Кб.",
                 footerTemplate1: (t, m, g, s) => `Тариф "Создавай Life" стоимостью ${t} сомони включает ${m} минут на другие сети РТ, ${g} ГБ, ${s} СМС и ночной безлимит, который предоставляет безлимитный интернет с 00:00 до 6:59. Чтобы тариф стал вам доступен, скачайте и установите приложение Life с сайта Life.tj.`,
-                footerTemplate2: (t, m, g, s) => `Тариф "Создавай Life 2.0" стоимостью ${t} сомони включает ${m} минут на другие сети РТ, ${g} ГБ, ${s} СМС и ночной безлимит (00:00-6:59). Также бесплатно предоставляются сервисы Oila TV и IVI. Чтобы тариф стал вам доступен, скачайте и установите приложение Life с сайта Life.tj.`
+                footerTemplate2: (t, m, g, s) => `Тариф "Создавай Life 2.0" стоимостью ${t} сомони включает ${m} минут на другие сети РТ, ${g} ГБ, ${s} СМС и ночной безлимит (00:00-6:59). Также бесплатно предоставляются сервисы Oila TV и IVI. Чтобы тариф стал вам доступен, скачайте и установите приложение Life с сайта Life.tj.`,
+                // Personal Tariff Translations RU
+                personal_config_title: "Конфигуратор тарифа",
+                personal_price_label: "Цена",
+                personal_price_unit: "сомони",
+                personal_minutes_label: "Минуты",
+                personal_minutes_unit: "мин.",
+                personal_gb_label: "Гигабайты",
+                personal_gb_unit: "ГБ",
+                personal_sms_label: "СМС",
+                personal_sms_unit: "СМС",
+                personal_preview_title: "Тариф \"Персональный\"",
+                personal_preview_price: "Ежемесячная плата",
+                personal_preview_minutes: "На другие сети",
+                personal_preview_gb: "Интернет-трафик",
+                personal_preview_sms: "Сообщения (СМС)",
+                personal_sms_unit_plural: "шт.",
+                personal_preview_night: "Ночной интернет",
+                personal_preview_unlimited: "Безлимит",
+                personal_copy_save_btn: "Копировать и сохранить",
+                personal_history_title: "История настроек",
+                personal_history_clear: "Очистить все",
+                personal_history_load: "Загрузить",
+                personal_history_delete: "Удалить",
+                personal_toast_saved: "Скопировано и сохранено в истории!",
+                personal_confirm_clear: "Вы уверены, что хотите удалить всю историю?",
+                personal_copy_template: (p, m, g, s) => `Тариф "Персональный" стоимостью ${p} сомони включает ${m} минут на другие сети РТ, ${g} МБ, ${s} СМС и ночной безлимит, который предоставляет безлимитный интернет с 00:00 до 6:59.`,
             },
             tj: {
-                nav_life1: "Биё! бисоз Life",
-                nav_life2: "Биё! бисоз Life 2.0",
+                nav_life1: "Биё! Бисоз Life",
+                nav_life2: "Биё! Бисоз Life 2.0",
+                nav_personal: "Персональный",
                 unlimited_in_network: "Белимит дар дохили шабака",
                 minutes_rt: "Дақиқаҳо ба дигар шабакаҳо",
                 sms: "СМС",
@@ -824,12 +593,38 @@
                 modal_sms_body1: "Ҳаҷми дохилшудаи SMS танҳо дар ҳудуди ҶТ дастрас аст. Пас аз ба охир расидани ҳаҷми SMS-ҳои дохилшуда, SMS-ҳои содиротӣ дар дохили ҶТ мувофиқи шартҳои асосии Нақшаи тарофавӣ нархгузорӣ карда мешаванд.",
                 modal_internet_body1: "Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб яклухт карда мешаванд.",
                 modal_minutes_body2: "• Нархгузорӣ дақиқавист.Фосилаи нархгузории даъвати овозӣ ба 60 сония баробар аст, ҳар 60 сонияи нопурраи суҳбат то як дақиқаи пурра яклухт карда мешавад.Арзиши минималии занг 0, 25 Сомониро(бо назардошти ААИ ва аксиз) ташкил медиҳад.Дақиқаҳои дар доираи бастаи хизматрасониҳо пешниҳодшуда ба зангҳо ба дигар шабакаҳои ҶТ паҳн мешаванд.Баъди ба поён расидани ҳаҷми дақиқаҳои дохилшуда, нархгузории зангҳо ба шабакаҳои дигар мувофиқи шартҳои асосии тарофаи «Биё! Бисоз 2.0» сурат мегирад.",
-        modal_sms_body2: "Ҳаҷми дохилшудаи SMS танҳо дар ҳудуди ҶТ дастрас аст.",
-            modal_internet_body2: "Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб яклухт карда мешаванд.",
+                modal_sms_body2: "Ҳаҷми дохилшудаи SMS танҳо дар ҳудуди ҶТ дастрас аст.",
+                modal_internet_body2: "Сессияҳои интернетӣ ба ҷониби боло, бо фосилаи нархгузории баробар ба 100 Кб яклухт карда мешаванд.",
                 footerTemplate1: (t, m, g, s) => `Тарофаи "Биё! бисоз Life" бо нархи ${t} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} ГБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро ба ҳама сомонаҳо пешниҳод мекунад. `,
-                    footerTemplate2: (t, m, g, s) => `Тарофаи "Биё! бисоз Life 2.0" бо нархи ${t} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} ГБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро пешниҳод мекунад. Инчунин хизматрасониҳои Oila TV ва IVI ройгон пешниҳод мешаванд. `
-        }
-    };
+                footerTemplate2: (t, m, g, s) => `Тарофаи "Биё! бисоз Life 2.0" бо нархи ${t} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} ГБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро пешниҳод мекунад. Инчунин хизматрасониҳои Oila TV ва IVI ройгон пешниҳод мешаванд. `,
+                // Personal Tariff Translations TJ
+                personal_config_title: "Созандаи тарофа",
+                personal_price_label: "Нарх",
+                personal_price_unit: "сомонӣ",
+                personal_minutes_label: "Дақиқаҳо",
+                personal_minutes_unit: "дақ.",
+                personal_gb_label: "Интернет",
+                personal_gb_unit: "МБ",
+                personal_sms_label: "СМС",
+                personal_sms_unit: "СМС",
+                personal_preview_title: "Тарофаи \"Персональный\"",
+                personal_preview_price: "Нархи моҳона",
+                personal_preview_minutes: "Ба дигар шабакаҳо",
+                personal_preview_gb: "Трафики интернет",
+                personal_preview_sms: "Паёмакҳо (СМС)",
+                personal_sms_unit_plural: "дона",
+                personal_preview_night: "Интернети шабона",
+                personal_preview_unlimited: "Бемаҳдуд",
+                personal_copy_save_btn: "Нусхабардорӣ ва Захира",
+                personal_history_title: "Таърихи танзимот",
+                personal_history_clear: "Тоза кардани ҳама",
+                personal_history_load: "Барқарор",
+                personal_history_delete: "Тоза",
+                personal_toast_saved: "Нусхабардорӣ ва дар таърих захира шуд!",
+                personal_confirm_clear: "Оё шумо мутмаин ҳастед, ки мехоҳед тамоми таърихро тоза кунед?",
+                personal_copy_template: (p, m, g, s) => `Тарофаи "Персональный" бо нархи ${p} сомонӣ оғоз шуда, дар худ ${m} дақиқа ба дигар шабакаҳои ҶТ, ${g} МБ, ${s} СМС ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро ба ҳама сомонаҳо пешниҳод мекунад.`,
+            }
+        };
 
         // --- Data for Tariffs (Prices and values remain the same) ---
         const config1 = {
@@ -850,7 +645,7 @@
         // --- General Functions ---
         let currentLang = 'tj';
         let currentTheme = 'light';
-        let life2ViewMode = 'grid'; // Can be 'grid' or 'slider'
+        let life2ViewMode = 'grid';
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -864,9 +659,14 @@
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
+            // Re-initialize/update components that depend on language
             initializeTariff(config1);
             initializeTariff(config2);
             initializeSliders();
+            // Re-render personal tariff history to update dates and text
+            if (typeof renderPersonalHistory === "function") {
+                renderPersonalHistory();
+            }
         }
 
         function setTheme(theme) {
@@ -878,6 +678,29 @@
             });
         }
 
+        function switchTab(tabId) {
+            document.querySelectorAll('.tariff-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        
+        function showToast(messageKey) {
+            const toast = document.getElementById('toast-notification');
+            toast.innerText = translations[currentLang][messageKey];
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function copyText(containerId, toastMessageKey) {
+            const textToCopy = document.getElementById(containerId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => showToast(toastMessageKey));
+        }
+
+        // --- Life Tariffs Functions ---
         function initializeTariff(config) {
             config.state.selectedMinutes = config.state.selectedMinutes || config.minutes.values[0];
             config.state.selectedSms = config.state.selectedSms || config.sms.values[0];
@@ -940,7 +763,6 @@
             );
         }
 
-        // --- New Slider Functions ---
         function initializeSliders() {
             setupSlider('internet', config2);
             setupSlider('minutes', config2);
@@ -950,6 +772,7 @@
 
         function setupSlider(type, config) {
             const slider = document.getElementById(`${type}-slider`);
+            if (!slider) return;
             const valueDisplay = document.getElementById(`${type}-slider-value`);
             const minDisplay = document.getElementById(`${type}-slider-min`);
             const maxDisplay = document.getElementById(`${type}-slider-max`);
@@ -972,27 +795,19 @@
         }
 
         function syncViews() {
-            // Syncs slider position based on grid selection, and vice-versa
             Object.keys(config2.elements).forEach(type => {
                 if (type === 'totalPrice' || type === 'footerText') return;
-
                 const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
                 const selectedValue = config2.state[stateKey];
                 const data = config2[type].values;
                 const index = data.indexOf(selectedValue);
-
-                // Sync Slider
                 const slider = document.getElementById(`${type}-slider`);
                 if (slider) slider.value = index;
-
-                // Sync Slider Label
                 const valueDisplay = document.getElementById(`${type}-slider-value`);
                 if (valueDisplay) {
                     const unit = translations[currentLang][`${type === 'internet' ? 'gb' : (type === 'minutes' ? 'min' : 'sms')}_unit`];
                     valueDisplay.innerText = `${selectedValue} ${unit}`;
                 }
-
-                // Sync Grid
                 document.querySelectorAll(`#${config2.elements[type]} .option-button`).forEach((btn, btnIndex) => {
                     btn.classList.toggle('active', btnIndex === index);
                 });
@@ -1003,7 +818,6 @@
             const gridView = document.getElementById('grid-view-life2');
             const sliderView = document.getElementById('slider-view-life2');
             const toggleBtn = document.getElementById('view-toggle-btn');
-
             if (life2ViewMode === 'grid') {
                 life2ViewMode = 'slider';
                 gridView.style.display = 'none';
@@ -1016,68 +830,147 @@
                 toggleBtn.dataset.translateKey = 'view_toggle_grid';
             }
             syncViews();
-            // Update button text after toggle
             toggleBtn.innerText = translations[currentLang][toggleBtn.dataset.translateKey];
         }
 
-        // --- UI Functions ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tariff-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        // --- Personal Tariff Functions ---
+        let personalHistory = [];
+
+        function updatePersonalCard() {
+            document.getElementById('price-display').textContent = parseFloat(document.getElementById('price').value).toFixed(2) || '0.00';
+            document.getElementById('minutes-display').textContent = document.getElementById('minutes').value || '0';
+            document.getElementById('gb-display').textContent = document.getElementById('gigabytes').value || '0';
+            document.getElementById('sms-display').textContent = document.getElementById('sms').value || '0';
         }
 
-        function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
-        function hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-
-        function showToast() {
-            const toast = document.getElementById('toast-notification');
-            toast.innerText = translations[currentLang].copied_toast;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        function setPersonalInputs(config) {
+            document.getElementById('price').value = config.price;
+            document.getElementById('minutes').value = config.minutes;
+            document.getElementById('gigabytes').value = config.gigabytes;
+            document.getElementById('sms').value = config.sms;
+            updatePersonalCard();
         }
 
-        function copyText(containerId) {
-            const textToCopy = document.getElementById(containerId).innerText;
-            navigator.clipboard.writeText(textToCopy).then(showToast);
+        function savePersonalHistory() {
+            localStorage.setItem('tariffHistory', JSON.stringify(personalHistory));
+        }
+
+        function loadPersonalHistory() {
+            const savedHistory = localStorage.getItem('tariffHistory');
+            personalHistory = savedHistory ? JSON.parse(savedHistory) : [];
+        }
+
+        function renderPersonalHistory() {
+            const historyList = document.getElementById('historyList');
+            const historyCard = document.getElementById('historyCard');
+            historyList.innerHTML = '';
+            if (personalHistory.length === 0) {
+                historyCard.style.display = 'none';
+            } else {
+                historyCard.style.display = 'block';
+                personalHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    const locale = currentLang === 'tj' ? 'tg-TJ' : 'ru-RU';
+                    li.innerHTML = `
+                        <div class="history-details">
+                            <div class="history-meta">${new Date(item.id).toLocaleString(locale, {dateStyle: 'short', timeStyle: 'short'})}</div>
+                            <div class="history-values">
+                                ${item.price}${translations[currentLang].currency} / ${item.minutes}${translations[currentLang].min_unit} / ${item.gigabytes}${translations[currentLang].gb_unit} / ${item.sms}${translations[currentLang].sms_unit}
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-history btn-load" data-id="${item.id}">${translations[currentLang].personal_history_load}</button>
+                            <button class="btn-history btn-delete" data-id="${item.id}">${translations[currentLang].personal_history_delete}</button>
+                        </div>
+                    `;
+                    historyList.appendChild(li);
+                });
+            }
         }
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => setLanguage(e.target.dataset.lang));
-            });
-
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => setTheme(e.target.dataset.theme));
-            });
-
-            document.getElementById('view-toggle-btn').addEventListener('click', toggleLife2View);
-
+            // General Setup
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', (e) => setLanguage(e.target.dataset.lang)));
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', (e) => setTheme(e.target.dataset.theme)));
             const savedLang = localStorage.getItem('language') || 'tj';
-            setLanguage(savedLang);
-
             const savedTheme = localStorage.getItem('theme') || 'light';
             setTheme(savedTheme);
+            setLanguage(savedLang); // Call this after theme to ensure all text is loaded
 
-            document.getElementById('copy-button1').addEventListener('click', () => copyText('footer-text-container1'));
-            document.getElementById('copy-button2').addEventListener('click', () => copyText('footer-text-container2'));
+            // Life Tariffs Setup
+            document.getElementById('view-toggle-btn').addEventListener('click', toggleLife2View);
+            document.getElementById('copy-button1').addEventListener('click', () => copyText('footer-text-container1', 'copied_toast'));
+            document.getElementById('copy-button2').addEventListener('click', () => copyText('footer-text-container2', 'copied_toast'));
+            
+            // Personal Tariff Setup
+            const personalInputs = [document.getElementById('price'), document.getElementById('minutes'), document.getElementById('gigabytes'), document.getElementById('sms')];
+            personalInputs.forEach(input => input.addEventListener('input', updatePersonalCard));
+            
+            document.getElementById('copyAndSaveBtn').addEventListener('click', () => {
+                const toast = document.getElementById('personal-toast');
+                const price = document.getElementById('price-display').textContent;
+                const minutes = document.getElementById('minutes-display').textContent;
+                const gb = document.getElementById('gb-display').textContent;
+                const sms = document.getElementById('sms-display').textContent;
+                
+                const cardText = translations[currentLang].personal_copy_template(price, minutes, gb, sms);
+                navigator.clipboard.writeText(cardText);
+
+                const newConfig = {
+                    id: Date.now(),
+                    price: document.getElementById('price').value,
+                    minutes: document.getElementById('minutes').value,
+                    gigabytes: document.getElementById('gigabytes').value,
+                    sms: document.getElementById('sms').value
+                };
+                personalHistory.unshift(newConfig);
+                savePersonalHistory();
+                renderPersonalHistory();
+                
+                toast.innerText = translations[currentLang].personal_toast_saved;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            });
+            
+            document.getElementById('historyList').addEventListener('click', (e) => {
+                const id = parseInt(e.target.dataset.id, 10);
+                if (e.target.classList.contains('btn-load')) {
+                    const itemToLoad = personalHistory.find(item => item.id === id);
+                    if (itemToLoad) {
+                        setPersonalInputs(itemToLoad);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+                if (e.target.classList.contains('btn-delete')) {
+                    personalHistory = personalHistory.filter(item => item.id !== id);
+                    savePersonalHistory();
+                    renderPersonalHistory();
+                }
+            });
+
+            document.getElementById('clearAllHistoryBtn').addEventListener('click', () => {
+                if(confirm(translations[currentLang].personal_confirm_clear)) {
+                    personalHistory = [];
+                    savePersonalHistory();
+                    renderPersonalHistory();
+                }
+            });
+            
+            loadPersonalHistory();
+            renderPersonalHistory();
+            updatePersonalCard();
         });
 
      if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => {
-                            console.log('Service Worker успешно зарегистрирован:', registration);
-                        })
-                        .catch(err => {
-                            console.log('Ошибка регистрации Service Worker:', err);
-                        });
-                });
-             }
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('Service Worker registered:', registration))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        });
+     }
     </script>
 
 </body>
-
 </html>
