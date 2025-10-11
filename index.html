@@ -486,6 +486,9 @@
                 <div class="options-grid" id="internet-options1"></div>
             </div>
             <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div>
+            
+           
+
             <div class="options-card">
                 <div class="card-header" data-translate-key="additional_options"></div>
                 <div class="card-item">
@@ -508,6 +511,17 @@
                     <div id="footer-text-container1"></div>
                 </div>
                 <div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
+            </div>
+             <div id="bonus-container1" style="display: none;" class="footer-container">
+                <div class="card">
+                    <p id="bonus-text1"></p>
+                </div>
+                <div class="card copy-button-card">
+                    <button id="copy-bonus-button1" class="copy-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg>
+                        <span data-translate-key="copy_button"></span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -552,6 +566,9 @@
                 </div>
             </div>
             <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div>
+
+           
+
             <div class="options-card">
                 <div class="card-header" data-translate-key="additional_options"></div>
                 <div class="card-item">
@@ -588,6 +605,17 @@
                     <div id="footer-text-container2"></div>
                 </div>
                 <div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
+            </div>
+             <div id="bonus-container2" style="display: none;" class="footer-container">
+                <div class="card">
+                    <p id="bonus-text2"></p>
+                </div>
+                <div class="card copy-button-card">
+                    <button id="copy-bonus-button2" class="copy-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg>
+                        <span data-translate-key="copy_button"></span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -691,12 +719,12 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // --- 2. GLOBAL VARIABLES (to be filled from Firebase) ---
+        // --- 2. GLOBAL VARIABLES ---
         let translations = {};
         let config1 = {};
         let config2 = {};
 
-        // --- 3. FETCH DATA FROM FIREBASE AND INITIALIZE APP ---
+        // --- 3. FETCH DATA & INITIALIZE APP ---
         database.ref('/').once('value').then((snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -716,7 +744,7 @@
                 initializeAppLogic();
 
             } else {
-                console.error("Could not fetch data from Firebase. Check your config and database rules.");
+                console.error("Could not fetch data from Firebase.");
                 document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Ошибка загрузки данных. Пожалуйста, обновите страницу.</p>';
             }
         }).catch(error => {
@@ -724,10 +752,8 @@
             document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Не удалось подключиться к базе данных.</p>';
         });
 
-
-        // --- 4. APPLICATION LOGIC (wrapped in a function) ---
+        // --- 4. APPLICATION LOGIC ---
         function initializeAppLogic() {
-            // --- General Functions ---
             let currentLang = 'tj';
             let currentTheme = 'light';
             let life2ViewMode = 'grid';
@@ -747,9 +773,7 @@
                 initializeTariff(config1);
                 initializeTariff(config2);
                 initializeSliders();
-                if (typeof renderPersonalHistory === "function") {
-                    renderPersonalHistory();
-                }
+                if (typeof renderPersonalHistory === "function") renderPersonalHistory();
             }
 
             function setTheme(theme) {
@@ -771,9 +795,9 @@
             function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
             function hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-            window.showModal = showModal; // Expose to global scope for inline onclick
-            window.hideModal = hideModal; // Expose to global scope for inline onclick
-            window.switchTab = switchTab; // Expose to global scope for inline onclick
+            window.showModal = showModal;
+            window.hideModal = hideModal;
+            window.switchTab = switchTab;
 
             function showToast(messageKey) {
                 const toast = document.getElementById('toast-notification');
@@ -804,10 +828,7 @@
                 if (!container) return;
                 container.innerHTML = "";
                 const data = config[type];
-                let unitKey;
-                if (type === 'minutes') unitKey = 'min_unit';
-                else if (type === 'sms') unitKey = 'sms_unit';
-                else if (type === 'internet') unitKey = 'gb_unit';
+                const unitKey = type === 'minutes' ? 'min_unit' : (type === 'sms' ? 'sms_unit' : 'gb_unit');
                 const unit = translations[currentLang][unitKey];
                 data.values.forEach(value => {
                     const btn = document.createElement("div");
@@ -828,7 +849,7 @@
 
             function getOptionCost(data, selectedValue) {
                 const index = data.values.indexOf(selectedValue);
-                if (index <= 0) return 0;
+                if (index < 1) return 0;
                 return data.prices.slice(1, index + 1).reduce((acc, price) => acc + price, 0);
             }
 
@@ -837,19 +858,43 @@
                 const smsCost = getOptionCost(config.sms, config.state.selectedSms);
                 const netCost = getOptionCost(config.internet, config.state.selectedInternet);
                 let total = config.basePrice + minCost + smsCost + netCost;
-                if (total > config.maxTotal) {
-                    total = config.maxTotal;
-                }
-                total = total.toFixed(2);
+                if (total > config.maxTotal) total = config.maxTotal;
+                
+                total = parseFloat(total.toFixed(2));
                 document.getElementById(config.elements.totalPrice).innerText = total;
 
                 const templateKey = (config === config1) ? 'footerTemplate1' : 'footerTemplate2';
                 let footerText = translations[currentLang][templateKey] || '';
-                footerText = footerText.replace('{t}', total)
-                                     .replace('{m}', config.state.selectedMinutes)
-                                     .replace('{g}', config.state.selectedInternet)
-                                     .replace('{s}', config.state.selectedSms);
+                footerText = footerText.replace('{t}', total).replace('{m}', config.state.selectedMinutes).replace('{g}', config.state.selectedInternet).replace('{s}', config.state.selectedSms);
                 document.getElementById(config.elements.footerText).innerText = footerText;
+                
+                handleBonusDisplay(config, total);
+            }
+            
+            // ИСПРАВЛЕНО: Более надежный метод определения конфигурации
+            function handleBonusDisplay(config, total) {
+                let bonusContainerId, bonusTextId;
+                
+                if (config === config1) {
+                    bonusContainerId = 'bonus-container1';
+                    bonusTextId = 'bonus-text1';
+                } else if (config === config2) {
+                    bonusContainerId = 'bonus-container2';
+                    bonusTextId = 'bonus-text2';
+                } else {
+                    return; // Не применять для других тарифов (например, Персональный)
+                }
+
+                const bonusContainer = document.getElementById(bonusContainerId);
+                const bonusTextElem = document.getElementById(bonusTextId);
+
+                if (total > 100) {
+                    const template = translations[currentLang]?.bonus_text_template || '';
+                    bonusTextElem.innerText = template.replace('{gb}', config.state.selectedInternet);
+                    bonusContainer.style.display = 'block';
+                } else {
+                    bonusContainer.style.display = 'none';
+                }
             }
 
             function initializeSliders() {
@@ -867,43 +912,35 @@
                 const maxDisplay = document.getElementById(`${type}-slider-max`);
                 const data = config[type].values;
                 const unit = translations[currentLang][`${type === 'internet' ? 'gb' : (type === 'minutes' ? 'min' : 'sms')}_unit`];
-
                 slider.min = 0;
                 slider.max = data.length - 1;
                 minDisplay.innerText = `${data[0]} ${unit}`;
                 maxDisplay.innerText = `${data[data.length - 1]} ${unit}`;
-
                 slider.oninput = function () {
                     const selectedValue = data[this.value];
                     valueDisplay.innerText = `${selectedValue} ${unit}`;
-                    const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
-                    config.state[stateKey] = selectedValue;
+                    config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`] = selectedValue;
                     updateTotal(config);
-                }
+                };
             }
             
             function syncViews() {
                 ['internet', 'minutes', 'sms'].forEach(type => {
                     const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
                     const selectedValue = config2.state[stateKey];
-                    if(selectedValue === undefined) return;
+                    if (selectedValue === undefined) return;
                     
                     const data = config2[type].values;
                     const index = data.indexOf(selectedValue);
-
                     const slider = document.getElementById(`${type}-slider`);
                     if (slider) slider.value = index;
 
                     const valueDisplay = document.getElementById(`${type}-slider-value`);
                     if (valueDisplay) {
                         const unitKey = type === 'internet' ? 'gb_unit' : (type === 'minutes' ? 'min_unit' : 'sms_unit');
-                        const unit = translations[currentLang][unitKey];
-                        valueDisplay.innerText = `${selectedValue} ${unit}`;
+                        valueDisplay.innerText = `${selectedValue} ${translations[currentLang][unitKey]}`;
                     }
-                    
-                    document.querySelectorAll(`#${config2.elements[type]} .option-button`).forEach((btn, btnIndex) => {
-                        btn.classList.toggle('active', btnIndex === index);
-                    });
+                    document.querySelectorAll(`#${config2.elements[type]} .option-button`).forEach((btn, i) => btn.classList.toggle('active', i === index));
                 });
             }
 
@@ -911,24 +948,16 @@
                 const gridView = document.getElementById('grid-view-life2');
                 const sliderView = document.getElementById('slider-view-life2');
                 const toggleBtn = document.getElementById('view-toggle-btn');
-                if (life2ViewMode === 'grid') {
-                    life2ViewMode = 'slider';
-                    gridView.style.display = 'none';
-                    sliderView.style.display = 'block';
-                    toggleBtn.dataset.translateKey = 'view_toggle_slider';
-                } else {
-                    life2ViewMode = 'grid';
-                    gridView.style.display = 'block';
-                    sliderView.style.display = 'none';
-                    toggleBtn.dataset.translateKey = 'view_toggle_grid';
-                }
+                life2ViewMode = (life2ViewMode === 'grid') ? 'slider' : 'grid';
+                gridView.style.display = life2ViewMode === 'grid' ? 'block' : 'none';
+                sliderView.style.display = life2ViewMode === 'slider' ? 'block' : 'none';
+                toggleBtn.dataset.translateKey = `view_toggle_${life2ViewMode}`;
                 syncViews();
                 toggleBtn.innerText = translations[currentLang][toggleBtn.dataset.translateKey];
             }
 
             // --- Personal Tariff Functions ---
             let personalHistory = [];
-
             function updatePersonalCard() {
                 const priceValue = parseFloat(document.getElementById('price').value);
                 document.getElementById('price-display').textContent = !isNaN(priceValue) ? priceValue.toFixed(2) : '0.00';
@@ -936,7 +965,6 @@
                 document.getElementById('gb-display').textContent = document.getElementById('gigabytes').value || '0';
                 document.getElementById('sms-display').textContent = document.getElementById('sms').value || '0';
             }
-
             function setPersonalInputs(config) {
                 document.getElementById('price').value = config.price;
                 document.getElementById('minutes').value = config.minutes;
@@ -944,44 +972,38 @@
                 document.getElementById('sms').value = config.sms;
                 updatePersonalCard();
             }
-
             function savePersonalHistory() { localStorage.setItem('tariffHistory', JSON.stringify(personalHistory)); }
             function loadPersonalHistory() {
                 const savedHistory = localStorage.getItem('tariffHistory');
                 personalHistory = savedHistory ? JSON.parse(savedHistory) : [];
             }
-
             function renderPersonalHistory() {
                 const historyList = document.getElementById('historyList');
                 const historyCard = document.getElementById('historyCard');
                 historyList.innerHTML = '';
-                if (personalHistory.length === 0) {
-                    historyCard.style.display = 'none';
-                } else {
-                    historyCard.style.display = 'block';
-                    personalHistory.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = 'history-item';
-                        const locale = currentLang === 'tj' ? 'tg-TJ' : 'ru-RU';
-                        li.innerHTML = `
-                            <div class="history-details">
-                                <div class="history-meta">${new Date(item.id).toLocaleString(locale, {dateStyle: 'short', timeStyle: 'short'})}</div>
-                                <div class="history-values">
-                                    ${item.price || 0} ${translations[currentLang].currency} / ${item.minutes || 0} ${translations[currentLang].min_unit} / ${item.gigabytes || 0} ${translations[currentLang].gb_unit} / ${item.sms || 0} ${translations[currentLang].sms_unit}
-                                </div>
+                historyCard.style.display = personalHistory.length > 0 ? 'block' : 'none';
+                personalHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    const locale = currentLang === 'tj' ? 'tg-TJ' : 'ru-RU';
+                    li.innerHTML = `
+                        <div class="history-details">
+                            <div class="history-meta">${new Date(item.id).toLocaleString(locale, {dateStyle: 'short', timeStyle: 'short'})}</div>
+                            <div class="history-values">
+                                ${item.price || 0} ${translations[currentLang].currency} / ${item.minutes || 0} ${translations[currentLang].min_unit} / ${item.gigabytes || 0} ${translations[currentLang].gb_unit} / ${item.sms || 0} ${translations[currentLang].sms_unit}
                             </div>
-                            <div class="history-actions">
-                                <button class="btn-history btn-load" data-id="${item.id}">${translations[currentLang].personal_history_load}</button>
-                                <button class="btn-history btn-delete" data-id="${item.id}">${translations[currentLang].personal_history_delete}</button>
-                            </div>`;
-                        historyList.appendChild(li);
-                    });
-                }
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-history btn-load" data-id="${item.id}">${translations[currentLang].personal_history_load}</button>
+                            <button class="btn-history btn-delete" data-id="${item.id}">${translations[currentLang].personal_history_delete}</button>
+                        </div>`;
+                    historyList.appendChild(li);
+                });
             }
 
-            // --- Initialization ---
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', (e) => setLanguage(e.target.dataset.lang)));
-            document.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', (e) => setTheme(e.target.dataset.theme)));
+            // --- Event Listeners Initialization ---
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
             const savedLang = localStorage.getItem('language') || 'tj';
             const savedTheme = localStorage.getItem('theme') || 'light';
             setTheme(savedTheme);
@@ -990,38 +1012,26 @@
             document.getElementById('view-toggle-btn').addEventListener('click', toggleLife2View);
             document.getElementById('copy-button1').addEventListener('click', () => copyText('footer-text-container1', 'copied_toast'));
             document.getElementById('copy-button2').addEventListener('click', () => copyText('footer-text-container2', 'copied_toast'));
+            document.getElementById('copy-bonus-button1').addEventListener('click', () => copyText('bonus-text1', 'copied_toast'));
+            document.getElementById('copy-bonus-button2').addEventListener('click', () => copyText('bonus-text2', 'copied_toast'));
 
-            const personalInputs = [document.getElementById('price'), document.getElementById('minutes'), document.getElementById('gigabytes'), document.getElementById('sms')];
-            personalInputs.forEach(input => input.addEventListener('input', updatePersonalCard));
-
+            document.querySelectorAll('#personal .input-group input').forEach(input => input.addEventListener('input', updatePersonalCard));
             document.getElementById('copyAndSaveBtn').addEventListener('click', () => {
                 const toast = document.getElementById('personal-toast');
                 const price = document.getElementById('price-display').textContent;
                 const minutes = document.getElementById('minutes-display').textContent;
                 const gb = document.getElementById('gb-display').textContent;
                 const sms = document.getElementById('sms-display').textContent;
-
-                let cardText = translations[currentLang].personal_copy_template;
-                cardText = cardText.replace('{p}', price).replace('{m}', minutes).replace('{g}', gb).replace('{s}', sms); // ИСПРАВЛЕНО: Добавлена недостающая скобка
+                let cardText = translations[currentLang].personal_copy_template.replace('{p}', price).replace('{m}', minutes).replace('{g}', gb).replace('{s}', sms);
                 navigator.clipboard.writeText(cardText);
-
-                const newConfig = {
-                    id: Date.now(),
-                    price: document.getElementById('price').value,
-                    minutes: document.getElementById('minutes').value,
-                    gigabytes: document.getElementById('gigabytes').value,
-                    sms: document.getElementById('sms').value
-                };
-                personalHistory.unshift(newConfig);
+                personalHistory.unshift({ id: Date.now(), price: document.getElementById('price').value, minutes: document.getElementById('minutes').value, gigabytes: document.getElementById('gigabytes').value, sms: document.getElementById('sms').value });
                 savePersonalHistory();
                 renderPersonalHistory();
-
                 toast.innerText = translations[currentLang].personal_toast_saved;
                 toast.classList.add('show');
                 setTimeout(() => { toast.classList.remove('show'); }, 2500);
             });
-
-            document.getElementById('historyList').addEventListener('click', (e) => {
+            document.getElementById('historyList').addEventListener('click', e => {
                 if (!e.target.dataset.id) return;
                 const id = parseInt(e.target.dataset.id, 10);
                 if (e.target.classList.contains('btn-load')) {
@@ -1037,9 +1047,8 @@
                     renderPersonalHistory();
                 }
             });
-
             document.getElementById('clearAllHistoryBtn').addEventListener('click', () => {
-                if(confirm(translations[currentLang].personal_confirm_clear)) {
+                if (confirm(translations[currentLang].personal_confirm_clear)) {
                     personalHistory = [];
                     savePersonalHistory();
                     renderPersonalHistory();
@@ -1052,13 +1061,10 @@
 
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => console.log('Service Worker registered:', registration))
-                        .catch(err => console.log('Service Worker registration failed:', err));
+                    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
                 });
             }
 
-            // Hide loader and show main content
             document.getElementById('loading-skeleton').style.display = 'none';
             document.querySelector('.container').style.display = 'block';
         }
