@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        /* Плавная анимация для переключения темы и открытия/закрытия меню */
+        body, .bg-white, .bg-gray-800, .bg-gray-900 {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        input, textarea, button, a {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Стили для скроллбара (опционально, но добавляет современности) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.4);
+            border-radius: 20px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: rgba(107, 114, 128, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
+
+    <div id="login-container" class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg dark:bg-gray-800">
+            <h1 class="text-2xl font-bold text-center">Вход в панель</h1>
+            <div>
+                <label for="email" class="text-sm font-medium">Email</label>
+                <input type="email" id="email" class="w-full px-4 py-2 mt-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="admin@example.com">
+            </div>
+            <div>
+                <label for="password" class="text-sm font-medium">Пароль</label>
+                <input type="password" id="password" class="w-full px-4 py-2 mt-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••••••">
+            </div>
+            <p id="login-error" class="text-sm text-red-500"></p>
+            <button id="login-btn" class="w-full px-4 py-2 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-md hover:shadow-lg transition-all duration-200">
+                Войти
+            </button>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+        <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
+
+            <div id="mobile-sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+                <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700/50">
+                    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Админ-панель</h1>
+                </div>
+                <div class="flex flex-col flex-grow p-4">
+                    <nav class="flex-grow space-y-2 sidebar-nav">
+                        <a href="#ui-settings" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                            <ion-icon name="settings-outline" class="mr-3"></ion-icon> Настройки UI
+                        </a>
+                        <a href="#translations" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                            <ion-icon name="language-outline" class="mr-3"></ion-icon> Переводы
+                        </a>
+                        <a href="#tariffs" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                           <ion-icon name="card-outline" class="mr-3"></ion-icon> Тарифы
+                        </a>
+                    </nav>
+                     <button id="logout-btn-mobile" class="w-full mt-4 px-4 py-2 font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-md hover:shadow-lg transition-all duration-200">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden"></div>
+
+            <div class="hidden md:flex flex-col w-64 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg">
+                <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700/50">
+                    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Админ-панель</h1>
+                </div>
+                <div class="flex flex-col flex-grow p-4">
+                    <nav class="flex-grow space-y-2 sidebar-nav">
+                        <a href="#ui-settings" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                            <ion-icon name="settings-outline" class="mr-3"></ion-icon> Настройки UI
+                        </a>
+                        <a href="#translations" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                            <ion-icon name="language-outline" class="mr-3"></ion-icon> Переводы
+                        </a>
+                        <a href="#tariffs" class="flex items-center px-4 py-2 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                           <ion-icon name="card-outline" class="mr-3"></ion-icon> Тарифы
+                        </a>
+                    </nav>
+                     <button id="logout-btn-desktop" class="w-full mt-4 px-4 py-2 font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-md hover:shadow-lg transition-all duration-200">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col flex-grow">
+                <header class="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700/50">
+                    <div class="flex items-center">
+                        <button id="mobile-menu-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden mr-2">
+                            <ion-icon name="menu-outline" class="text-xl"></ion-icon>
+                        </button>
+                        <h2 class="text-lg md:text-xl font-semibold">Добро пожаловать, <span id="admin-email"></span>!</h2>
+                    </div>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <ion-icon name="moon-outline" class="text-xl" id="theme-icon"></ion-icon>
+                    </button>
+                </header>
+                
+                <main class="flex-grow p-4 md:p-6 overflow-auto">
+                    <div id="ui-settings-section" class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">🖼️ Настройки интерфейса (UI)</h3>
+                        <div id="ui-settings-form">Загрузка...</div>
+                    </div>
+
+                    <div id="translations-section" class="mt-6 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hidden">
+                        <h3 class="text-xl font-semibold mb-4">📜 Переводы</h3>
+                        <div class="mb-6">
+                            <input type="search" id="translation-search" placeholder="Поиск по ключам (например: welcome_message)" class="w-full px-4 py-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div id="translations-form">Загрузка...</div>
+                    </div>
+                    
+                    <div id="tariffs-section" class="mt-6 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hidden">
+                        <h3 class="text-xl font-semibold mb-4">⚙️ Конфигурация тарифов</h3>
+                        <div id="tariffs-form">Загрузка...</div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>
+// --- 1. ИНИЦИАЛИЗАЦИЯ И КОНФИГУРАЦИЯ ---
+const firebaseConfig = {
+    apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+    authDomain: "bisoz-682b8.firebaseapp.com",
+    databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bisoz-682b8",
+    storageBucket: "bisoz-682b8.appspot.com",
+    messagingSenderId: "90545419911",
+    appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+    measurementId: "G-WYNYL1RCX2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
+// --- 2. ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ DOM ---
+const loginContainer = document.getElementById('login-container');
+const adminPanel = document.getElementById('admin-panel');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
+const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+const adminEmailSpan = document.getElementById('admin-email');
+const loginError = document.getElementById('login-error');
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const mobileSidebar = document.getElementById('mobile-sidebar');
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileOverlay = document.getElementById('mobile-overlay');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+const sections = document.querySelectorAll('main > div[id$="-section"]');
+// НОВЫЙ ЭЛЕМЕНТ: Поиск
+const translationSearch = document.getElementById('translation-search');
+
+// --- 3. ЛОГИКА АУТЕНТИФИКАЦИИ ---
+auth.onAuthStateChanged(user => {
+    if (user) {
+        loginContainer.style.display = 'none';
+        adminPanel.style.display = 'block';
+        adminEmailSpan.textContent = user.email;
+        loadAdminData();
+        initNavigation();
+        initSearch(); // Инициализация поиска
+    } else {
+        loginContainer.style.display = 'flex';
+        adminPanel.style.display = 'none';
+    }
+});
+
+loginBtn.addEventListener('click', () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    loginError.textContent = '';
+    auth.signInWithEmailAndPassword(email, password)
+        .catch(error => {
+            loginError.textContent = 'Ошибка входа. Проверьте email и пароль.';
+            console.error("Login Error:", error);
+        });
+});
+
+logoutBtnDesktop.addEventListener('click', () => auth.signOut());
+logoutBtnMobile.addEventListener('click', () => auth.signOut());
+
+// --- 4. ЛОГИКА ТЕМНОЙ ТЕМЫ (с сохранением) ---
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeIcon.setAttribute('name', 'sunny-outline');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+        themeIcon.setAttribute('name', 'moon-outline');
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+});
+
+const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme(savedTheme);
+
+
+// --- 5. ЛОГИКА МОБИЛЬНОГО МЕНЮ ---
+function toggleMobileMenu() {
+    mobileSidebar.classList.toggle('-translate-x-full');
+    mobileOverlay.classList.toggle('hidden');
+}
+
+mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+mobileOverlay.addEventListener('click', toggleMobileMenu);
+
+// --- 6. ЛОГИКА НАВИГАЦИИ (SPA-style) ---
+function setActiveLink(hash) {
+    navLinks.forEach(link => {
+        const linkHash = link.getAttribute('href');
+        if (linkHash === hash) {
+            // НОВЫЙ СТИЛЬ: Активная ссылка с градиентом
+            link.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-indigo-600', 'text-white', 'font-semibold', 'shadow-md');
+            link.classList.remove('text-gray-600', 'dark:text-gray-300', 'font-medium');
+        } else {
+            // Снимаем активный класс
+            link.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-indigo-600', 'text-white', 'font-semibold', 'shadow-md');
+            link.classList.add('text-gray-600', 'dark:text-gray-300', 'font-medium');
+        }
+    });
+
+    sections.forEach(section => {
+        if (`#${section.id.replace('-section', '')}` === hash) {
+            section.classList.remove('hidden');
+        } else {
+            section.classList.add('hidden');
+        }
+    });
+}
+
+function initNavigation() {
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const hash = e.currentTarget.getAttribute('href');
+            window.location.hash = hash;
+            setActiveLink(hash);
+            
+            if (!mobileSidebar.classList.contains('-translate-x-full')) {
+                toggleMobileMenu();
+            }
+        });
+    });
+
+    const currentHash = window.location.hash || '#ui-settings';
+    setActiveLink(currentHash);
+}
+
+// --- 7. НОВАЯ ЛОГИКА ПОИСКА (ДЛЯ ПЕРЕВОДОВ) ---
+function initSearch() {
+    translationSearch.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        // Ищем все "карточки" переводов
+        const translationItems = document.querySelectorAll('.translation-item');
+        
+        translationItems.forEach(item => {
+            const label = item.querySelector('label').textContent.toLowerCase();
+            if (label.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+}
+
+// --- 8. ЗАГРУЗКА, РЕНДЕРИНГ И СОХРАНЕНИЕ ДАННЫХ ---
+function loadAdminData() {
+    database.ref('/').once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            renderUiSettings(data.ui);
+            renderTranslations(data.translations);
+            renderTariffs(data.tariffConfigs);
+        } else {
+            console.error("Не удалось загрузить данные из Firebase.");
+        }
+    }).catch(error => {
+        console.error("Ошибка загрузки данных:", error);
+    });
+}
+
+// Рендеринг настроек UI
+function renderUiSettings(uiData) {
+    const container = document.getElementById('ui-settings-form');
+    container.innerHTML = `
+        <div>
+            <label for="headerImageUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL изображения в шапке</label>
+            <input type="text" id="headerImageUrl" value="${uiData.headerImageUrl || ''}" class="mt-1 block w-full rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+        <button id="save-ui" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200">Сохранить UI</button>
+    `;
+
+    document.getElementById('save-ui').addEventListener('click', () => {
+        const newUrl = document.getElementById('headerImageUrl').value;
+        database.ref('ui').update({ headerImageUrl: newUrl })
+            .then(() => alert('Настройки UI сохранены!'));
+    });
+}
+
+// Рендеринг переводов (С НОВЫМ ДИЗАЙНОМ КАРТОЧЕК)
+function renderTranslations(translationsData) {
+    const container = document.getElementById('translations-form');
+    let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+
+    for (const lang in translationsData) {
+        html += `<div><h4 class="text-lg font-semibold mb-2 capitalize">${lang}</h4><div class="space-y-4">`;
+        for (const key in translationsData[lang]) {
+            // НОВЫЙ ДИЗАЙН: Оборачиваем каждый перевод в "карточку" с классом .translation-item
+            html += `
+                <div class="translation-item p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg shadow-sm">
+                    <label for="trans-${lang}-${key}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${key}</label>
+                    <textarea id="trans-${lang}-${key}" rows="3" class="mt-1 block w-full rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500">${translationsData[lang][key]}</textarea>
+                </div>
+            `;
+        }
+        html += '</div></div>'; // Закрываем .space-y-4 и .div языка
+    }
+    html += '</div><button id="save-translations" class="mt-6 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200">Сохранить переводы</button>';
+    container.innerHTML = html;
+
+    document.getElementById('save-translations').addEventListener('click', () => {
+        const newData = {};
+        for (const lang in translationsData) {
+            newData[lang] = {};
+            for (const key in translationsData[lang]) {
+                newData[lang][key] = document.getElementById(`trans-${lang}-${key}`).value;
+            }
+        }
+        database.ref('translations').update(newData)
+            .then(() => alert('Переводы сохранены!'));
+    });
+}
+
+// Рендеринг тарифов
+function renderTariffs(tariffsData) {
+    const container = document.getElementById('tariffs-form');
+    let html = '<div class="space-y-8">';
+
+    for (const key in tariffsData) {
+        const tariff = tariffsData[key];
+        html += `<fieldset class="border p-4 rounded-lg dark:border-gray-600 shadow-sm"><legend class="text-lg font-semibold px-2">Тариф: ${key}</legend><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+        html += createInputField(key, 'basePrice', tariff.basePrice, 'number');
+        html += createInputField(key, 'maxTotal', tariff.maxTotal, 'number');
+        html += createTextareaField(key, 'minutes-values', tariff.minutes.values);
+        html += createTextareaField(key, 'minutes-prices', tariff.minutes.prices);
+        html += createTextareaField(key, 'sms-values', tariff.sms.values);
+        html += createTextareaField(key, 'sms-prices', tariff.sms.prices);
+        html += createTextareaField(key, 'internet-values', tariff.internet.values);
+        html += createTextareaField(key, 'internet-prices', tariff.internet.prices);
+        html += `</div></fieldset>`;
+    }
+
+    html += '</div><button id="save-tariffs" class="mt-6 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200">Сохранить все тарифы</button>';
+    container.innerHTML = html;
+    
+    document.getElementById('save-tariffs').addEventListener('click', () => {
+        const newData = {};
+        try {
+            for (const key in tariffsData) {
+                newData[key] = {
+                    basePrice: parseFloat(document.getElementById(`${key}-basePrice`).value),
+                    maxTotal: parseFloat(document.getElementById(`${key}-maxTotal`).value),
+                    minutes: {
+                        values: JSON.parse(`[${document.getElementById(`${key}-minutes-values`).value}]`),
+                        prices: JSON.parse(`[${document.getElementById(`${key}-minutes-prices`).value}]`)
+                    },
+                    sms: {
+                        values: JSON.parse(`[${document.getElementById(`${key}-sms-values`).value}]`),
+                        prices: JSON.parse(`[${document.getElementById(`${key}-sms-prices`).value}]`)
+                    },
+                    internet: {
+                        values: JSON.parse(`[${document.getElementById(`${key}-internet-values`).value}]`),
+                        prices: JSON.parse(`[${document.getElementById(`${key}-internet-prices`).value}]`)
+                    }
+                };
+            }
+            database.ref('tariffConfigs').update(newData)
+                .then(() => alert('Тарифы сохранены!'));
+        } catch (e) {
+            alert('Ошибка в формате данных! Массивы должны быть числами через запятую.');
+            console.error("Data parsing error:", e);
+        }
+    });
+}
+
+// Хелперы для создания полей (с обновленными классами)
+function createInputField(tariffKey, fieldKey, value, type = 'text') {
+    return `
+        <div>
+            <label for="${tariffKey}-${fieldKey}" class="block text-sm font-medium">${fieldKey}</label>
+            <input type="${type}" id="${tariffKey}-${fieldKey}" value="${value}" class="mt-1 block w-full rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+    `;
+}
+
+function createTextareaField(tariffKey, fieldKey, valueArray) {
+    const stringValue = valueArray.join(', ');
+    return `
+        <div class="md:col-span-2">
+            <label for="${tariffKey}-${fieldKey}" class="block text-sm font-medium">${fieldKey.replace('-', '.')}</label>
+            <textarea id="${tariffKey}-${fieldKey}" rows="2" class="mt-1 block w-full rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Числа через запятую, например: 50, 75, 100">${stringValue}</textarea>
+        </div>
+    `;
+}
+
+    </script>
+</body>
+</html>
