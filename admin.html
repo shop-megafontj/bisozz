@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-Панель - MegaFon TJ</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <div id="admin-panel" class="page active">
+        <header class="app-header">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo-small">
+            <h1>Панель Администратора</h1>
+            <div class="user-info">
+                <span id="admin-user-email">Загрузка...</span>
+                <button id="admin-logout" class="btn-secondary">Выйти</button>
+            </div>
+        </header>
+
+        <main class="app-main split-view">
+            <aside class="sidebar">
+                <h3>Управление</h3>
+                <nav>
+                    <a href="#" class="nav-link active" data-target="admin-operators">Операторы</a>
+                    <a href="#" class="nav-link" data-target="admin-templates">Шаблоны</a>
+                </nav>
+            </aside>
+
+            <section class="content">
+                <div id="admin-operators" class="content-section active">
+                    
+                    <h2>Создать нового оператора</h2>
+                    <form id="add-operator-form" class="template-form">
+                        <div class="form-group">
+                            <label for="add-name">ФИО оператора</label>
+                            <input type="text" id="add-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-email">Почта (Email) для входа</label>
+                            <input type="email" id="add-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-password">Пароль</label>
+                            <input type="password" id="add-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-password-confirm">Подтвердите пароль</label>
+                            <input type="password" id="add-password-confirm" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Создать оператора</button>
+                        <p id="add-operator-message" class="info-message" style="display: none;"></p>
+                        <p id="add-operator-error" class="error-message" style="display: none;"></p>
+                    </form>
+                    
+                    <hr>
+                    
+                    <h2>Список операторов</h2>
+                    <p>Здесь вы можете одобрять (Принять) или удалять (Отклонить) операторов.</p>
+                    <div id="operator-list" class="user-list">
+                        </div>
+                </div>
+
+                <div id="admin-templates" class="content-section">
+                    <h2>Управление шаблонами (CRUD)</h2>
+                    <form id="admin-template-form" class="template-form">
+                        <input type="hidden" id="admin-template-id">
+                        <div class="form-group">
+                            <label for="admin-template-title">Название</label>
+                            <input type="text" id="admin-template-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-template-ru">Текст (Русский)</label>
+                            <textarea id="admin-template-ru" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-template-tj">Текст (Таджикский)</label>
+                            <textarea id="admin-template-tj" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-template-tags">Метки (через запятую)</label>
+                            <input type="text" id="admin-template-tags" placeholder="интернет, претензия, приветствие">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Сохранить</button>
+                            <button type="button" id="admin-cancel-edit" class="btn-secondary" style="display: none;">Отмена</button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    <h3>Все шаблоны</h3>
+                    <div id="admin-template-list" class="template-list-admin">
+                        </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+      feather.replace();
+    </script>
+    <script>
+      // ❗️❗️❗️ ВСТАВЬТЕ СЮДА ВАШ firebaseConfig ❗️❗️❗️
+       const firebaseConfig = {
+    apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+    authDomain: "bisoz-682b8.firebaseapp.com",
+    databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bisoz-682b8",
+    storageBucket: "bisoz-682b8.firebasestorage.app",
+    messagingSenderId: "90545419911",
+    appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+    measurementId: "G-WYNYL1RCX2"
+  };
+      
+      // 1. Основное (для работы админа)
+      firebase.initializeApp(firebaseConfig);
+      
+      // 2. Вспомогательное (ТОЛЬКО для создания новых пользователей)
+      try {
+        firebase.initializeApp(firebaseConfig, "secondaryAdminApp");
+      } catch (error) {
+        if (error.code !== 'app/duplicate-app') {
+          console.error(error);
+        }
+      }
+      
+    </script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель Оператора - MegaFon TJ</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <div id="operator-panel" class="page active">
+        <header class="app-header">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo-small">
+            <h1>Панель Оператора</h1>
+            <div class="user-info">
+                <span id="operator-user-email">Загрузка...</span>
+                <button id="operator-logout" class="btn-secondary">Выйти</button>
+            </div>
+        </header>
+
+        <main class="app-main split-view">
+            <aside class="sidebar">
+                
+                <button id="open-add-modal-btn" class="btn-primary" style="display: none; width: 100%; margin-bottom: 20px;">
+                    <i data-feather="plus" class="icon"></i> Добавить шаблон
+                </button>
+
+                <div id="operator-pending-message" class="info-message" style="display: none;">
+                    Ваш аккаунт ожидает подтверждения администратором. После одобрения вы сможете добавлять новые шаблоны.
+                </div>
+                
+                <hr id="pending-hr" style="display: none;">
+
+                <h3>Поиск</h3>
+                <div class="form-group">
+                    <input type="search" id="search-input" placeholder="Найти шаблон...">
+                </div>
+                <h3>Сортировка</h3>
+                <div class="form-group">
+                    <select id="sort-select">
+                        <option value="date-desc">Сначала новые</option>
+                        <option value="date-asc">Сначала старые</option>
+                        <option value="title-asc">По названию (А-Я)</option>
+                        <option value="title-desc">По названию (Я-А)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="show-favorites">
+                        Только избранные
+                    </label>
+                </div>
+                
+                </aside>
+
+            <section class="content">
+                <h2>Шаблоны ответов</h2>
+                <div id="operator-template-list" class="template-list-operator">
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="template-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Добавить шаблон</h3>
+                <button id="close-modal-btn" class="modal-close-btn">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="operator-template-form" class="template-form" style="box-shadow: none; padding: 0;">
+                    <input type="hidden" id="op-template-id">
+                    
+                    <div class="form-group">
+                        <label for="op-template-title">Название</label>
+                        <input type="text" id="op-template-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="op-template-ru">Текст (Русский)</label>
+                        <textarea id="op-template-ru" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="op-template-tj">Текст (Таджикский)</label>
+                        <textarea id="op-template-tj" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="op-template-tags">Метки (через запятую)</label>
+                        <input type="text" id="op-template-tags" placeholder="интернет, претензия, приветствие">
+                    </div>
+                    <button type="submit" class="btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+      feather.replace();
+    </script>
+    <script>
+      // ❗️❗️❗️ ВСТАВЬТЕ СЮДА ВАШ firebaseConfig ❗️❗️❗️
+      const firebaseConfig = {
+    apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+    authDomain: "bisoz-682b8.firebaseapp.com",
+    databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bisoz-682b8",
+    storageBucket: "bisoz-682b8.firebasestorage.app",
+    messagingSenderId: "90545419911",
+    appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+    measurementId: "G-WYNYL1RCX2"
+  };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="operator.js"></script>
+</body>
+</html>

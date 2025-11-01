@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Панель шаблонов MegaFon TJ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <div id="login-page" class="page active" style="display: flex;">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo">
+            <h2>Вход в панель шаблонов</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Почта (Email)</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn-primary">Войти</button>
+                <div class="auth-toggle">
+                    Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a>
+                </div>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="register-page" class="page" style="display: none;">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo">
+            <h2>Регистрация оператора</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">ФИО</label>
+                    <input type="text" id="reg-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Почта (Email)</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Пароль</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password-confirm">Подтвердите пароль</label>
+                    <input type="password" id="reg-password-confirm" required>
+                </div>
+                <button type="submit" class="btn-primary">Отправить заявку</button>
+                <div class="auth-toggle">
+                    Уже есть аккаунт? <a href="#" id="show-login">Войти</a>
+                </div>
+                <p id="register-message" class="info-message"></p>
+                <p id="register-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      // 
+      // ❗️❗️❗️ ВСТАВЬТЕ СЮДА ВАШ firebaseConfig ❗️❗️❗️
+      //
+       const firebaseConfig = {
+    apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+    authDomain: "bisoz-682b8.firebaseapp.com",
+    databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bisoz-682b8",
+    storageBucket: "bisoz-682b8.firebasestorage.app",
+    messagingSenderId: "90545419911",
+    appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+    measurementId: "G-WYNYL1RCX2"
+  };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="login.js"></script>
+</body>
+</html>
