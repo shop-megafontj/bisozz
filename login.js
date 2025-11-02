@@ -3,26 +3,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // Селекторы для страниц
+    // Селекторы
     const loginPage = document.getElementById("login-page");
     const registerPage = document.getElementById("register-page");
-
-    // Формы
     const loginForm = document.getElementById("login-form");
     const registerForm = document.getElementById("register-form");
-    
-    // Сообщения
     const loginError = document.getElementById("login-error");
     const registerError = document.getElementById("register-error");
     const registerMessage = document.getElementById("register-message");
-
-    // Переключатели Вход/Регистрация
     const showRegisterLink = document.getElementById("show-register");
     const showLoginLink = document.getElementById("show-login");
 
-    // --- Флаг, чтобы избежать "гонки" ---
-    // Он не даст onAuthStateChanged сработать, пока идет регистрация
     let registrationInProgress = false;
+
+    // --- ЛОГИКА TOAST-УВЕДОМЛЕНИЙ ---
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`; // type: success, error, info
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add("show");
+        }, 100); // delay for entry animation
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => {
+                toastContainer.removeChild(toast);
+            }, 500); // delay for exit animation
+        }, 3000);
+    }
 
     // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ФОРМ ---
     showRegisterLink.addEventListener("click", (e) => {
@@ -38,16 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- ПРОВЕРКА ДЛЯ ТЕХ, КТО УЖЕ ВОШЕЛ ---
     auth.onAuthStateChanged(user => {
-        // Если пользователь вошел И НЕ идет процесс регистрации
         if (user && !registrationInProgress) {
-            console.log("Уже вошел, проверяем права...");
             checkUserRoleAndRedirect(user);
-        } else if (!user) {
-            console.log("Нет активной сессии.");
         }
     });
 
-    // --- ВХОД (Без изменений) ---
+    // --- ВХОД ---
     loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
         loginError.style.display = "none";
@@ -55,23 +63,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const pass = document.getElementById("login-password").value;
 
         auth.signInWithEmailAndPassword(email, pass)
-            .then(userCredential => {
-                console.log("Вход успешен, ждем редирект...");
-                // onAuthStateChanged сам сделает редирект
-            })
             .catch(error => {
-                loginError.textContent = `Ошибка: ${error.message}`;
+                // loginError.textContent = `Ошибка: ${error.message}`;
+                loginError.textContent = "Ошибка: Неверный почта или пароль.";
                 loginError.style.display = "block";
+                // Заменяем alert на toast
+                // showToast(`Ошибка входа: ${error.message}`, "error");
             });
     });
 
-    // --- РЕГИСТРАЦИЯ (Исправленная логика) ---
+    // --- РЕГИСТРАЦИЯ ---
     registerForm.addEventListener("submit", (e) => {
         e.preventDefault();
         registerError.style.display = "none";
         registerMessage.style.display = "none";
-
-        // 1. Устанавливаем флаг
         registrationInProgress = true;
 
         const name = document.getElementById("reg-name").value;
@@ -82,52 +87,56 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pass !== passConfirm) {
             registerError.textContent = "Пароли не совпадают.";
             registerError.style.display = "block";
-            registrationInProgress = false; // Снимаем флаг при ошибке
+            registrationInProgress = false;
             return;
         }
 
-        // 2. Создаем пользователя в Auth
         auth.createUserWithEmailAndPassword(email, pass)
             .then(userCredential => {
                 const user = userCredential.user;
-                
-                // 3. Создаем запись в Database
+                // Создаем запись в DB со статусом "Ожидает" (false)
                 return db.ref('users/' + user.uid).set({
                     name: name,
                     email: email,
                     isAdmin: false,
                     approved: false // Статус "Ожидает"
                 });
-                // (Мы возвращаем .set(), чтобы .then() дождался его)
             })
             .then(() => {
-                // 4. ЗАПИСЬ В БАЗУ УСПЕШНА!
-                console.log("Регистрация и запись в DB успешны. Перенаправление...");
-                // 5. Теперь вручную перенаправляем.
-                window.location.href = "operator.html";
+                // Успешная регистрация
+                registerForm.reset();
+                showToast("Заявка отправлена! Ожидайте одобрения.", "success");
+                
+                // Переключаемся на страницу входа
+                loginPage.style.display = "flex";
+                registerPage.style.display = "none";
             })
             .catch(error => {
-                // 6. Обработка ошибок
                 registerError.textContent = `Ошибка: ${error.message}`;
                 registerError.style.display = "block";
-                registrationInProgress = false; // Снимаем флаг при ошибке
+            })
+            .finally(() => {
+                registrationInProgress = false;
             });
     });
 
-    // --- Функция редиректа (теперь только для входа) ---
+    // --- ФУНКЦИЯ РЕДИРЕКТА (с новой логикой) ---
     function checkUserRoleAndRedirect(user) {
-        // Используем .once(), так как нам не нужно ждать
         db.ref('/users/' + user.uid).once('value').then(snapshot => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 
                 if (userData.isAdmin) {
                     window.location.href = "admin.html";
-                } else {
+                } 
+                // НОВАЯ ЛОГИКА:
+                // Неважно, какой статус (true, false, 'rejected'),
+                // всех не-админов отправляем в operator.html.
+                // operator.js сам решит, что им показать.
+                else {
                     window.location.href = "operator.html";
                 }
             } else {
-                // Это может случиться, если админ удалил юзера из DB, но не из Auth
                 loginError.textContent = "Ошибка: не найдены данные пользователя.";
                 loginError.style.display = "block";
                 auth.signOut();
