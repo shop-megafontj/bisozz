@@ -1,0 +1,28 @@
+{
+  "name": "Панель шаблонов MegaFon TJ",
+  "short_name": "Шаблоны",
+  "description": "Панель управления шаблонами чата для операторов MegaFon Таджикистан.",
+  "start_url": "",
+  "display": "standalone",
+  "background_color": "#00B956",
+  "theme_color": "#00B956",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "login-megafon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "login-megafon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "login-megafon.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    }
+  ]
+}
