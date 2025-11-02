@@ -3,14 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
+    <link rel="manifest" href="manifest1.json">
+    <meta name="theme-color" content="#00B956">
     <title>Вход - Панель шаблонов MegaFon TJ</title>
-    <link rel="stylesheet" href="style.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #00B956;
+            --secondary-color: #512D6D;
+            --text-dark: #222;
+            --text-light: #666;
+            --bg-main: #f4f7f6;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --red: #e74c3c;
+            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+        }
+        #login-page,
+        #register-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .form-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        .logo { width: 200px; margin-bottom: 24px; }
+        .form-container h2 { margin-bottom: 24px; color: var(--text-dark); }
+        .auth-toggle { margin-top: 20px; font-size: 14px; }
+        .auth-toggle a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-toggle a:hover { text-decoration: underline; }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--white);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover { background-color: #00a34c; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--white);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.2);
+        }
+        .info-message, .error-message {
+            color: var(--text-light);
+            font-size: 14px;
+            background-color: var(--bg-main);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+            text-align: left;
+            display: none; /* Скрыты по умолчанию */
+        }
+        .error-message {
+            color: var(--red);
+            background-color: #fbeeeC;
+            border-color: var(--red);
+        }
+
+        /* === СТИЛИ TOAST (УВЕДОМЛЕНИЙ) === */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            color: var(--white);
+            font-weight: 500;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast.success { background-color: var(--primary-color); }
+        .toast.error { background-color: var(--red); }
+        .toast.info { background-color: #882af3; }
+    </style>
 </head>
 <body>
+    
+    <div id="toast-container"></div>
 
     <div id="login-page" class="page active" style="display: flex;">
         <div class="form-container">
@@ -66,9 +192,6 @@
     </div>
 
     <script>
-      // 
-      // ❗️❗️❗️ ВСТАВЬТЕ СЮДА ВАШ firebaseConfig ❗️❗️❗️
-      //
        const firebaseConfig = {
     apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
     authDomain: "bisoz-682b8.firebaseapp.com",
