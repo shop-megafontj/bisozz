@@ -3,40 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="manifest" href="manifest1.json">
+    <meta name="theme-color" content="#00B956">
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
     <title>Админ-Панель - MegaFon TJ</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/feather-icons"></script>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <style>
+        /* ... (Все те же 700+ строк CSS, что и в operator.html) ... */
+        /* Я скопирую их для полноты. В реальном проекте это был бы 1 файл. */
+        :root {
+            --primary-color: #00B956;
+            --secondary-color: #512D6D;
+            --text-dark: #222;
+            --text-light: #666;
+            --bg-main: #f4f7f6;
+            --bg-sidebar: #ffffff;
+            --bg-header: #ffffff;
+            --border-color: #e0e0e0;
+            --white: #ffffff;
+            --red: #e74c3c;
+            --blue: #3498db;
+            --yellow: #f39c12;
+            --purple: #8e44ad;
+            --teal: #1abc9c;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+        [data-theme="dark"] {
+            --text-dark: #f0f0f0;
+            --text-light: #999;
+            --bg-main: #1a1a1a;
+            --bg-sidebar: #222222;
+            --bg-header: #222222;
+            --border-color: #333;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .form-group textarea,
+        [data-theme="dark"] .search-bar input {
+            background: #2b2b2b;
+            color: var(--text-dark);
+            border-color: #444;
+        }
+        [data-theme="dark"] .btn-secondary {
+            background-color: #333;
+            color: var(--text-dark);
+            border-color: #444;
+        }
+        [data-theme="dark"] .btn-secondary:hover { background-color: #444; }
+        [data-theme="dark"] .template-card,
+        [data-theme="dark"] .form-container-card,
+        [data-theme="dark"] .user-item {
+            background: var(--bg-sidebar);
+        }
+        [data-theme="dark"] .card-lang-tabs { background: #1e1e1e; }
+        [data-theme="dark"] .card-footer { background: #202020; }
+        [data-theme="dark"] .info-message {
+            background-color: #2b2b2b;
+            color: var(--text-light);
+            border-color: #444;
+        }
+        [data-theme="dark"] .success-message {
+            background-color: #27ae6030;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+        [data-theme="dark"] .error-message {
+            background-color: #e74c3c30;
+            border-color: var(--red);
+            color: var(--red);
+        }
+        [data-theme="dark"] .rejection-notice {
+            background-color: #e74c3c30;
+            border-color: var(--red);
+            color: var(--red);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .app-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: var(--header-height) 1fr;
+            grid-template-areas: "header header" "sidebar content";
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-header {
+            grid-area: header; display: flex; align-items: center;
+            padding: 0 30px; background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .hamburger-btn {
+            background: none; border: none; cursor: pointer;
+            padding: 5px; display: none; color: var(--text-light);
+        }
+        .hamburger-btn:hover { color: var(--primary-color); }
+        .logo-small { height: 30px; width: auto; }
+        #page-title { font-size: 22px; font-weight: 600; color: var(--text-dark); }
+        .header-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+        .user-info { text-align: right; }
+        .user-info span { font-size: 15px; font-weight: 500; }
+        .btn-secondary {
+            padding: 8px 16px; font-size: 14px; font-weight: 600;
+            color: var(--text-dark); background-color: var(--bg-main);
+            border: 1px solid var(--border-color); border-radius: 8px;
+            cursor: pointer; transition: background-color 0.3s, color 0.2s, border-color 0.2s;
+        }
+        .btn-secondary:hover { background-color: #e9e9e9; }
+        .theme-switcher {
+            display: flex; align-items: center;
+            color: var(--text-light); cursor: pointer;
+        }
+        .app-sidebar {
+            grid-area: sidebar; background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            padding: 20px; overflow-y: auto;
+            transition: transform 0.3s ease-in-out, background-color 0.2s, border-color 0.2s;
+        }
+        .app-sidebar nav { display: flex; flex-direction: column; gap: 8px; }
+        .app-sidebar nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: 8px;
+            font-size: 16px; font-weight: 500;
+            color: var(--text-light); text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .app-sidebar nav a:hover { background-color: var(--bg-main); color: var(--text-dark); }
+        .app-sidebar nav a.active { background-color: var(--primary-color); color: var(--white); }
+        .app-sidebar nav a .icon { width: 20px; height: 20px; }
+        .app-content { grid-area: content; overflow-y: auto; padding: 30px; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .btn-primary {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; padding: 12px 20px; font-size: 15px; font-weight: 600;
+            color: var(--white); background-color: var(--primary-color);
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover { background-color: #00a34c; }
+        .btn-primary .icon { width: 18px; height: 18px; }
+        .content-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 25px;
+        }
+        .content-header h2 { font-size: 28px; font-weight: 700; }
+        .search-bar { position: relative; width: 100%; max-width: 400px; }
+        .search-bar .icon {
+            position: absolute; left: 15px; top: 50%;
+            transform: translateY(-50%); color: var(--text-light);
+        }
+        .search-bar input {
+            width: 100%; padding: 12px 15px 12px 45px;
+            border: 1px solid var(--border-color); border-radius: 8px;
+            font-size: 16px; background: var(--white);
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .search-bar input:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.2);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 12px 16px;
+            border: 1px solid var(--border-color); border-radius: 8px;
+            font-size: 16px; background: var(--white);
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.2);
+        }
+        .form-group input[readonly] { background: var(--bg-main); }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-container-card {
+            background: var(--white); padding: 30px;
+            border-radius: 12px; box-shadow: var(--shadow-light);
+            max-width: 600px; margin-bottom: 30px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        .form-container-card h3 {
+            font-size: 20px; margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+        .info-message {
+            color: var(--text-light); font-size: 14px;
+            background-color: var(--bg-main); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin: 10px 0;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .success-message {
+            color: #27ae60; background-color: #eaf8f1;
+            border-color: #27ae60;
+        }
+        .error-message {
+            color: var(--red); background-color: #fbeeeC;
+            border-color: var(--red);
+        }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .template-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: none;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .template-card:hover {
+            box-shadow: var(--shadow-medium);
+            border-color: transparent;
+        }
+        .card-header {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-header h4 {
+            font-size: 18px; color: var(--secondary-color);
+            margin: 0; word-break: break-word;
+        }
+        .card-actions { display: flex; align-items: center; gap: 8px; }
+        .icon-small { width: 18px; height: 18px; }
+        .card-action-btn {
+            background: none; border: none; padding: 4px;
+            cursor: pointer; color: var(--text-light);
+            border-radius: 50%; transition: all 0.2s;
+        }
+        .card-action-btn:hover { background-color: var(--bg-main); color: var(--text-dark); }
+        .card-favorite {
+            cursor: pointer; color: var(--text-light);
+            padding: 4px; border-radius: 50%;
+        }
+        .card-favorite:hover { background-color: var(--bg-main); }
+        .card-favorite.favorited { color: var(--yellow); fill: var(--yellow); }
+        .card-lang-tabs { display: flex; background: var(--bg-main); transition: background-color 0.2s; }
+        .lang-tab {
+            flex: 1; text-align: center; padding: 10px;
+            font-weight: 600; cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+        }
+        .lang-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        .card-body { padding: 20px; flex-grow: 1; }
+        .lang-content {
+            display: none; font-size: 15px;
+            white-space: pre-wrap; word-wrap: break-word;
+        }
+        .lang-content.active { display: block; }
+        .card-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            background: #fcfcfc;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .card-tags { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag {
+            font-size: 12px; padding: 4px 10px;
+            border-radius: 16px; font-weight: 500;
+            color: var(--white);
+        }
+        .tag-color-1 { background-color: var(--primary-color); }
+        .tag-color-2 { background-color: var(--secondary-color); }
+        .tag-color-3 { background-color: var(--blue); }
+        .tag-color-4 { background-color: var(--teal); }
+        .tag-color-5 { background-color: var(--purple); }
+        .tag-color-0 { background-color: var(--text-light); }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; }
+        .card-author { font-size: 13px; color: var(--text-light); }
+        .card-author strong { color: var(--text-dark); }
+        .btn-copy {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--primary-color); color: var(--white);
+            border: none; padding: 8px 14px; border-radius: 8px;
+            cursor: pointer; font-weight: 600;
+        }
+        .btn-copy .icon { width: 16px; height: 16px; }
+        
+        /* --- Список Операторов (Админка) --- */
+        .user-list {
+            display: flex; flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .user-item {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 16px 20px;
+            background: var(--white); border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        .user-item-info strong { font-size: 16px; }
+        .user-item-info .email { color: var(--text-light); font-size: 14px; }
+        .user-item-info .status {
+            font-weight: 700; padding: 4px 8px;
+            border-radius: 6px; font-size: 12px; margin-left: 10px;
+            color: var(--white);
+        }
+        .status-pending { background-color: var(--yellow); }
+        .status-approved { background-color: var(--primary-color); }
+        .status-rejected { background-color: var(--red); }
+        
+        .user-item-actions { display: flex; gap: 10px; }
+        .btn-approve {
+            background: #2ecc71; color: white; border: none;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        }
+        .btn-reject {
+            background: var(--yellow); color: white; border: none;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        }
+        .btn-delete {
+            background: var(--red); color: white; border: none;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        }
+
+        /* --- Скелетон --- */
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        .shimmer-bg {
+            animation: shimmer 1.5s infinite linear;
+            background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+            background-size: 1000px 100%;
+        }
+        [data-theme="dark"] .shimmer-bg {
+             background: linear-gradient(to right, #333 8%, #444 18%, #333 33%);
+             background-size: 1000px 100%;
+        }
+        .skeleton-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-sidebar);
+            overflow: hidden;
+        }
+        .skeleton-header { height: 55px; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
+        .skeleton-header div { height: 20px; width: 70%; border-radius: 4px; }
+        .skeleton-tabs { height: 45px; background: var(--bg-main); }
+        .skeleton-body { padding: 20px; }
+        .skeleton-body div { height: 15px; border-radius: 4px; margin-bottom: 10px; }
+        .skeleton-body div:last-child { width: 80%; }
+        .skeleton-footer { height: 80px; padding: 16px 20px; border-top: 1px solid var(--border-color); }
+        
+        .skeleton-list .skeleton-item {
+            height: 70px;
+            background: var(--bg-sidebar);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .skeleton-list .skeleton-item div { border-radius: 4px; }
+        .skeleton-list .skeleton-item-info { height: 30px; width: 40%; }
+        .skeleton-list .skeleton-item-actions { height: 30px; width: 20%; }
+
+        /* --- Модальное Окно --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.3s forwards;
+            display: grid;
+            place-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-sidebar);
+            padding: 24px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            z-index: 1001;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            opacity: 0;
+            animation: zoomInModal 0.3s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        .modal-header {
+            display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px; margin-bottom: 20px;
+        }
+        .modal-header h3 { font-size: 22px; color: var(--secondary-color); }
+        .modal-close-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-light); padding: 4px;
+            border-radius: 50%;
+        }
+        .modal-close-btn:hover { background-color: var(--bg-main); }
+        .modal-body .template-form { margin-bottom: 0; box-shadow: none; padding: 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomInModal {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        /* --- Toast --- */
+        #toast-container {
+            position: fixed; top: 20px; right: 20px;
+            z-index: 2000; display: flex;
+            flex-direction: column; gap: 10px;
+        }
+        .toast {
+            padding: 15px 20px; border-radius: 8px;
+            box-shadow: var(--shadow-medium); color: var(--white);
+            font-weight: 500; opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
+        }
+        .toast.show { opacity: 1; transform: translateX(0); }
+        .toast.success { background-color: var(--primary-color); }
+        .toast.error { background-color: var(--red); }
+        .toast.info { background-color: #3498db; }
+
+        /* --- Адаптивность --- */
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas: "header" "content";
+            }
+            .app-sidebar {
+                position: fixed; top: 0; left: 0;
+                height: 100vh; width: var(--sidebar-width);
+                z-index: 1001; transform: translateX(-100%);
+                box-shadow: var(--shadow-medium);
+                border-right: 1px solid var(--border-color);
+            }
+            .app-sidebar.visible { transform: translateX(0); }
+            .sidebar-overlay {
+                position: fixed; top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 1000;
+            }
+            .hamburger-btn { display: block; z-index: 1002; }
+            .app-header { padding: 0 20px; }
+            .app-content, .content { padding: 20px; }
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .content-header .search-bar { max-width: none; }
+            .user-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .user-item-actions { width: 100%; }
+        }
+    </style>
 </head>
 <body>
+    
+    <div id="toast-container"></div>
 
-    <div id="admin-panel" class="page active">
+    <div class="app-container">
         <header class="app-header">
-            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo-small">
-            <h1>Панель Администратора</h1>
-            <div class="user-info">
-                <span id="admin-user-email">Загрузка...</span>
+            <div class="header-left">
+                <button class="hamburger-btn" id="hamburger-btn">
+                    <i data-feather="menu"></i>
+                </button>
+                <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo-small">
+                <h1 id="page-title">Шаблоны</h1> </div>
+            <div class="header-right">
+                <div class="theme-switcher" id="theme-switcher" title="Переключить тему">
+                    <i data-feather="sun"></i>
+                </div>
+                <div class="user-info">
+                    <span id="admin-user-email">Загрузка...</span>
+                </div>
                 <button id="admin-logout" class="btn-secondary">Выйти</button>
             </div>
         </header>
 
-        <main class="app-main split-view">
-            <aside class="sidebar">
-                <h3>Управление</h3>
-                <nav>
-                    <a href="#" class="nav-link active" data-target="admin-operators">Операторы</a>
-                    <a href="#" class="nav-link" data-target="admin-templates">Шаблоны</a>
-                </nav>
-            </aside>
+        <aside class="app-sidebar" id="app-sidebar">
+            <nav>
+                <a href="#" class="nav-link active" data-target="templates-page">
+                    <i data-feather="grid" class="icon"></i> Шаблоны
+                </a>
+                <a href="#" class="nav-link" data-target="operators-page">
+                    <i data-feather="users" class="icon"></i> Операторы
+                </a>
+            </nav>
+        </aside>
 
-            <section class="content">
-                <div id="admin-operators" class="content-section active">
-                    
-                    <h2>Создать нового оператора</h2>
-                    <form id="add-operator-form" class="template-form">
+        <main class="app-content">
+
+            <div id="templates-page" class="page-section active">
+                <div class="content-header">
+                    <h2>Управление шаблонами</h2>
+                    <button id="admin-open-add-modal-btn" class="btn-primary">
+                        <i data-feather="plus" class="icon"></i> Добавить шаблон
+                    </button>
+                </div>
+                
+                <div class="template-grid" id="template-skeleton-loader">
+                    <div class="skeleton-card">
+                        <div class="skeleton-header"><div class="shimmer-bg"></div></div>
+                        <div class="skeleton-tabs"></div>
+                        <div class="skeleton-body"><div class="shimmer-bg"></div><div class="shimmer-bg"></div></div>
+                        <div class="skeleton-footer"></div>
+                    </div>
+                </div>
+                
+                <div class="template-grid" id="admin-template-list" style="display: none;">
+                    </div>
+            </div>
+
+            <div id="operators-page" class="page-section">
+                <div class="content-header">
+                    <h2>Управление операторами</h2>
+                </div>
+                
+                <div class="form-container-card">
+                    <h3>Создать нового оператора</h3>
+                    <form id="add-operator-form">
                         <div class="form-group">
                             <label for="add-name">ФИО оператора</label>
                             <input type="text" id="add-name" required>
@@ -49,64 +556,114 @@
                             <label for="add-password">Пароль</label>
                             <input type="password" id="add-password" required>
                         </div>
-                        <div class="form-group">
-                            <label for="add-password-confirm">Подтвердите пароль</label>
-                            <input type="password" id="add-password-confirm" required>
-                        </div>
-                        <button type="submit" class="btn-primary">Создать оператора</button>
-                        <p id="add-operator-message" class="info-message" style="display: none;"></p>
-                        <p id="add-operator-error" class="error-message" style="display: none;"></p>
-                    </form>
-                    
-                    <hr>
-                    
-                    <h2>Список операторов</h2>
-                    <p>Здесь вы можете одобрять (Принять) или удалять (Отклонить) операторов.</p>
-                    <div id="operator-list" class="user-list">
-                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Создать оператора</button>
+                        </form>
                 </div>
+                
+                <h3>Список операторов</h3>
+                
+                <div class="skeleton-list" id="operator-skeleton-loader">
+                    <div class="skeleton-item"><div class="skeleton-item-info shimmer-bg"></div><div class="skeleton-item-actions shimmer-bg"></div></div>
+                    <div class="skeleton-item"><div class="skeleton-item-info shimmer-bg"></div><div class="skeleton-item-actions shimmer-bg"></div></div>
+                </div>
+                
+                <div id="operator-list" class="user-list" style="display: none;">
+                    </div>
+            </div>
 
-                <div id="admin-templates" class="content-section">
-                    <h2>Управление шаблонами (CRUD)</h2>
-                    <form id="admin-template-form" class="template-form">
-                        <input type="hidden" id="admin-template-id">
-                        <div class="form-group">
-                            <label for="admin-template-title">Название</label>
-                            <input type="text" id="admin-template-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="admin-template-ru">Текст (Русский)</label>
-                            <textarea id="admin-template-ru" rows="3" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="admin-template-tj">Текст (Таджикский)</label>
-                            <textarea id="admin-template-tj" rows="3" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="admin-template-tags">Метки (через запятую)</label>
-                            <input type="text" id="admin-template-tags" placeholder="интернет, претензия, приветствие">
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary">Сохранить</button>
-                            <button type="button" id="admin-cancel-edit" class="btn-secondary" style="display: none;">Отмена</button>
-                        </div>
-                    </form>
-                    
-                    <hr>
-                    <h3>Все шаблоны</h3>
-                    <div id="admin-template-list" class="template-list-admin">
-                        </div>
-                </div>
-            </section>
         </main>
+    </div>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" style="display: none;"></div>
+
+
+    <div id="template-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Добавить шаблон</h3>
+                <button id="close-template-modal-btn" class="modal-close-btn">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="admin-template-form" style="box-shadow: none; padding: 0;">
+                    <input type="hidden" id="admin-template-id">
+                    <div class="form-group">
+                        <label for="admin-template-title">Название</label>
+                        <input type="text" id="admin-template-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-template-tj">Текст (Таджикский)</label>
+                        <textarea id="admin-template-tj" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-template-ru">Текст (Русский)</label>
+                        <textarea id="admin-template-ru" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-template-tags">Метки (через запятую)</label>
+                        <input type="text" id="admin-template-tags" placeholder="интернет, претензия, приветствие">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="operator-edit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="operator-modal-title">Редактировать оператора</h3>
+                <button id="close-operator-modal-btn" class="modal-close-btn">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="operator-edit-form">
+                    <input type="hidden" id="operator-edit-uid">
+                    <div class="form-group">
+                        <label for="operator-edit-name">ФИО</label>
+                        <input type="text" id="operator-edit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="operator-edit-email">Email (только чтение)</label>
+                        <input type="email" id="operator-edit-email" readonly style="background: var(--bg-main);">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-bottom: 15px;">Сохранить ФИО</button>
+                </form>
+                <hr>
+                <h4>Сброс пароля</h4>
+                <p class="info-message" style="font-size: 13px; margin-top: 0; margin-bottom: 15px;">
+                    Отправить оператору ссылку для сброса на его Email.
+                </p>
+                <button id="operator-password-reset-btn" class="btn-secondary" style="width: 100%;">Отправить ссылку</button>
+                </div>
+        </div>
+    </div>
+    
+    <div id="rejection-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="rejection-modal-title">Отклонить заявку</h3>
+                <button id="close-rejection-modal-btn" class="modal-close-btn">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="rejection-form">
+                    <input type="hidden" id="rejection-uid">
+                    <div class="form-group">
+                        <label for="rejection-reason">Причина отклонения</label>
+                        <textarea id="rejection-reason" rows="3" required placeholder="Укажите причину, которую увидит оператор..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; background-color: var(--red);">Отклонить заявку</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
-      feather.replace();
-    </script>
-    <script>
-      // ❗️❗️❗️ ВСТАВЬТЕ СЮДА ВАШ firebaseConfig ❗️❗️❗️
-       const firebaseConfig = {
+      const firebaseConfig = {
     apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
     authDomain: "bisoz-682b8.firebaseapp.com",
     databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -117,18 +674,12 @@
     measurementId: "G-WYNYL1RCX2"
   };
       
-      // 1. Основное (для работы админа)
       firebase.initializeApp(firebaseConfig);
-      
-      // 2. Вспомогательное (ТОЛЬКО для создания новых пользователей)
       try {
         firebase.initializeApp(firebaseConfig, "secondaryAdminApp");
       } catch (error) {
-        if (error.code !== 'app/duplicate-app') {
-          console.error(error);
-        }
+        if (error.code !== 'app/duplicate-app') { console.error(error); }
       }
-      
     </script>
     <script src="admin.js"></script>
 </body>
