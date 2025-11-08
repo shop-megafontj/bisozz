@@ -3,684 +3,1459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <link rel="manifest" href="manifest1.json">
-    <meta name="theme-color" content="#00B956">
+    <title>Панель Администратора - MegaFon TJ</title>
     <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
-    <title>Админ-Панель - MegaFon TJ</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#512D6D">
     <script src="https://unpkg.com/feather-icons"></script>
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
     <style>
-        /* ... (Все те же 700+ строк CSS, что и в operator.html) ... */
-        /* Я скопирую их для полноты. В реальном проекте это был бы 1 файл. */
         :root {
-            --primary-color: #00B956;
-            --secondary-color: #512D6D;
+            --primary-color: #6410a5; 
+            --secondary-color: #00B956;
             --text-dark: #222;
-            --text-light: #666;
+            --text-light: #275e4d;
             --bg-main: #f4f7f6;
             --bg-sidebar: #ffffff;
             --bg-header: #ffffff;
             --border-color: #e0e0e0;
             --white: #ffffff;
-            --red: #e74c3c;
-            --blue: #3498db;
-            --yellow: #f39c12;
-            --purple: #8e44ad;
-            --teal: #1abc9c;
+            --red: #e02914;
+            --blue: #147bc0;
+            --yellow: #e0900e;
             --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
             --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.08);
             --sidebar-width: 260px;
             --header-height: 70px;
         }
         [data-theme="dark"] {
-            --text-dark: #f0f0f0;
-            --text-light: #999;
-            --bg-main: #1a1a1a;
-            --bg-sidebar: #222222;
-            --bg-header: #222222;
-            --border-color: #333;
-            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.2);
-            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.3);
+            --text-dark: #f0f0f0; --text-light: #999;
+            --bg-main: #1a1a1a; --bg-sidebar: #222222;
+            --bg-header: #222222; --border-color: #333;
         }
         [data-theme="dark"] .form-group input,
         [data-theme="dark"] .form-group textarea,
-        [data-theme="dark"] .search-bar input {
-            background: #2b2b2b;
-            color: var(--text-dark);
-            border-color: #444;
+        [data-theme="dark"] .search-bar input,
+        [data-theme="dark"] .filter-group input {
+            background: #2b2b2b; color: var(--text-dark); border-color: #444;
         }
-        [data-theme="dark"] .btn-secondary {
-            background-color: #333;
-            color: var(--text-dark);
-            border-color: #444;
+        [data-theme="dark"] .btn-secondary,
+        [data-theme="dark"] .card-lang-toggle {
+            background-color: #333; color: var(--text-dark); border-color: #444;
         }
-        [data-theme="dark"] .btn-secondary:hover { background-color: #444; }
         [data-theme="dark"] .template-card,
-        [data-theme="dark"] .form-container-card,
-        [data-theme="dark"] .user-item {
-            background: var(--bg-sidebar);
-        }
-        [data-theme="dark"] .card-lang-tabs { background: #1e1e1e; }
+        [data-theme="dark"] .user-list-card,
+        [data-theme="dark"] .form-container-card { background: var(--bg-sidebar); }
         [data-theme="dark"] .card-footer { background: #202020; }
         [data-theme="dark"] .info-message {
-            background-color: #2b2b2b;
-            color: var(--text-light);
-            border-color: #444;
+            background-color: #2b2b2b; color: var(--text-light); border-color: #444;
         }
-        [data-theme="dark"] .success-message {
-            background-color: #27ae6030;
-            border-color: #27ae60;
-            color: #27ae60;
+        
+        .loader-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease-out;
         }
-        [data-theme="dark"] .error-message {
-            background-color: #e74c3c30;
-            border-color: var(--red);
-            color: var(--red);
+        .loader-spinner {
+            width: 50px; height: 50px;
+            border: 5px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        [data-theme="dark"] .rejection-notice {
-            background-color: #e74c3c30;
-            border-color: var(--red);
-            color: var(--red);
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        [data-theme="dark"] .loader-overlay { background: var(--bg-main); }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-dark);
-            transition: background-color 0.2s, color 0.2s;
         }
         .app-container {
-            display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr;
+            display: grid; grid-template-columns: var(--sidebar-width) 1fr;
             grid-template-rows: var(--header-height) 1fr;
             grid-template-areas: "header header" "sidebar content";
-            height: 100vh;
-            overflow: hidden;
+            height: 100vh; overflow: hidden;
+            visibility: hidden; 
         }
-        .app-header {
-            grid-area: header; display: flex; align-items: center;
-            padding: 0 30px; background: var(--bg-header);
-            border-bottom: 1px solid var(--border-color);
+        .app-container.loaded { visibility: visible; }
+        
+        .app-header { 
+            grid-area: header; display: flex; align-items: center; 
+            padding: 0 30px; background: var(--bg-header); 
+            border-bottom: 1px solid var(--border-color); 
             z-index: 100;
-            transition: background-color 0.2s, border-color 0.2s;
+            gap: 20px;
         }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .hamburger-btn {
-            background: none; border: none; cursor: pointer;
-            padding: 5px; display: none; color: var(--text-light);
+        .header-left { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
+        .header-right { 
+            display: flex; align-items: center; 
+            gap: 20px; flex-shrink: 0; 
         }
-        .hamburger-btn:hover { color: var(--primary-color); }
+        
+        .hamburger-btn { background: none; border: none; cursor: pointer; padding: 5px; display: none; color: var(--text-light); }
         .logo-small { height: 30px; width: auto; }
         #page-title { font-size: 22px; font-weight: 600; color: var(--text-dark); }
-        .header-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
-        .user-info { text-align: right; }
         .user-info span { font-size: 15px; font-weight: 500; }
-        .btn-secondary {
-            padding: 8px 16px; font-size: 14px; font-weight: 600;
-            color: var(--text-dark); background-color: var(--bg-main);
-            border: 1px solid var(--border-color); border-radius: 8px;
-            cursor: pointer; transition: background-color 0.3s, color 0.2s, border-color 0.2s;
-        }
-        .btn-secondary:hover { background-color: #e9e9e9; }
-        .theme-switcher {
-            display: flex; align-items: center;
-            color: var(--text-light); cursor: pointer;
-        }
-        .app-sidebar {
-            grid-area: sidebar; background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            padding: 20px; overflow-y: auto;
-            transition: transform 0.3s ease-in-out, background-color 0.2s, border-color 0.2s;
-        }
+        .btn-secondary { padding: 8px 16px; font-size: 14px; font-weight: 600; color: var(--text-dark); background-color: var(--secondary-color); border: 1px solid var(--border-color); border-radius: 18px; cursor: pointer; }
+        .theme-switcher { display: flex; align-items: center; color: var(--text-light); cursor: pointer; }
+        .app-sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 20px; overflow-y: auto; }
         .app-sidebar nav { display: flex; flex-direction: column; gap: 8px; }
-        .app-sidebar nav a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; border-radius: 8px;
-            font-size: 16px; font-weight: 500;
-            color: var(--text-light); text-decoration: none;
-            transition: background-color 0.2s, color 0.2s;
-        }
+        .app-sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 500; color: var(--text-light); text-decoration: none; }
         .app-sidebar nav a:hover { background-color: var(--bg-main); color: var(--text-dark); }
         .app-sidebar nav a.active { background-color: var(--primary-color); color: var(--white); }
         .app-sidebar nav a .icon { width: 20px; height: 20px; }
         .app-content { grid-area: content; overflow-y: auto; padding: 30px; }
         .page-section { display: none; }
         .page-section.active { display: block; }
-        .btn-primary {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 12px 20px; font-size: 15px; font-weight: 600;
-            color: var(--white); background-color: var(--primary-color);
-            border: none; border-radius: 8px; cursor: pointer;
-            transition: background-color 0.3s;
+        .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; font-size: 15px; font-weight: 600; color: var(--white); background-color: var(--primary-color); border: none; border-radius: 8px; cursor: pointer; }
+        .btn-primary:disabled { background-color: var(--border-color); cursor: not-allowed; }
+        .btn-danger { background-color: var(--red); }
+        .btn-success { background-color: var(--secondary-color); }
+        .btn-warning { background-color: var(--yellow); color: var(--white); }
+        .btn-info { background-color: var(--blue); }
+        
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        
+        .search-bar { 
+            position: relative; 
+            width: 100%; 
+            flex-grow: 1;
+            max-width: 600px;
+            visibility: hidden;
         }
-        .btn-primary:hover { background-color: #00a34c; }
-        .btn-primary .icon { width: 18px; height: 18px; }
-        .content-header {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 25px;
+        .app-header .search-bar {
+            visibility: visible;
         }
-        .content-header h2 { font-size: 28px; font-weight: 700; }
-        .search-bar { position: relative; width: 100%; max-width: 400px; }
-        .search-bar .icon {
-            position: absolute; left: 15px; top: 50%;
-            transform: translateY(-50%); color: var(--text-light);
-        }
-        .search-bar input {
-            width: 100%; padding: 12px 15px 12px 45px;
-            border: 1px solid var(--border-color); border-radius: 8px;
-            font-size: 16px; background: var(--white);
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .search-bar input:focus {
-            outline: none; border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.2);
-        }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px 16px;
-            border: 1px solid var(--border-color); border-radius: 8px;
-            font-size: 16px; background: var(--white);
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.2);
-        }
-        .form-group input[readonly] { background: var(--bg-main); }
-        .form-group textarea { resize: vertical; min-height: 100px; }
-        .form-container-card {
-            background: var(--white); padding: 30px;
-            border-radius: 12px; box-shadow: var(--shadow-light);
-            max-width: 600px; margin-bottom: 30px;
-            transition: background-color 0.2s, box-shadow 0.2s;
-        }
-        .form-container-card h3 {
-            font-size: 20px; margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            transition: border-color 0.2s;
-        }
-        .info-message {
-            color: var(--text-light); font-size: 14px;
-            background-color: var(--bg-main); padding: 10px 15px;
-            border-radius: 8px; border: 1px solid var(--border-color);
-            margin: 10px 0;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .success-message {
-            color: #27ae60; background-color: #eaf8f1;
-            border-color: #27ae60;
-        }
-        .error-message {
-            color: var(--red); background-color: #fbeeeC;
-            border-color: var(--red);
-        }
+        .search-bar .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+        .search-bar input { width: 100%; padding: 12px 15px 12px 45px; border: 1px solid var(--border-color); border-radius: 20px; font-size: 16px; background: var(--white); }
+        
+        .filter-bar { display: flex; gap: 15px; flex-grow: 1; flex-wrap: wrap; align-items: center; }
+        .filter-group { position: relative; }
+        
+        .filter-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 14px; font-size: 14px; font-weight: 500; color: var(--text-dark); cursor: pointer; }
+        .filter-btn:disabled { color: var(--text-light); background-color: var(--bg-main); cursor: not-allowed; opacity: 0.7; }
+        .filter-btn.active-filter { background-color: var(--primary-color); color: var(--white); border-color: var(--primary-color); }
+        .filter-dropdown { display: none; position: absolute; top: 100%; left: 0; margin-top: 6px; background-color: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow-medium); z-index: 100; min-width: 240px; max-height: 300px; overflow-y: auto; padding: 6px; }
+        .filter-dropdown.active { display: block; }
+        .filter-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 500; }
+        .filter-dropdown-item:hover { background-color: var(--bg-main); }
+        .filter-dropdown-item.active { background-color: var(--primary-color); color: var(--white); }
+        .tag-color-preview { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+        
         .template-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            gap: 20px;
+            align-items: stretch;
         }
         .template-card {
-            background: var(--white);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: none;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .template-card:hover {
-            box-shadow: var(--shadow-medium);
-            border-color: transparent;
+            background: var(--white); border: 1px solid var(--border-color);
+            border-radius: 12px; display: flex; flex-direction: column;
+            height: 100%;
         }
         .card-header {
             display: flex; justify-content: space-between;
-            align-items: center; padding: 16px 20px;
+            align-items: center; padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
         }
-        .card-header h4 {
-            font-size: 18px; color: var(--secondary-color);
-            margin: 0; word-break: break-word;
+        .card-header h4 { 
+            font-size: 16px; color: var(--primary-color);
+            margin: 0;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; padding-right: 10px;
         }
-        .card-actions { display: flex; align-items: center; gap: 8px; }
-        .icon-small { width: 18px; height: 18px; }
-        .card-action-btn {
-            background: none; border: none; padding: 4px;
-            cursor: pointer; color: var(--text-light);
-            border-radius: 50%; transition: all 0.2s;
+        .card-lang-toggle {
+            font-size: 12px; font-weight: 600;
+            color: var(--text-dark); background: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 4px 8px;
+            cursor: pointer; flex-shrink: 0;
         }
-        .card-action-btn:hover { background-color: var(--bg-main); color: var(--text-dark); }
-        .card-favorite {
-            cursor: pointer; color: var(--text-light);
-            padding: 4px; border-radius: 50%;
+        .card-body {
+            padding: 16px 16px 16px 16px;
+            flex-grow: 1; display: flex; flex-direction: column;
+            min-height: 0;
+            position: relative;
+            max-height: 120px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding-bottom 0.2s ease-out;
         }
-        .card-favorite:hover { background-color: var(--bg-main); }
-        .card-favorite.favorited { color: var(--yellow); fill: var(--yellow); }
-        .card-lang-tabs { display: flex; background: var(--bg-main); transition: background-color 0.2s; }
-        .lang-tab {
-            flex: 1; text-align: center; padding: 10px;
-            font-weight: 600; cursor: pointer;
-            border-bottom: 3px solid transparent;
-            color: var(--text-light);
+        .card-body.expanded {
+            max-height: 1000px;
         }
-        .lang-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-        .card-body { padding: 20px; flex-grow: 1; }
+        .card-body.is-truncated {
+             padding-bottom: 35px;
+        }
         .lang-content {
-            display: none; font-size: 15px;
-            white-space: pre-wrap; word-wrap: break-word;
+            font-size: 15px; white-space: pre-wrap; word-wrap: break-word;
+            flex-grow: 1; min-height: 0;
         }
         .lang-content.active { display: block; }
+        .lang-content:not(.active) { display: none; }
+        .card-body-expander {
+            display: none; 
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: right; 
+            height: 50px; 
+            padding: 25px 16px 10px; 
+            background: linear-gradient(to bottom, transparent 0%, var(--white) 50%);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+        [data-theme="dark"] .card-body-expander {
+             background: linear-gradient(to bottom, transparent 0%, var(--bg-sidebar) 50%);
+        }
+        .card-body-expander.visible { display: block; }
+        
         .card-footer {
-            padding: 16px 20px;
+            padding: 12px 16px;
             border-top: 1px solid var(--border-color);
-            background: #fcfcfc;
-            transition: background-color 0.2s, border-color 0.2s;
+            background: #fcfcfc; 
+            margin-top: auto;
         }
-        .card-tags { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag {
-            font-size: 12px; padding: 4px 10px;
-            border-radius: 16px; font-weight: 500;
-            color: var(--white);
+        .card-tags { 
+            margin-bottom: 12px; 
+            display: flex; flex-wrap: wrap; gap: 6px; 
         }
-        .tag-color-1 { background-color: var(--primary-color); }
-        .tag-color-2 { background-color: var(--secondary-color); }
-        .tag-color-3 { background-color: var(--blue); }
-        .tag-color-4 { background-color: var(--teal); }
-        .tag-color-5 { background-color: var(--purple); }
+        .tag { font-size: 12px; padding: 4px 10px; border-radius: 16px; font-weight: 500; color: var(--white); }
+        
         .tag-color-0 { background-color: var(--text-light); }
-        .card-meta { display: flex; justify-content: space-between; align-items: center; }
-        .card-author { font-size: 13px; color: var(--text-light); }
-        .card-author strong { color: var(--text-dark); }
-        .btn-copy {
-            display: flex; align-items: center; gap: 6px;
-            background: var(--primary-color); color: var(--white);
-            border: none; padding: 8px 14px; border-radius: 8px;
-            cursor: pointer; font-weight: 600;
-        }
-        .btn-copy .icon { width: 16px; height: 16px; }
+        .tag-color-1 { background-color: var(--secondary-color); }
+        .tag-color-2 { background-color: var(--primary-color); }
+        .tag-color-3 { background-color: var(--blue); }
+        .tag-color-4 { background-color: var(--red); }
+        .tag-color-5 { background-color: var(--yellow); }
         
-        /* --- Список Операторов (Админка) --- */
-        .user-list {
-            display: flex; flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
+        .card-meta { 
+            display: flex; justify-content: space-between; 
+            align-items: center; 
         }
-        .user-item {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 16px 20px;
-            background: var(--white); border-radius: 8px;
-            box-shadow: var(--shadow-light);
-            transition: background-color 0.2s, box-shadow 0.2s;
+        .card-footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .user-item-info strong { font-size: 16px; }
-        .user-item-info .email { color: var(--text-light); font-size: 14px; }
-        .user-item-info .status {
-            font-weight: 700; padding: 4px 8px;
-            border-radius: 6px; font-size: 12px; margin-left: 10px;
-            color: var(--white);
+        .card-author,
+        .card-footer-actions button,
+        .card-footer-actions span {
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .status-pending { background-color: var(--yellow); }
-        .status-approved { background-color: var(--primary-color); }
-        .status-rejected { background-color: var(--red); }
-        
-        .user-item-actions { display: flex; gap: 10px; }
-        .btn-approve {
-            background: #2ecc71; color: white; border: none;
-            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        .card-footer-actions button {
+            background: none;
+            border: none;
         }
-        .btn-reject {
-            background: var(--yellow); color: white; border: none;
-            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        .card-footer-actions button:hover,
+        .card-footer-actions span:hover,
+        .card-author:hover {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
         }
-        .btn-delete {
-            background: var(--red); color: white; border: none;
-            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        .card-favorite.favorited { 
+            color: var(--yellow); 
+            fill: var(--yellow); 
         }
+        .icon-small { width: 18px; height: 18px; }
+        .icon { width: 20px; height: 20px; }
 
-        /* --- Скелетон --- */
-        @keyframes shimmer {
-            0% { background-position: -468px 0; }
-            100% { background-position: 468px 0; }
+        @keyframes pulse {
+            0% { background-color: var(--border-color); }
+            50% { background-color: var(--bg-main); }
+            100% { background-color: var(--border-color); }
         }
-        .shimmer-bg {
-            animation: shimmer 1.5s infinite linear;
-            background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
-            background-size: 1000px 100%;
-        }
-        [data-theme="dark"] .shimmer-bg {
-             background: linear-gradient(to right, #333 8%, #444 18%, #333 33%);
-             background-size: 1000px 100%;
+        [data-theme="dark"] @keyframes pulse {
+            0% { background-color: var(--border-color); }
+            50% { background-color: #2c2c2c; }
+            100% { background-color: var(--border-color); }
         }
         .skeleton-card {
+            background: var(--bg-sidebar); border: 1px solid var(--border-color);
+            border-radius: 12px; display: flex; flex-direction: column;
+        }
+        .skeleton-line {
+            height: 16px; border-radius: 4px;
+            animation: pulse 1.5s infinite ease-in-out;
+            background-color: var(--border-color);
+        }
+        .skeleton-card .card-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+        .skeleton-card .card-header .skeleton-line { width: 70%; height: 20px; }
+        .skeleton-card .card-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .skeleton-card .card-body .skeleton-line { width: 100%; }
+        .skeleton-card .card-body .skeleton-line:last-child { width: 80%; }
+        .skeleton-card .card-footer { padding: 12px 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .skeleton-card .card-footer .skeleton-line { width: 80px; height: 24px; }
+        .skeleton-avatar {
+            width: 24px; height: 24px; border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+            background-color: var(--border-color);
+        }
+        [data-theme="dark"] .skeleton-card { background: var(--bg-sidebar); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 18px; font-size: 16px; background: var(--white); }
+        .form-group input:disabled { background-color: var(--bg-main); opacity: 0.7; }
+        .form-container-card { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: var(--shadow-light); max-width: 600px; margin-bottom: 30px; }
+        .form-container-card h3 { font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .info-message { color: var(--text-light); font-size: 14px; background-color: var(--bg-main); padding: 10px 15px; border-radius: 18px; border: 1px solid var(--border-color); margin: 10px 0; }
+        
+        /* ... Стили V23 (Карточки Операторов) ... */
+        .user-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .user-list-card {
+            background: var(--bg-sidebar);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            background: var(--bg-sidebar);
-            overflow: hidden;
+            display: flex; flex-direction: column;
         }
-        .skeleton-header { height: 55px; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
-        .skeleton-header div { height: 20px; width: 70%; border-radius: 4px; }
-        .skeleton-tabs { height: 45px; background: var(--bg-main); }
-        .skeleton-body { padding: 20px; }
-        .skeleton-body div { height: 15px; border-radius: 4px; margin-bottom: 10px; }
-        .skeleton-body div:last-child { width: 80%; }
-        .skeleton-footer { height: 80px; padding: 16px 20px; border-top: 1px solid var(--border-color); }
+        .user-card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .user-card-header h4 { font-size: 18px; margin: 0; }
+        .status-badge {
+            font-size: 12px; font-weight: 600;
+            padding: 4px 10px; border-radius: 16px;
+            color: var(--white);
+        }
+        .status-badge.pending { background-color: var(--yellow); }
+        .status-badge.approved { background-color: var(--secondary-color); }
+        .status-badge.rejected { background-color: var(--red); }
         
-        .skeleton-list .skeleton-item {
-            height: 70px;
-            background: var(--bg-sidebar);
-            border-radius: 8px;
-            padding: 16px 20px;
+        .user-card-body { padding: 16px; }
+        .user-card-body p {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        .user-card-body p strong { color: var(--text-dark); }
+        
+        /* V23: Стили для кнопок в футере карточки оператора */
+        .user-card-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Позволяет кнопкам переноситься */
         }
-        .skeleton-list .skeleton-item div { border-radius: 4px; }
-        .skeleton-list .skeleton-item-info { height: 30px; width: 40%; }
-        .skeleton-list .skeleton-item-actions { height: 30px; width: 20%; }
-
-        /* --- Модальное Окно --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            animation: fadeIn 0.3s forwards;
-            display: grid;
-            place-items: center;
-            overflow-y: auto;
-            padding: 20px;
+        .user-card-footer .btn-primary {
+            flex-grow: 1; /* Кнопки занимают все доступное место */
+            min-width: 120px; /* Минимальная ширина кнопки */
+            font-size: 14px;
+            padding: 10px 15px;
         }
-        .modal-content {
-            background: var(--bg-sidebar);
-            padding: 24px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            z-index: 1001;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.95);
-            opacity: 0;
-            animation: zoomInModal 0.3s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28);
-        }
-        .modal-header {
-            display: flex; justify-content: space-between;
-            align-items: center; border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px; margin-bottom: 20px;
-        }
-        .modal-header h3 { font-size: 22px; color: var(--secondary-color); }
-        .modal-close-btn {
-            background: none; border: none; cursor: pointer;
-            color: var(--text-light); padding: 4px;
-            border-radius: 50%;
-        }
-        .modal-close-btn:hover { background-color: var(--bg-main); }
-        .modal-body .template-form { margin-bottom: 0; box-shadow: none; padding: 0; }
+        
+        /* ... Стили V22 (Модалки, Адаптивность) ... */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; display: grid; place-items: center; overflow-y: auto; padding: 20px; animation: fadeIn 0.3s forwards; }
+        .modal-content { background: var(--bg-sidebar); padding: 24px 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px; z-index: 1001; max-height: 90vh; overflow-y: auto; transform: scale(0.95); opacity: 0; animation: zoomInModal 0.3s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 22px; color: var(--primary-color); }
+        .modal-close-btn { background: none; border: none; cursor: pointer; color: var(--text-light); padding: 4px; border-radius: 50%; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes zoomInModal {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        /* --- Toast --- */
-        #toast-container {
-            position: fixed; top: 20px; right: 20px;
-            z-index: 2000; display: flex;
-            flex-direction: column; gap: 10px;
-        }
-        .toast {
-            padding: 15px 20px; border-radius: 8px;
-            box-shadow: var(--shadow-medium); color: var(--white);
-            font-weight: 500; opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
-        }
+        @keyframes zoomInModal { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 15px 20px; border-radius: 8px; box-shadow: var(--shadow-medium); color: var(--white); font-weight: 500; opacity: 0; transform: translateX(100%); transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1); }
         .toast.show { opacity: 1; transform: translateX(0); }
-        .toast.success { background-color: var(--primary-color); }
-        .toast.error { background-color: var(--red); }
-        .toast.info { background-color: #3498db; }
-
-        /* --- Адаптивность --- */
+        .toast.success { background-color: var(--secondary-color); } .toast.error { background-color: var(--red); } .toast.info { background-color: var(--blue); }
+        
         @media (max-width: 900px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                grid-template-areas: "header" "content";
-            }
-            .app-sidebar {
-                position: fixed; top: 0; left: 0;
-                height: 100vh; width: var(--sidebar-width);
-                z-index: 1001; transform: translateX(-100%);
-                box-shadow: var(--shadow-medium);
-                border-right: 1px solid var(--border-color);
-            }
+            .app-container { grid-template-columns: 1fr; grid-template-areas: "header" "content"; }
+            .app-sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-width); z-index: 1001; transform: translateX(-100%); }
             .app-sidebar.visible { transform: translateX(0); }
-            .sidebar-overlay {
-                position: fixed; top: 0; left: 0;
-                width: 100%; height: 100%;
-                background: rgba(0,0,0,0.4);
-                z-index: 1000;
-            }
+            .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; }
             .hamburger-btn { display: block; z-index: 1002; }
-            .app-header { padding: 0 20px; }
-            .app-content, .content { padding: 20px; }
-            .content-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+            .app-header { 
+                padding: 10px 20px; 
+                flex-wrap: wrap; 
+                height: auto;
             }
-            .content-header .search-bar { max-width: none; }
-            .user-item { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .user-item-actions { width: 100%; }
+            .app-header .header-right {
+                margin-left: auto;
+            }
+            .app-header .search-bar {
+                order: 3;
+                width: 100%; 
+                max-width: none; 
+                margin-top: 10px;
+            }
+            .app-content, .content { padding: 20px; }
+            .content-header { flex-direction: column; align-items: stretch; }
+            .filter-bar { flex-direction: column; }
         }
     </style>
 </head>
 <body>
+
+    <div id="page-loader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+    </div>
     
     <div id="toast-container"></div>
-
-    <div class="app-container">
+    
+    <div class="app-container" id="app-container">
         <header class="app-header">
             <div class="header-left">
-                <button class="hamburger-btn" id="hamburger-btn">
-                    <i data-feather="menu"></i>
-                </button>
+                <button class="hamburger-btn" id="hamburger-btn"><i data-feather="menu"></i></button>
                 <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon Logo" class="logo-small">
-                <h1 id="page-title">Шаблоны</h1> </div>
+                <h1 id="page-title">Шаблоны</h1>
+            </div>
+
+            <div class="search-bar">
+                <i data-feather="search" class="icon"></i>
+                <input type="search" id="title-search-input" placeholder="Поиск по шаблонам...">
+            </div>
+
             <div class="header-right">
-                <div class="theme-switcher" id="theme-switcher" title="Переключить тему">
-                    <i data-feather="sun"></i>
-                </div>
-                <div class="user-info">
-                    <span id="admin-user-email">Загрузка...</span>
-                </div>
+                <div class="theme-switcher" id="theme-switcher" title="Переключить тему"><i data-feather="sun"></i></div>
+                <div class="user-info"><span id="admin-user-email">...</span></div>
                 <button id="admin-logout" class="btn-secondary">Выйти</button>
             </div>
         </header>
 
         <aside class="app-sidebar" id="app-sidebar">
             <nav>
-                <a href="#" class="nav-link active" data-target="templates-page">
-                    <i data-feather="grid" class="icon"></i> Шаблоны
-                </a>
-                <a href="#" class="nav-link" data-target="operators-page">
-                    <i data-feather="users" class="icon"></i> Операторы
-                </a>
+                <a href="#" class="nav-link active" data-target="templates-page"><i data-feather="grid" class="icon"></i> Шаблоны</a>
+                <a href="#" class="nav-link" data-target="favorites-page"><i data-feather="star" class="icon"></i> Избранное</a>
+                <a href="#" class="nav-link" data-target="pending-page"><i data-feather="clock" class="icon"></i> Заявки</a>
+                <a href="#" class="nav-link" data-target="operators-page"><i data-feather="users" class="icon"></i> Операторы</a>
+                 <a href="admink.html" class="nav-link active" data-target="templates-page"><i data-feather="grid" class="icon"></i>Admin-Bisoz</a>
+
             </nav>
         </aside>
 
         <main class="app-content">
-
+            
             <div id="templates-page" class="page-section active">
                 <div class="content-header">
-                    <h2>Управление шаблонами</h2>
-                    <button id="admin-open-add-modal-btn" class="btn-primary">
-                        <i data-feather="plus" class="icon"></i> Добавить шаблон
-                    </button>
+                    <div class="filter-bar" id="filter-bar">
+                        <div class="filter-group tag-filter">
+                            <button class="filter-btn" data-filter="tags" id="tags-filter-btn" disabled>
+                                <i data-feather="tag" class="icon"></i>
+                                <span class="filter-btn-text">Все метки</span>
+                            </button>
+                            <div class="filter-dropdown" data-filter-list="tags"></div>
+                        </div>
+                        <div class="filter-group author-filter">
+                            <button class="filter-btn" data-filter="authors" id="authors-filter-btn" disabled>
+                                <i data-feather="user" class="icon"></i>
+                                <span class="filter-btn-text">Все операторы</span>
+                            </button>
+                            <div class="filter-dropdown" data-filter-list="authors"></div>
+                        </div>
+                    </div>
+                    <button id="open-add-modal-btn" class="btn-primary"><i data-feather="plus" class="icon"></i> Добавить</button>
                 </div>
                 
                 <div class="template-grid" id="template-skeleton-loader">
-                    <div class="skeleton-card">
-                        <div class="skeleton-header"><div class="shimmer-bg"></div></div>
-                        <div class="skeleton-tabs"></div>
-                        <div class="skeleton-body"><div class="shimmer-bg"></div><div class="shimmer-bg"></div></div>
-                        <div class="skeleton-footer"></div>
-                    </div>
+                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
+                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
+                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
                 </div>
-                
-                <div class="template-grid" id="admin-template-list" style="display: none;">
-                    </div>
+                <div class="template-grid" id="admin-template-list" style="display: none;"></div>
+            </div>
+            
+            <div id="favorites-page" class="page-section">
+                <div class="content-header">
+                    <h2>Избранные шаблоны</h2>
+                </div>
+                <div class="template-grid" id="favorites-skeleton-loader">
+                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
+                </div>
+                <div class="template-grid" id="favorites-template-list" style="display: none;"></div>
             </div>
 
+            <div id="pending-page" class="page-section">
+                <div class="content-header">
+                    <h2>Заявки на регистрацию</h2>
+                </div>
+                <div class="user-list-grid" id="pending-list">
+                    </div>
+            </div>
+            
             <div id="operators-page" class="page-section">
                 <div class="content-header">
-                    <h2>Управление операторами</h2>
+                    <h2>Все операторы</h2>
                 </div>
-                
-                <div class="form-container-card">
-                    <h3>Создать нового оператора</h3>
-                    <form id="add-operator-form">
-                        <div class="form-group">
-                            <label for="add-name">ФИО оператора</label>
-                            <input type="text" id="add-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-email">Почта (Email) для входа</label>
-                            <input type="email" id="add-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-password">Пароль</label>
-                            <input type="password" id="add-password" required>
-                        </div>
-                        <button type="submit" class="btn-primary" style="width: 100%;">Создать оператора</button>
-                        </form>
-                </div>
-                
-                <h3>Список операторов</h3>
-                
-                <div class="skeleton-list" id="operator-skeleton-loader">
-                    <div class="skeleton-item"><div class="skeleton-item-info shimmer-bg"></div><div class="skeleton-item-actions shimmer-bg"></div></div>
-                    <div class="skeleton-item"><div class="skeleton-item-info shimmer-bg"></div><div class="skeleton-item-actions shimmer-bg"></div></div>
-                </div>
-                
-                <div id="operator-list" class="user-list" style="display: none;">
+                <div class="user-list-grid" id="operators-list">
                     </div>
             </div>
-
+            
         </main>
     </div>
     
     <div class="sidebar-overlay" id="sidebar-overlay" style="display: none;"></div>
-
-
+    
     <div id="template-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title">Добавить шаблон</h3>
-                <button id="close-template-modal-btn" class="modal-close-btn">
-                    <i data-feather="x"></i>
-                </button>
+                <button id="close-modal-btn" class="modal-close-btn"><i data-feather="x"></i></button>
             </div>
             <div class="modal-body">
                 <form id="admin-template-form" style="box-shadow: none; padding: 0;">
                     <input type="hidden" id="admin-template-id">
-                    <div class="form-group">
-                        <label for="admin-template-title">Название</label>
-                        <input type="text" id="admin-template-title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-template-tj">Текст (Таджикский)</label>
-                        <textarea id="admin-template-tj" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-template-ru">Текст (Русский)</label>
-                        <textarea id="admin-template-ru" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-template-tags">Метки (через запятую)</label>
-                        <input type="text" id="admin-template-tags" placeholder="интернет, претензия, приветствие">
-                    </div>
+                    <div class="form-group"><label for="admin-template-title">Название (Необязательно)</label><input type="text" id="admin-template-title"></div>
+                    <div class="form-group"><label for="admin-template-tj">Текст (Таджикский)</label><textarea id="admin-template-tj" rows="3" required></textarea></div>
+                    <div class="form-group"><label for="admin-template-ru">Текст (Русский)</label><textarea id="admin-template-ru" rows="3" required></textarea></div>
+                    <div class="form-group"><label for="admin-template-tags">Метки (через запятую)</label><input type="text" id="admin-template-tags" placeholder="интернет, претензия, приветствие"></div>
                     <button type="submit" class="btn-primary" style="width: 100%;">Сохранить</button>
                 </form>
             </div>
         </div>
     </div>
     
-    <div id="operator-edit-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="operator-modal-title">Редактировать оператора</h3>
-                <button id="close-operator-modal-btn" class="modal-close-btn">
-                    <i data-feather="x"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="operator-edit-form">
-                    <input type="hidden" id="operator-edit-uid">
-                    <div class="form-group">
-                        <label for="operator-edit-name">ФИО</label>
-                        <input type="text" id="operator-edit-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="operator-edit-email">Email (только чтение)</label>
-                        <input type="email" id="operator-edit-email" readonly style="background: var(--bg-main);">
-                    </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-bottom: 15px;">Сохранить ФИО</button>
-                </form>
-                <hr>
-                <h4>Сброс пароля</h4>
-                <p class="info-message" style="font-size: 13px; margin-top: 0; margin-bottom: 15px;">
-                    Отправить оператору ссылку для сброса на его Email.
-                </p>
-                <button id="operator-password-reset-btn" class="btn-secondary" style="width: 100%;">Отправить ссылку</button>
-                </div>
-        </div>
-    </div>
-    
     <div id="rejection-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="rejection-modal-title">Отклонить заявку</h3>
-                <button id="close-rejection-modal-btn" class="modal-close-btn">
-                    <i data-feather="x"></i>
-                </button>
+                <h3 id="rejection-modal-title">Причина отклонения</h3>
+                <button id="close-rejection-modal-btn" class="modal-close-btn"><i data-feather="x"></i></button>
             </div>
             <div class="modal-body">
                 <form id="rejection-form">
-                    <input type="hidden" id="rejection-uid">
+                    <input type="hidden" id="rejection-user-id">
                     <div class="form-group">
-                        <label for="rejection-reason">Причина отклонения</label>
-                        <textarea id="rejection-reason" rows="3" required placeholder="Укажите причину, которую увидит оператор..."></textarea>
+                        <label for="rejection-reason-input">Укажите причину</label>
+                        <textarea id="rejection-reason-input" rows="4" placeholder="Например: ФИО указано неверно." required></textarea>
                     </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; background-color: var(--red);">Отклонить заявку</button>
+                    <button type="submit" class="btn-primary btn-danger" style="width: 100%;">Отклонить заявку</button>
                 </form>
             </div>
         </div>
     </div>
-
+    
+    <div id="user-edit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Изменить данные оператора</h3>
+                <button id="close-user-edit-modal-btn" class="modal-close-btn"><i data-feather="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="user-edit-form">
+                    <input type="hidden" id="user-edit-uid">
+                    <div class="form-group">
+                        <label for="user-edit-name">ФИО Оператора</label>
+                        <input type="text" id="user-edit-name" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-info" style="width: 100%;">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <script>
-      const firebaseConfig = {
-    apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
-    authDomain: "bisoz-682b8.firebaseapp.com",
-    databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "bisoz-682b8",
-    storageBucket: "bisoz-682b8.firebasestorage.app",
-    messagingSenderId: "90545419911",
-    appId: "1:90545419911:web:217b288ff83fa1e204ea22",
-    measurementId: "G-WYNYL1RCX2"
-  };
-      
-      firebase.initializeApp(firebaseConfig);
-      try {
-        firebase.initializeApp(firebaseConfig, "secondaryAdminApp");
-      } catch (error) {
-        if (error.code !== 'app/duplicate-app') { console.error(error); }
-      }
+       const firebaseConfig = {
+         apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+         authDomain: "bisoz-682b8.firebaseapp.com",
+         databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+         projectId: "bisoz-682b8",
+         storageBucket: "bisoz-682b8.firebasestorage.app",
+         messagingSenderId: "90545419911",
+         appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+         measurementId: "G-WYNYL1RCX2"
+       };
     </script>
-    <script src="admin.js"></script>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    
+        // --- 1. ИНИЦИАЛИЗАЦИЯ И ЛОАДЕР ---
+        const loader = document.getElementById("page-loader");
+        const appContainer = document.getElementById("app-container");
+        if (loader && appContainer) {
+            appContainer.classList.add("loaded");
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 300);
+        } else {
+            alert("Критическая ошибка: не найдены #page-loader или #app-container.");
+            return;
+        }
+
+        if (typeof firebaseConfig === 'undefined') {
+            alert("ОШИБКА (admin.js): 'firebaseConfig' не найден!");
+            return;
+        }
+        
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+        } catch (e) {
+             alert("ОШИБКА: " + e.message);
+             console.error("Ошибка инициализации Firebase:", e);
+             return;
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.database();
+        
+        // Глобальные переменные
+        let currentUser = null; 
+        let allTemplates = {};
+        let allUsers = {};
+        let currentFilters = { title: '', tag: 'all', author: 'all' };
+        let allAvailableTags = new Set();
+        let currentGlobalLang = 'tj';
+
+        // ================================================
+        // ====      ЛОГИКА ВХОДА АДМИНИСТРАТОРА       ====
+        // ================================================
+        
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                db.ref('/users/' + user.uid).once('value', snapshot => {
+                    if (snapshot.exists() && snapshot.val().isAdmin) {
+                        currentUser = { uid: user.uid, email: user.email, ...snapshot.val() };
+                        try {
+                            initAdminPanel();
+                        } catch (e) {
+                            console.error("Критическая ошибка инициализации панели:", e);
+                            showToast("Критическая ошибка. Обновите страницу.", "error"); 
+                        }
+                    } else {
+                        showToast("Доступ запрещен. У вас нет прав администратора.", "error");
+                        auth.signOut();
+                        window.location.href = "login.html";
+                    }
+                }).catch(error => {
+                    console.error("Ошибка чтения данных:", error);
+                    showToast("Ошибка прав доступа к базе данных.", "error");
+                    auth.signOut();
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // ================================================
+        // ====  ИНИЦИАЛИЗАЦИЯ ПАНЕЛИ (V23)            ====
+        // ================================================
+        
+        function initAdminPanel() {
+            if (window.listenersInitialized) return;
+            
+            // Навигация и Хедер
+            const adminLogoutBtn = document.getElementById("admin-logout");
+            const hamburgerBtn = document.getElementById("hamburger-btn");
+            const sidebar = document.getElementById("app-sidebar");
+            const sidebarOverlay = document.getElementById("sidebar-overlay");
+            const navLinks = document.querySelectorAll(".nav-link");
+            const themeSwitcher = document.getElementById("theme-switcher");
+            const themeIcon = themeSwitcher.querySelector('i');
+            const titleSearchInput = document.getElementById("title-search-input");
+            
+            // Списки
+            const adminTemplateList = document.getElementById("admin-template-list");
+            const favoritesTemplateList = document.getElementById("favorites-template-list");
+            const pendingList = document.getElementById("pending-list");
+            const operatorsList = document.getElementById("operators-list");
+            
+            // Модалка (Шаблоны)
+            const openAddModalBtn = document.getElementById("open-add-modal-btn");
+            const modal = document.getElementById("template-modal");
+            const closeModalBtn = document.getElementById("close-modal-btn");
+            const adminTemplateForm = document.getElementById("admin-template-form");
+            
+            // Модалка (Отклонение)
+            const rejectionModal = document.getElementById("rejection-modal");
+            const closeRejectionModalBtn = document.getElementById("close-rejection-modal-btn");
+            const rejectionForm = document.getElementById("rejection-form");
+
+            // V23: Модалка (Изменение Оператора)
+            const userEditModal = document.getElementById("user-edit-modal");
+            const closeUserEditModalBtn = document.getElementById("close-user-edit-modal-btn");
+            const userEditForm = document.getElementById("user-edit-form");
+
+            document.getElementById("admin-user-email").textContent = currentUser.email;
+
+            // --- Слушатели ---
+            
+            themeSwitcher.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                setTeam(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+            setTeam(localStorage.getItem('theme') || 'light');
+            
+            hamburgerBtn.addEventListener("click", () => {
+                sidebar.classList.toggle("visible");
+                sidebarOverlay.style.display = sidebar.classList.contains("visible") ? "block" : "none";
+            });
+            sidebarOverlay.addEventListener("click", () => {
+                sidebar.classList.remove("visible");
+                sidebarOverlay.style.display = "none";
+            });
+            navLinks.forEach(link => {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    navigateToPage(link.getAttribute("data-target"));
+                });
+            });
+            
+            setupFilterListeners();
+            titleSearchInput.addEventListener("input", handleSearch);
+
+            listenForUsers();
+            listenForTemplates();
+
+            adminLogoutBtn.addEventListener("click", () => auth.signOut());
+            
+            // Слушатели модалок
+            adminTemplateForm.addEventListener("submit", handleAdminFormSubmit);
+            openAddModalBtn.addEventListener("click", () => openTemplateModal('add'));
+            closeModalBtn.addEventListener("click", closeTemplateModal);
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) closeTemplateModal();
+            });
+            
+            rejectionForm.addEventListener("submit", handleRejectionSubmit);
+            closeRejectionModalBtn.addEventListener("click", closeRejectionModal);
+            rejectionModal.addEventListener("click", (e) => {
+                if (e.target === rejectionModal) closeRejectionModal();
+            });
+            
+            // V23: Слушатели модалки оператора
+            userEditForm.addEventListener("submit", handleUserEditFormSubmit);
+            closeUserEditModalBtn.addEventListener("click", closeUserEditModal);
+            userEditModal.addEventListener("click", (e) => {
+                if (e.target === userEditModal) closeUserEditModal();
+            });
+            
+            // Слушатели кликов по карточкам
+            adminTemplateList.addEventListener("click", handleCardClick);
+            favoritesTemplateList.addEventListener("click", handleCardClick);
+            pendingList.addEventListener("click", handleUserCardClick);
+            operatorsList.addEventListener("click", handleUserCardClick);
+            
+            navigateToPage("templates-page");
+            window.listenersInitialized = true;
+        }
+        
+        function setTeam(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            document.querySelector('#theme-switcher i').setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
+            feather.replace();
+        }
+
+        // ================================================
+        // ====   V22: "Супер-поиск" и Навигация       ====
+        // ================================================
+        
+        function navigateToPage(targetId) {
+            document.querySelectorAll(".page-section").forEach(section => {
+                section.classList.toggle("active", section.id === targetId);
+            });
+            const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+            if (activeLink) {
+                document.getElementById("page-title").textContent = activeLink.textContent.trim();
+                document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+                activeLink.classList.add("active");
+            }
+            
+            const headerSearch = document.querySelector('.app-header .search-bar');
+            const filterBar = document.getElementById('filter-bar');
+            const searchInput = document.getElementById('title-search-input');
+            
+            if (targetId === 'templates-page' || targetId === 'favorites-page') {
+                if(headerSearch) headerSearch.style.visibility = 'visible';
+                if(filterBar) filterBar.style.display = 'flex';
+                searchInput.placeholder = "Поиск по шаблонам...";
+                
+            } else if (targetId === 'operators-page') {
+                if(headerSearch) headerSearch.style.visibility = 'visible';
+                if(filterBar) filterBar.style.display = 'none';
+                searchInput.placeholder = "Поиск по операторам...";
+                
+            } else if (targetId === 'pending-page') {
+                if(headerSearch) headerSearch.style.visibility = 'hidden';
+                if(filterBar) filterBar.style.display = 'none';
+            }
+            
+            if (Object.keys(allTemplates).length > 0 && Object.keys(allUsers).length > 0) {
+                if(targetId === 'templates-page' || targetId === 'favorites-page') { renderAllLists(); }
+                if(targetId === 'operators-page') { renderOperators(); }
+            }
+            
+            if (window.innerWidth <= 900) {
+                document.getElementById("app-sidebar").classList.remove("visible");
+                document.getElementById("sidebar-overlay").style.display = "none";
+            }
+        }
+        
+        function handleSearch(e) {
+            currentFilters.title = e.target.value.toLowerCase();
+            const activePageId = document.querySelector('.page-section.active').id;
+            
+            if (activePageId === 'templates-page' || activePageId === 'favorites-page') {
+                renderAllLists();
+            } else if (activePageId === 'operators-page') {
+                renderOperators();
+            }
+        }
+
+        // ================================================
+        // ====   V20: Логика загрузки и Фильтров      ====
+        // ================================================
+
+        function listenForUsers() {
+            db.ref('users').on('value', snapshot => {
+                allUsers = snapshot.val() || {};
+                populateAuthorFilter();
+                renderPendingUsers();
+                renderOperators();
+                renderAllLists();
+            }, err => { showToast("Ошибка загрузки пользователей.", "error"); console.error(err); });
+        }
+        
+        function listenForTemplates() {
+            db.ref('templates').on('value', snapshot => {
+                allTemplates = snapshot.val() || {};
+                allAvailableTags.clear();
+                for (const id in allTemplates) {
+                    if (allTemplates[id].tags) {
+                        allTemplates[id].tags.forEach(tag => allAvailableTags.add(tag));
+                    }
+                }
+                populateTagFilter();
+                renderAllLists();
+            }, err => { 
+                showToast("Ошибка загрузки шаблонов.", "error"); console.error(err);
+                document.getElementById("template-skeleton-loader").style.display = "none";
+                document.getElementById("favorites-skeleton-loader").style.display = "none";
+            });
+        }
+        
+        function setupFilterListeners() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const dropdowns = document.querySelectorAll('.filter-dropdown');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filterName = btn.dataset.filter;
+                    const dropdown = document.querySelector(`.filter-dropdown[data-filter-list="${filterName}"]`);
+                    dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
+                    dropdown.classList.toggle('active');
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.filter-group')) {
+                    dropdowns.forEach(d => d.classList.remove('active'));
+                }
+            });
+            document.querySelector('.filter-dropdown[data-filter-list="tags"]').addEventListener('click', (e) => {
+                const item = e.target.closest('.filter-dropdown-item');
+                if (!item) return;
+                currentFilters.tag = item.dataset.value;
+                updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="tags"]'), item.textContent, currentFilters.tag !== 'all');
+                renderAllLists();
+                document.querySelector('.filter-dropdown[data-filter-list="tags"]').classList.remove('active');
+            });
+            document.querySelector('.filter-dropdown[data-filter-list="authors"]').addEventListener('click', (e) => {
+                const item = e.target.closest('.filter-dropdown-item');
+                if (!item) return;
+                currentFilters.author = item.dataset.value;
+                updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="authors"]'), item.textContent, currentFilters.author !== 'all');
+                renderAllLists();
+                document.querySelector('.filter-dropdown[data-filter-list="authors"]').classList.remove('active');
+            });
+        }
+        
+        function updateFilterButtonUI(btnElement, text, isActive) {
+            btnElement.querySelector('.filter-btn-text').textContent = text;
+            btnElement.classList.toggle('active-filter', isActive);
+        }
+        
+        function populateTagFilter() {
+            const dropdownTagList = document.querySelector('.filter-dropdown[data-filter-list="tags"]');
+            dropdownTagList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.tag === 'all' ? 'active' : ''}" data-value="all">Все метки</div>`;
+            allAvailableTags.forEach(tag => {
+                dropdownTagList.insertAdjacentHTML('beforeend', `
+                    <div class="filter-dropdown-item ${currentFilters.tag === tag ? 'active' : ''}" data-value="${tag}">
+                        <span class="tag-color-preview ${getTagColor(tag)}"></span> ${tag}
+                    </div>
+                `);
+            });
+            const tagsFilterBtn = document.getElementById("tags-filter-btn");
+            if(tagsFilterBtn) tagsFilterBtn.disabled = false;
+        }
+        
+        function populateAuthorFilter() {
+            if (Object.keys(allUsers).length === 0) return;
+            const dropdownAuthorList = document.querySelector('.filter-dropdown[data-filter-list="authors"]');
+            dropdownAuthorList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.author === 'all' ? 'active' : ''}" data-value="all">Все операторы</div>`;
+            for (const uid in allUsers) {
+                const user = allUsers[uid];
+                if (user && user.name && !user.isAdmin) {
+                    dropdownAuthorList.insertAdjacentHTML('beforeend', `
+                        <div class="filter-dropdown-item ${currentFilters.author === uid ? 'active' : ''}" data-value="${uid}">${user.name}</div>
+                    `);
+                }
+            }
+            const authorsFilterBtn = document.getElementById("authors-filter-btn");
+            if(authorsFilterBtn) authorsFilterBtn.disabled = false;
+        }
+
+        // ================================================
+        // ====   V22: Рендер Шаблонов (с V20, V21)    ====
+        // ================================================
+        
+        function renderAllLists() {
+            if (Object.keys(allTemplates).length === 0 || Object.keys(allUsers).length === 0) {
+                return;
+            }
+            renderTemplates(document.getElementById("admin-template-list"), 'all');
+            renderTemplates(document.getElementById("favorites-template-list"), 'favorites');
+        }
+
+        function getTagColor(tag) {
+            let hash = 0;
+            for (let i = 0; i < tag.length; i++) { hash = tag.charCodeAt(i) + ((hash << 5) - hash); }
+            return `tag-color-${Math.abs(hash % 6)}`;
+        }
+        
+        function checkCardOverflow(card) {
+            const body = card.querySelector('.card-body');
+            const activeContent = card.querySelector('.lang-content.active');
+            if (!body || !activeContent) return;
+            const expander = body.querySelector('.card-body-expander');
+            
+            const isExpanded = body.classList.contains('expanded');
+            expander.classList.remove('visible');
+            body.classList.remove('is-truncated'); 
+
+            if (activeContent.scrollHeight > 120) {
+                expander.classList.add('visible');
+                if (isExpanded) {
+                    expander.textContent = "Свернуть"; 
+                    body.classList.remove('is-truncated'); 
+                } else {
+                    expander.textContent = "Развернуть";
+                    body.classList.add('is-truncated');
+                }
+            } else {
+                expander.classList.remove('visible');
+                body.classList.remove('is-truncated');
+                body.classList.remove('expanded'); 
+            }
+        }
+        
+        function updateCardLanguage(cardElement, newLang) {
+            if (!cardElement) return;
+            const otherLang = (newLang === 'ru') ? 'tj' : 'ru';
+            const contentNew = cardElement.querySelector(`.lang-content[data-content="${newLang}"]`);
+            const contentOld = cardElement.querySelector(`.lang-content[data-content="${otherLang}"]`);
+            if (contentNew) contentNew.classList.add('active');
+            if (contentOld) contentOld.classList.remove('active');
+            const toggleBtn = cardElement.querySelector('.card-lang-toggle');
+            if (toggleBtn) {
+                toggleBtn.dataset.lang = otherLang;
+                toggleBtn.textContent = otherLang.toUpperCase();
+            }
+            checkCardOverflow(cardElement); 
+        }
+
+        function renderTemplates(targetListElement, filterMode) {
+            if (!currentUser || !allUsers) return; 
+
+            let skeletonLoader;
+            if (targetListElement.id === 'admin-template-list') {
+                skeletonLoader = document.getElementById("template-skeleton-loader");
+            } else if (targetListElement.id === 'favorites-template-list') {
+                skeletonLoader = document.getElementById("favorites-skeleton-loader");
+            }
+
+            if (skeletonLoader) skeletonLoader.style.display = "none";
+            targetListElement.style.display = "grid";
+            targetListElement.innerHTML = "";
+            
+            let filteredTemplates = [];
+            for (const id in allTemplates) {
+                filteredTemplates.push({ id: id, ...allTemplates[id] });
+            }
+            
+            if (filterMode === 'favorites') {
+                filteredTemplates = filteredTemplates.filter(t => t.favorites && t.favorites[currentUser.uid]);
+            }
+            
+            if (currentFilters.title) {
+                const searchTerm = currentFilters.title;
+                filteredTemplates = filteredTemplates.filter(t => {
+                    const titleMatch = (t.title || '').toLowerCase().includes(searchTerm);
+                    const textRuMatch = (t.text_ru || '').toLowerCase().includes(searchTerm);
+                    const textTjMatch = (t.text_tj || '').toLowerCase().includes(searchTerm);
+                    const tagsMatch = t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                    const author = allUsers[t.authorId];
+                    const authorName = author ? author.name.toLowerCase() : "";
+                    const authorMatch = authorName.includes(searchTerm);
+                    return titleMatch || textRuMatch || textTjMatch || tagsMatch || authorMatch;
+                });
+            }
+            
+            if (currentFilters.tag !== 'all') {
+                filteredTemplates = filteredTemplates.filter(t => t.tags && t.tags.includes(currentFilters.tag));
+            }
+            if (currentFilters.author !== 'all') {
+                filteredTemplates = filteredTemplates.filter(t => t.authorId === currentFilters.author);
+            }
+            
+            filteredTemplates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (filteredTemplates.length === 0) {
+                let message;
+                if (filterMode === 'favorites') {
+                    message = (currentFilters.title || currentFilters.tag !== 'all' || currentFilters.author !== 'all')
+                        ? "В избранном нет совпадений по вашему запросу."
+                        : "У вас пока нет избранных шаблонов.";
+                } else {
+                    message = (currentFilters.title || currentFilters.tag !== 'all' || currentFilters.author !== 'all')
+                        ? "Шаблоны не найдены. Попробуйте изменить поиск или фильтры."
+                        : "Шаблоны пока не добавлены.";
+                }
+                targetListElement.innerHTML = `<p>${message}</p>`;
+                targetListElement.style.display = "block";
+                return;
+            }
+            
+            targetListElement.style.display = "grid";
+
+            filteredTemplates.forEach(template => {
+                const author = allUsers[template.authorId];
+                const authorName = author ? author.name : "Неизвестно";
+                const isFavorite = template.favorites && template.favorites[currentUser.uid];
+                const tagsHtml = (template.tags || []).map(tag => `<span class="tag ${getTagColor(tag)}">${tag}</span>`).join("");
+                const adminButtons = `
+                    <button class="card-action-btn" data-action="edit" title="Редактировать"><i data-feather="edit-2" class="icon-small"></i></button>
+                    <button class="card-action-btn" data-action="delete" title="Удалить"><i data-feather="trash-2" class="icon-small"></i></button>
+                `;
+                const activeLang = currentGlobalLang;
+                const inactiveLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
+
+                const card = document.createElement("div");
+                card.className = "template-card";
+                card.setAttribute("data-id", template.id);
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h4>${template.title}</h4>
+                        <button class="card-lang-toggle" data-action="toggle-lang" data-lang="${inactiveLang}" title="Сменить язык">${inactiveLang.toUpperCase()}</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="lang-content ${activeLang === 'tj' ? 'active' : ''}" data-content="tj">${template.text_tj}</div>
+                        <div class="lang-content ${activeLang === 'ru' ? 'active' : ''}" data-content="ru">${template.text_ru}</div>
+                        <div class="card-body-expander" data-action="expand">Развернуть</div>
+                    </div>
+                    <div class="card-footer">
+                        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+                        <div class="card-meta">
+                            <div class="card-author" title="Добавил: ${authorName}">
+                                <i data-feather="user" class="icon-small"></i>
+                            </div>
+                            <div class="card-footer-actions">
+                                <span class="card-favorite ${isFavorite ? 'favorited' : ''}" data-action="favorite" title="В избранное">
+                                    <i data-feather="star" class="icon-small"></i>
+                                </span>
+                                ${adminButtons}
+                                <button class="card-action-btn" data-action="copy" title="Копировать">
+                                    <i data-feather="copy" class="icon-small"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                targetListElement.appendChild(card);
+                checkCardOverflow(card);
+            });
+            feather.replace();
+        }
+        
+        // ================================================
+        // ====   V23: Рендер Операторов (Обновлено)   ====
+        // ================================================
+
+        function renderPendingUsers() {
+            const listEl = document.getElementById("pending-list");
+            listEl.innerHTML = "";
+            let hasPending = false;
+            
+            const userEntries = Object.entries(allUsers).sort(([, userA], [, userB]) => {
+                if (userA.approved === false && userB.approved !== false) return -1;
+                if (userA.approved !== false && userB.approved === false) return 1;
+                return 0;
+            });
+
+            for (const [uid, user] of userEntries) {
+                if (user.isAdmin || (user.approved !== false && user.approved !== 'rejected')) continue;
+                
+                hasPending = true;
+                let statusText, statusClass;
+                let primaryButtons;
+                
+                if (user.approved === false) {
+                    statusText = "Ожидает"; statusClass = "pending";
+                    primaryButtons = `
+                        <button class="btn-primary btn-success" data-action="approve">Одобрить</button>
+                        <button class="btn-primary btn-warning" data-action="reject">Отклонить</button>
+                    `;
+                } else {
+                    statusText = "Отклонен"; statusClass = "rejected";
+                    primaryButtons = `
+                        <button class="btn-primary btn-success" data-action="approve">Одобрить повторно</button>
+                    `;
+                }
+                
+                const card = document.createElement("div");
+                card.className = "user-list-card";
+                card.dataset.uid = uid;
+                
+                card.innerHTML = `
+                    <div class="user-card-header">
+                        <h4>${user.name || 'Имя не указано'}</h4>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="user-card-body">
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        ${user.approved === 'rejected' ? `<p><strong>Причина:</strong> ${user.rejectionReason || 'Не указана'}</p>` : ''}
+                    </div>
+                    <div class="user-card-footer">
+                        ${primaryButtons}
+                        <button class="btn-primary btn-info" data-action="edit">Изменить</button>
+                        <button class="btn-primary btn-danger" data-action="delete">Удалить</button>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            }
+            if (!hasPending) {
+                listEl.innerHTML = "<p>Нет новых заявок.</p>";
+            }
+        }
+        
+        function renderOperators() {
+            const listEl = document.getElementById("operators-list");
+            listEl.innerHTML = "";
+            let hasOperators = false;
+            const searchTerm = currentFilters.title;
+            
+            for (const uid in allUsers) {
+                const user = allUsers[uid];
+                if (user.isAdmin || user.approved !== true) continue;
+                
+                if (searchTerm) {
+                    const nameMatch = (user.name || '').toLowerCase().includes(searchTerm);
+                    const emailMatch = (user.email || '').toLowerCase().includes(searchTerm);
+                    if (!nameMatch && !emailMatch) continue;
+                }
+                
+                hasOperators = true;
+                const card = document.createElement("div");
+                card.className = "user-list-card";
+                card.dataset.uid = uid;
+                
+                card.innerHTML = `
+                    <div class="user-card-header">
+                        <h4>${user.name}</h4>
+                        <span class="status-badge approved">Одобрен</span>
+                    </div>
+                    <div class="user-card-body">
+                        <p><strong>Email:</strong> ${user.email}</p>
+                    </div>
+                    <div class="user-card-footer">
+                        <button class="btn-primary btn-info" data-action="edit">Изменить</button>
+                        <button class="btn-primary btn-warning" data-action="reject">Отклонить</button>
+                        <button class="btn-primary btn-danger" data-action="delete">Удалить</button>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            }
+            if (!hasOperators && !searchTerm) {
+                listEl.innerHTML = "<p>Нет одобренных операторов.</p>";
+            } else if (!hasOperators && searchTerm) {
+                 listEl.innerHTML = "<p>Операторы не найдены по вашему запросу.</p>";
+            }
+        }
+
+        // ================================================
+        // ====   V22: Логика кликов (Шаблоны)         ====
+        // ================================================
+        
+        function handleCardClick(e) {
+            const card = e.target.closest(".template-card");
+            if (!card) return;
+            const templateId = card.getAttribute("data-id");
+            if (!templateId) return;
+            const template = allTemplates[templateId];
+            if (!template) return;
+            
+            const actionTarget = e.target.closest("[data-action]");
+            if (!actionTarget) return;
+            
+            const action = actionTarget.dataset.action;
+
+            switch (action) {
+                case 'expand': {
+                    const parentGrid = card.closest('.template-grid');
+                    if (!parentGrid) break;
+                    const clickedCardOffsetTop = card.offsetTop;
+                    const bodyOfClickedCard = card.querySelector('.card-body');
+                    const shouldExpand = !bodyOfClickedCard.classList.contains('expanded');
+                    const allCardsInGrid = parentGrid.querySelectorAll('.template-card');
+                    allCardsInGrid.forEach(otherCard => {
+                        if (otherCard.offsetTop === clickedCardOffsetTop) {
+                            const body = otherCard.querySelector('.card-body');
+                            const expander = otherCard.querySelector('.card-body-expander');
+                            if (body) {
+                                body.classList.toggle('expanded', shouldExpand);
+                                body.classList.toggle('is-truncated', !shouldExpand);
+                            }
+                            if (expander && expander.classList.contains('visible')) {
+                                expander.textContent = shouldExpand ? "Свернуть" : "Развернуть";
+                            }
+                        }
+                    });
+                    break;
+                }
+                case 'toggle-lang': {
+                    currentGlobalLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
+                    const allGrids = document.querySelectorAll('.template-grid');
+                    allGrids.forEach(grid => {
+                        grid.querySelectorAll('.template-card').forEach(cardElement => {
+                            updateCardLanguage(cardElement, currentGlobalLang);
+                        });
+                    });
+                    break;
+                }
+                case 'edit': {
+                    openTemplateModal('edit', templateId, template);
+                    break;
+                }
+                case 'delete': {
+                    if (confirm(`Удалить шаблон "${template.title}"?`)) { 
+                        db.ref('templates/' + templateId).remove().then(() => showToast("Шаблон удален", "info")); 
+                    }
+                    break;
+                }
+                case 'favorite': {
+                    const isFavorite = template.favorites && template.favorites[currentUser.uid];
+                    db.ref(`templates/${templateId}/favorites/${currentUser.uid}`).set(isFavorite ? null : true);
+                    break;
+                }
+                case 'copy': {
+                    const activeLangContent = card.querySelector(".lang-content.active").textContent;
+                    navigator.clipboard.writeText(activeLangContent).then(() => {
+                        actionTarget.style.color = "var(--primary-color)";
+                        setTimeout(() => {
+                            actionTarget.style.color = "var(--text-light)";
+                        }, 1500);
+                    });
+                    break;
+                }
+            }
+        }
+        
+        function handleAdminFormSubmit(e) {
+            e.preventDefault();
+            let title = document.getElementById("admin-template-title").value.trim();
+            const textTj = document.getElementById("admin-template-tj").value.trim();
+            if (!title) { title = textTj.substring(0, 40) + (textTj.length > 40 ? "..." : ""); }
+            if (!title) { title = "Без названия"; }
+            
+            const templateData = {
+                title: title,
+                text_ru: document.getElementById("admin-template-ru").value,
+                text_tj: textTj,
+                tags: document.getElementById("admin-template-tags").value.split(",").map(t => t.trim()).filter(t => t),
+            };
+            
+            const templateId = document.getElementById("admin-template-id").value;
+            let action;
+            if (templateId) {
+                action = db.ref('templates/' + templateId).update(templateData);
+            } else {
+                templateData.authorId = currentUser.uid; 
+                templateData.createdAt = new Date().toISOString();
+                action = db.ref('templates').push(templateData);
+            }
+
+            action.then(() => {
+                closeTemplateModal();
+                showToast(templateId ? "Шаблон обновлен" : "Шаблон добавлен", "success");
+            }).catch(err => showToast(`Ошибка: ${err.message}`, "error"));
+        }
+        
+        function openTemplateModal(mode, templateId = null, data = {}) {
+            const modal = document.getElementById("template-modal");
+            const modalTitle = modal.querySelector("#modal-title");
+            const templateIdInput = modal.querySelector("#admin-template-id");
+            const templateForm = document.getElementById("admin-template-form");
+            
+            if (mode === 'edit') {
+                modalTitle.textContent = "Изменить шаблон";
+                templateIdInput.value = templateId;
+                modal.querySelector("#admin-template-title").value = data.title || '';
+                modal.querySelector("#admin-template-ru").value = data.text_ru;
+                modal.querySelector("#admin-template-tj").value = data.text_tj;
+                modal.querySelector("#admin-template-tags").value = data.tags ? data.tags.join(", ") : '';
+            } else {
+                modalTitle.textContent = "Добавить шаблон";
+                templateForm.reset();
+                templateIdInput.value = "";
+            }
+            modal.style.display = "grid";
+            feather.replace(); 
+        }
+        function closeTemplateModal() { document.getElementById("template-modal").style.display = "none"; }
+        
+        // ================================================
+        // ====   V23: Логика кликов (Операторы)       ====
+        // ================================================
+        
+        function handleUserCardClick(e) {
+            const card = e.target.closest(".user-list-card");
+            if (!card) return;
+            const uid = card.dataset.uid;
+            if (!uid) return;
+            
+            const actionTarget = e.target.closest("[data-action]");
+            if (!actionTarget) return;
+            
+            const action = actionTarget.dataset.action;
+
+            if (action === 'approve') {
+                handleUserApproval(uid, true);
+            } else if (action === 'reject') {
+                openRejectionModal(uid);
+            } else if (action === 'edit') {
+                openUserEditModal(uid);
+            } else if (action === 'delete') {
+                handleUserDelete(uid);
+            }
+        }
+        
+        function handleUserApproval(uid, status, reason = null) {
+            db.ref('users/' + uid).update({
+                approved: status,
+                rejectionReason: reason
+            })
+            .then(() => {
+                const actionText = status === true ? "одобрен" : (status === 'rejected' ? "отклонен" : "возвращен на рассмотрение");
+                showToast(`Оператор ${actionText}.`, "success");
+                closeRejectionModal();
+            })
+            .catch(err => showToast(`Ошибка: ${err.message}`, "error"));
+        }
+        
+        // V23: Новая функция
+        function handleUserDelete(uid) {
+            if (uid === currentUser.uid) {
+                showToast("Вы не можете удалить свой собственный аккаунт.", "error");
+                return;
+            }
+            
+            const user = allUsers[uid];
+            if (!user) return;
+            
+            if (confirm(`Вы уверены, что хотите ПОЛНОСТЬЮ УДАЛИТЬ оператора "${user.name || user.email}"? \n\nЭто действие необратимо. \n(Его auth-аккаунт будет удален только через Firebase Console, но он потеряет доступ к панели).`)) {
+                db.ref('users/' + uid).remove()
+                    .then(() => {
+                        showToast("Оператор удален из базы данных.", "info");
+                        // Примечание: Это не удаляет Auth-запись, это можно сделать
+                        // только через Admin SDK (backend) или вручную в консоли.
+                        // Но пользователь все равно потеряет доступ.
+                    })
+                    .catch(err => showToast(`Ошибка удаления: ${err.message}`, "error"));
+            }
+        }
+        
+        // V23: Новые функции для модалки (Изменение)
+        function openUserEditModal(uid) {
+            const user = allUsers[uid];
+            if (!user) return;
+            document.getElementById("user-edit-uid").value = uid;
+            document.getElementById("user-edit-name").value = user.name || '';
+            document.getElementById("user-edit-modal").style.display = "grid";
+        }
+        
+        function closeUserEditModal() {
+            document.getElementById("user-edit-modal").style.display = "none";
+            document.getElementById("user-edit-form").reset();
+        }
+        
+        function handleUserEditFormSubmit(e) {
+            e.preventDefault();
+            const uid = document.getElementById("user-edit-uid").value;
+            const newName = document.getElementById("user-edit-name").value;
+            if (!uid || !newName) return;
+            
+            db.ref('users/' + uid).update({ name: newName })
+                .then(() => {
+                    showToast("Данные оператора обновлены.", "success");
+                    closeUserEditModal();
+                })
+                .catch(err => showToast(`Ошибка: ${err.message}`, "error"));
+        }
+
+        // V23: Функции модалки (Отклонение)
+        function openRejectionModal(uid) {
+            document.getElementById("rejection-user-id").value = uid;
+            document.getElementById("rejection-modal").style.display = "grid";
+        }
+        function closeRejectionModal() {
+            document.getElementById("rejection-modal").style.display = "none";
+            document.getElementById("rejection-form").reset();
+        }
+        
+        function handleRejectionSubmit(e) {
+            e.preventDefault();
+            const uid = document.getElementById("rejection-user-id").value;
+            const reason = document.getElementById("rejection-reason-input").value;
+            if (!uid || !reason) return;
+            handleUserApproval(uid, 'rejected', reason);
+        }
+
+        // ================================================
+        // ====   V22: Утилита Toast                   ====
+        // ================================================
+        
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById("toast-container");
+            if (!toastContainer) return;
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.add("show"), 100);
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toastContainer.removeChild(toast), 500);
+            }, 3000);
+        }
+    });
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/service-worker.js'); }); }
+    </script>
 </body>
 </html>
