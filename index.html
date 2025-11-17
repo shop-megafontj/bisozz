@@ -79,160 +79,44 @@
             --skeleton-shimmer: #3f3f3f;
         }
         
-        /* --- MODERN SKELETON LOADER STYLES --- */
-        @keyframes shimmer {
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        .skeleton-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: var(--container-bg);
-        }
-
-        .sk-item {
-            position: relative;
-            overflow: hidden;
-            background-color: var(--skeleton-bg);
-            border-radius: 12px;
-        }
-        
-        .sk-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: translateX(-100%);
-            background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent);
-            animation: shimmer 1.5s infinite linear;
-        }
-
-        .sk-header {
-            width: 100%;
-            height: 150px;
-            border-radius: 0;
-            position: relative;
-            margin-bottom: 0;
-        }
-        .sk-header-buttons {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .sk-button-group {
-            display: flex;
-            gap: 8px;
-            padding: 6px;
-            border-radius: 24px;
-            background-color: var(--header-bg);
-        }
-        .sk-button-sm {
-            width: 42px;
-            height: 32px;
-            border-radius: 18px;
-        }
-        .sk-nav { 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 16px; 
-            gap: 16px; 
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--nav-bg);
-        }
+        /* ... (Все стили CSS остаются без изменений) ... */
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+        .skeleton-wrapper { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); }
+        .sk-item { position: relative; overflow: hidden; background-color: var(--skeleton-bg); border-radius: 12px; }
+        .sk-item::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: translateX(-100%); background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent); animation: shimmer 1.5s infinite linear; }
+        .sk-header { width: 100%; height: 150px; border-radius: 0; position: relative; margin-bottom: 0; }
+        .sk-header-buttons { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; }
+        .sk-button-group { display: flex; gap: 8px; padding: 6px; border-radius: 24px; background-color: var(--header-bg); }
+        .sk-button-sm { width: 42px; height: 32px; border-radius: 18px; }
+        .sk-nav { display: flex; justify-content: space-around; padding: 16px; gap: 16px; border-bottom: 1px solid var(--border-color); background-color: var(--nav-bg); }
         .sk-nav-btn { flex-grow: 1; height: 40px; border-radius: 24px; }
         .sk-content { padding: 24px; }
         .sk-line { height: 22px; margin-bottom: 12px; border-radius: 12px; }
         .sk-line-short { width: 45%; }
         .sk-line-medium { width: 70%; }
         .sk-section { margin-top: 28px; }
-        .sk-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
-            gap: 14px; 
-            margin-top: 18px; 
-        }
+        .sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 14px; margin-top: 18px; }
         .sk-grid-item { height: 52px; border-radius: 14px; }
         .sk-price { width: 55%; height: 32px; margin: 28px auto; border-radius: 24px; }
-        .sk-card {
-            padding: 24px;
-            margin-top: 24px;
-            border-radius: 28px;
-            background-color: var(--light-gray);
-        }
-        .sk-card-item {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            margin-top: 18px;
-            padding: 0;
-        }
+        .sk-card { padding: 24px; margin-top: 24px; border-radius: 28px; background-color: var(--light-gray); }
+        .sk-card-item { display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 0; }
         .sk-icon { width: 52px; height: 52px; border-radius: 24px; flex-shrink: 0; }
         .sk-text-block { flex-grow: 1; }
         .sk-text-title { height: 20px; width: 35%; margin-bottom: 10px; border-radius: 8px; }
         .sk-text-desc { height: 16px; width: 95%; border-radius: 8px; }
         .sk-footer-card { padding: 24px; margin-top: 24px; border-radius: 24px; }
         .sk-copy-btn { width: 160px; height: 50px; margin: 24px auto; border-radius: 28px; }
-
-        body {
-            font-family: "Manrope", sans-serif;
-            background-color: var(--background-color);
-            margin: 0;
-            padding: 0;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: var(--container-bg);
-            box-shadow: 0 0 20px var(--shadow-color);
-        }
-
+        body { font-family: "Manrope", sans-serif; background-color: var(--background-color); margin: 0; padding: 0; font-weight: bold; color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); box-shadow: 0 0 20px var(--shadow-color); }
         .header { position: relative; }
         .header img { width: 100%; height: auto; display: block; }
-
-        .lang-switcher, .theme-switcher {
-            position: absolute;
-            top: 10px;
-            background-color: var(--header-bg);
-            border-radius: 20px;
-            border: 1px solid var(--primary-color);
-            padding: 4px;
-            display: flex;
-            box-shadow: 0 2px 5px var(--shadow-color);
-        }
+        .lang-switcher, .theme-switcher { position: absolute; top: 10px; background-color: var(--header-bg); border-radius: 20px; border: 1px solid var(--primary-color); padding: 4px; display: flex; box-shadow: 0 2px 5px var(--shadow-color); }
         .lang-switcher { right: 10px; }
         .theme-switcher { left: 10px; }
-
-        .lang-btn, .theme-btn {
-            background-color: transparent; border: none; padding: 8px 16px; border-radius: 16px;
-            font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease;
-            font-size: 12px;
-        }
-
+        .lang-btn, .theme-btn { background-color: transparent; border: none; padding: 8px 16px; border-radius: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; font-size: 12px; }
         .lang-btn.active, .theme-btn.active { background-color: var(--primary-color); color: white; }
-
-        .navigation {
-            display: flex;
-            justify-content: space-around;
-            background-color: var(--nav-bg);
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-link {
-            text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 18px;
-            border-radius: 20px; border: #00aa44 1px solid; transition: background-color 0.3s, color 0.3s;
-            cursor: pointer; color: var(--text-color);
-        }
+        .navigation { display: flex; justify-content: space-around; background-color: var(--nav-bg); padding: 10px 0; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 5px; }
+        .nav-link { text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 18px; border-radius: 20px; border: #00aa44 1px solid; transition: background-color 0.3s, color 0.3s; cursor: pointer; color: var(--text-color); }
         .nav-link.active { background-color: var(--active-bg); color: var(--active-text); }
         .tariff-content { display: none; }
         .tariff-content.active { display: block; }
@@ -244,11 +128,7 @@
         .tariff-section-header h3 { margin: 0; flex-grow: 1; }
         .info-icon { color: #888; cursor: pointer; margin-left: 10px; }
         .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; }
-        .option-button {
-            border: 1px solid var(--option-border); color: var(--option-text); background-color: var(--option-bg);
-            padding: 8px 5px; border-radius: 12px; text-align: center; font-size: 14px; cursor: pointer;
-            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
-        }
+        .option-button { border: 1px solid var(--option-border); color: var(--option-text); background-color: var(--option-bg); padding: 8px 5px; border-radius: 12px; text-align: center; font-size: 14px; cursor: pointer; transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s; }
         .option-button:hover { box-shadow: var(--button-shadow); border-color: var(--primary-color); }
         .option-button.active { background-color: var(--active-bg); color: var(--active-text); border-color: var(--primary-color); }
         .total-price-display { text-align: center; font-size: 15px; font-weight: bold; padding: 20px 15px; }
@@ -262,31 +142,14 @@
         .footer-container { padding: 10px 20px 20px; }
         .card { background-color: var(--light-gray); border-radius: 20px; padding: 20px; margin-top: 15px; box-shadow: var(--card-shadow); font-size: 14px; line-height: 1.5; }
         .copy-button-card { padding: 15px; text-align: center; }
-        .copy-button {
-            background-color: var(--option-bg); color: var(--primary-color); border: 1px solid var(--primary-color);
-            padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer;
-            display: inline-flex; align-items: center; transition: background-color 0.2s, box-shadow 0.2s;
-        }
+        .copy-button { background-color: var(--option-bg); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; transition: background-color 0.2s, box-shadow 0.2s; }
         .copy-button:hover { background-color: #f0fff8; box-shadow: var(--button-shadow); }
         .copy-button svg { margin-right: 8px; }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal { background-color: var(--modal-bg); padding: 20px; border-radius: 15px; max-width: 80%; text-align: center; }
-        .modal-button {
-            background-color: transparent; color: var(--primary-color); border: none; padding: 12px 24px;
-            border-radius: 20px; cursor: pointer; font-weight: bold; width: 80%; margin-top: 15px;
-        }
-        #toast-notification {
-            visibility: hidden; min-width: 250px; background-color: var(--toast-bg); color: var(--toast-text);
-            text-align: center; border-radius: 38px; padding: 16px; position: fixed; z-index: 2000;
-            left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 15px; opacity: 0;
-            transition: opacity 0.5s, visibility 0.5s, bottom 0.5s;
-        }
+        .modal-button { background-color: transparent; color: var(--primary-color); border: none; padding: 12px 24px; border-radius: 20px; cursor: pointer; font-weight: bold; width: 80%; margin-top: 15px; }
+        #toast-notification { visibility: hidden; min-width: 250px; background-color: var(--toast-bg); color: var(--toast-text); text-align: center; border-radius: 38px; padding: 16px; position: fixed; z-index: 2000; left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 15px; opacity: 0; transition: opacity 0.5s, visibility 0.5s, bottom 0.5s; }
         #toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
-
-        /* --- Slider Styles --- */
         .view-toggle { text-align: right; padding: 0 15px 10px; }
         #view-toggle-btn { background: var(--light-gray); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 15px; font-weight: bold; cursor: pointer; }
         .slider-group { padding: 10px 25px 20px; }
@@ -295,75 +158,37 @@
         .slider-value { font-size: 18px; color: var(--primary-color); font-weight: 800; }
         .slider { -webkit-appearance: none; width: 100%; height: 8px; background: var(--slider-bg); outline: none; border-radius: 4px; opacity: 0.7; transition: opacity .2s; }
         .slider:hover { opacity: 1; }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: var(--primary-color);
-            cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        .slider::-moz-range-thumb {
-            width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%;
-            border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
+        .slider::-moz-range-thumb { width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
         .slider-minmax { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 5px; }
-
         @media (max-width: 400px) {
             .lang-switcher, .theme-switcher { padding: 2px; }
             .lang-btn, .theme-btn { padding: 6px 10px; font-size: 11px; }
             .options-grid { grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); }
             .nav-link { font-size: 12px; padding: 8px 10px; }
         }
-
-        /* --- Personal Tariff Styles --- */
         #personal { padding: 15px; }
         #personal .container-personal { max-width: 800px; margin: 0 auto; display: grid; gap: 25px; }
-        #personal .card {
-            background-color: var(--personal-card-bg); border-radius: 16px; padding: 25px;
-            border: 1px solid var(--personal-border); transition: box-shadow 0.3s ease;
-            color: var(--personal-text-primary); margin-top: 0;
-        }
+        #personal .card { background-color: var(--personal-card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--personal-border); transition: box-shadow 0.3s ease; color: var(--personal-text-primary); margin-top: 0; }
         #personal .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        #personal .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--personal-border);
-        }
+        #personal .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--personal-border); }
         #personal .card-title { font-size: 20px; font-weight: 700; margin: 0; color: var(--brand-purple); }
         #personal .configurator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         #personal .input-group { position: relative; display: flex; flex-direction: column; }
-        #personal .input-group label {
-            font-size: 14px; font-weight: 600; color: var(--personal-text-secondary); margin-bottom: 8px;
-        }
-        #personal .input-group input {
-            width: 80%; padding: 12px 60px 12px 12px; border: 1px solid var(--personal-border); border-radius: 25px;
-            font-size: 16px; font-family: 'Manrope', sans-serif; font-weight: 600;
-            transition: all 0.2s ease; background-color: var(--personal-card-bg); color: var(--personal-text-primary);
-        }
-        #personal .input-group input:focus {
-            outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.15);
-        }
-        #personal .input-unit {
-            position: absolute; right: 15px; top: 42px; color: var(--personal-text-secondary);
-            font-size: 14px; font-weight: 600; pointer-events: none;
-        }
+        #personal .input-group label { font-size: 14px; font-weight: 600; color: var(--personal-text-secondary); margin-bottom: 8px; }
+        #personal .input-group input { width: 80%; padding: 12px 60px 12px 12px; border: 1px solid var(--personal-border); border-radius: 25px; font-size: 16px; font-family: 'Manrope', sans-serif; font-weight: 600; transition: all 0.2s ease; background-color: var(--personal-card-bg); color: var(--personal-text-primary); }
+        #personal .input-group input:focus { outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.15); }
+        #personal .input-unit { position: absolute; right: 15px; top: 42px; color: var(--personal-text-secondary); font-size: 14px; font-weight: 600; pointer-events: none; }
         #personal .tariff-preview-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 15px; }
-        #personal .tariff-item {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 16px; padding: 10px 0;
-        }
+        #personal .tariff-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; padding: 10px 0; }
         #personal .tariff-item:not(:last-child){ border-bottom: 1px solid var(--personal-border); }
         #personal .tariff-label { color: var(--personal-text-secondary); }
         #personal .tariff-value { font-weight: 700; font-size: 17px; }
         #personal #historyList { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-        #personal .history-item {
-            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-            padding: 12px; border-radius: 10px; background-color: var(--light-gray);
-            border: 1px solid var(--personal-border);
-        }
+        #personal .history-item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 12px; border-radius: 10px; background-color: var(--light-gray); border: 1px solid var(--personal-border); }
         #personal .history-details { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--personal-text-secondary); }
         #personal .history-values { font-weight: 600; color: var(--personal-text-primary); }
-        #personal .btn {
-            display: flex; align-items: center; justify-content: center; width: 100%; border: none;
-            padding: 14px; border-radius: 22px; cursor: pointer; font-size: 15px; font-weight: 700;
-            font-family: 'Manrope', sans-serif; transition: all 0.2s ease; margin-top: 25px;
-        }
+        #personal .btn { display: flex; align-items: center; justify-content: center; width: 100%; border: none; padding: 14px; border-radius: 22px; cursor: pointer; font-size: 15px; font-weight: 700; font-family: 'Manrope', sans-serif; transition: all 0.2s ease; margin-top: 25px; }
         #personal .btn-primary { background-color: var(--brand-green); color: white; }
         #personal .btn-primary:hover { background-color: #00a34c; }
         #personal .btn-history { padding: 8px 12px; font-size: 12px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; }
@@ -371,81 +196,21 @@
         #personal .btn-delete { background-color: var(--light-gray); color: var(--personal-text-primary); }
         #personal .clear-all-btn { font-size: 13px; color: #999; background: none; border: none; cursor: pointer; padding: 0; }
         #personal .clear-all-btn:hover { color: var(--brand-purple); }
-        #personal-toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background-color: var(--brand-purple); color: white; padding: 12px 25px; border-radius: 10px;
-            font-size: 14px; font-weight: 600; opacity: 0; visibility: hidden;
-            transition: all 0.4s ease; z-index: 1000;
-        }
+        #personal-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--brand-purple); color: white; padding: 12px 25px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
         #personal-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px); }
         @media (max-width: 480px) { #personal .configurator-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 
 <body>
+    
     <div id="loading-skeleton" class="skeleton-wrapper">
-        <div class="sk-item sk-header">
-            <div class="sk-header-buttons">
-                <div class="sk-button-group">
-                    <div class="sk-item sk-button-sm"></div>
-                    <div class="sk-item sk-button-sm"></div>
-                </div>
-                <div class="sk-button-group">
-                    <div class="sk-item sk-button-sm"></div>
-                    <div class="sk-item sk-button-sm"></div>
-                </div>
-            </div>
-        </div>
-        <div class="sk-nav">
-            <div class="sk-item sk-nav-btn"></div>
-            <div class="sk-item sk-nav-btn"></div>
-            <div class="sk-item sk-nav-btn"></div>
-        </div>
-        <div class="sk-content">
-            <div class="sk-item sk-line sk-line-medium"></div>
-            <div class="sk-section">
-                <div class="sk-item sk-line sk-line-short"></div>
-                <div class="sk-grid">
-                    <div class="sk-item sk-grid-item"></div>
-                    <div class="sk-item sk-grid-item"></div>
-                    <div class="sk-item sk-grid-item"></div>
-                    <div class="sk-item sk-grid-item"></div>
-                </div>
-            </div>
-            <div class="sk-section">
-                <div class="sk-item sk-line sk-line-short"></div>
-                <div class="sk-grid">
-                    <div class="sk-item sk-grid-item"></div>
-                    <div class="sk-item sk-grid-item"></div>
-                    <div class="sk-item sk-grid-item"></div>
-                </div>
-            </div>
-            <div class="sk-item sk-price"></div>
-            <div class="sk-card">
-                <div class="sk-item sk-line sk-line-short"></div>
-                <div class="sk-card-item">
-                    <div class="sk-item sk-icon"></div>
-                    <div class="sk-text-block">
-                        <div class="sk-item sk-text-title"></div>
-                        <div class="sk-item sk-text-desc"></div>
-                    </div>
-                </div>
-                <div class="sk-card-item">
-                    <div class="sk-item sk-icon"></div>
-                    <div class="sk-text-block">
-                        <div class="sk-item sk-text-title"></div>
-                        <div class="sk-item sk-text-desc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="sk-footer-card">
-                 <div class="sk-item sk-line" style="width: 95%"></div>
-                 <div class="sk-item sk-line" style="width: 80%"></div>
-            </div>
-            <div class="sk-item sk-copy-btn"></div>
-        </div>
+        <div class="sk-item sk-header"><div class="sk-header-buttons"><div class="sk-button-group"><div class="sk-item sk-button-sm"></div><div class="sk-item sk-button-sm"></div></div><div class="sk-button-group"><div class="sk-item sk-button-sm"></div><div class="sk-item sk-button-sm"></div></div></div></div>
+        <div class="sk-nav"><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div></div>
+        <div class="sk-content"><div class="sk-item sk-line sk-line-medium"></div><div class="sk-section"><div class="sk-item sk-line sk-line-short"></div><div class="sk-grid"><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div></div></div><div class="sk-section"><div class="sk-item sk-line sk-line-short"></div><div class="sk-grid"><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div></div></div><div class="sk-item sk-price"></div><div class="sk-card"><div class="sk-item sk-line sk-line-short"></div><div class="sk-card-item"><div class="sk-item sk-icon"></div><div class="sk-text-block"><div class="sk-item sk-text-title"></div><div class="sk-item sk-text-desc"></div></div></div><div class="sk-card-item"><div class="sk-item sk-icon"></div><div class="sk-text-block"><div class="sk-item sk-text-title"></div><div class="sk-item sk-text-desc"></div></div></div></div><div class="sk-footer-card"><div class="sk-item sk-line" style="width: 95%"></div><div class="sk-item sk-line" style="width: 80%"></div></div><div class="sk-item sk-copy-btn"></div></div>
     </div>
 
+    
     <div class="container" style="display: none;">
         <div class="header">
             <img src="" alt="Тариф">
@@ -463,229 +228,12 @@
             <a class="nav-link active" onclick="switchTab('life1')" data-translate-key="nav_life1"></a>
             <a class="nav-link" onclick="switchTab('life2')" data-translate-key="nav_life2"></a>
             <a class="nav-link" onclick="switchTab('personal')" data-translate-key="nav_personal"></a>
+            <a class="nav-link" id="templates-link" href="#" data-translate-key="nav_templates">Шаблоны</a>
         </div>
 
-        <div id="life1" class="tariff-content active">
-            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
-            <div class="tariff-section">
-                <div class="tariff-section-header">
-                    <h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span>
-                </div>
-                <div class="options-grid" id="minutes-options1"></div>
-            </div>
-            <div class="tariff-section">
-                <div class="tariff-section-header">
-                    <h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span>
-                </div>
-                <div class="options-grid" id="sms-options1"></div>
-            </div>
-            <div class="tariff-section">
-                <div class="tariff-section-header">
-                    <h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span>
-                </div>
-                <div class="options-grid" id="internet-options1"></div>
-            </div>
-            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div>
-            
-           
-
-            <div class="options-card">
-                <div class="card-header" data-translate-key="additional_options"></div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="night_unlimited"></div>
-                        <div class="item-description" data-translate-key="night_unlimited_desc"></div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="in_network_calls"></div>
-                        <div class="item-description" data-translate-key="in_network_calls_desc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-container">
-                <div class="card footer-text-card">
-                    <div id="footer-text-container1"></div>
-                </div>
-                <div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
-            </div>
-             <div id="bonus-container1" style="display: none;" class="footer-container">
-                <div class="card">
-                    <p id="bonus-text1"></p>
-                </div>
-                <div class="card copy-button-card">
-                    <button id="copy-bonus-button1" class="copy-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg>
-                        <span data-translate-key="copy_button"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="life2" class="tariff-content">
-            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
-            <div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div>
-            <div id="grid-view-life2">
-                <div class="tariff-section">
-                    <div class="tariff-section-header">
-                        <h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span>
-                    </div>
-                    <div class="options-grid" id="minutes-options2"></div>
-                </div>
-                <div class="tariff-section">
-                    <div class="tariff-section-header">
-                        <h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span>
-                    </div>
-                    <div class="options-grid" id="sms-options2"></div>
-                </div>
-                <div class="tariff-section">
-                    <div class="tariff-section-header">
-                        <h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span>
-                    </div>
-                    <div class="options-grid" id="internet-options2"></div>
-                </div>
-            </div>
-            <div id="slider-view-life2" style="display: none;">
-                <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div>
-                    <input type="range" id="internet-slider" class="slider" step="1">
-                    <div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div>
-                </div>
-                <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div>
-                    <input type="range" id="minutes-slider" class="slider" step="1">
-                    <div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div>
-                </div>
-                <div class="slider-group">
-                    <div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div>
-                    <input type="range" id="sms-slider" class="slider" step="1">
-                    <div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div>
-                </div>
-            </div>
-            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div>
-
-           
-
-            <div class="options-card">
-                <div class="card-header" data-translate-key="additional_options"></div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="night_unlimited"></div>
-                        <div class="item-description" data-translate-key="night_unlimited_desc"></div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="in_network_calls"></div>
-                        <div class="item-description" data-translate-key="in_network_calls_desc"></div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="oila_tv"></div>
-                        <div class="item-description" data-translate-key="oila_tv_desc"></div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div>
-                    <div class="item-details">
-                        <div class="item-title" data-translate-key="ivi_cinema"></div>
-                        <div class="item-description" data-translate-key="ivi_cinema_desc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-container">
-                <div class="card footer-text-card">
-                    <div id="footer-text-container2"></div>
-                </div>
-                <div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div>
-            </div>
-             <div id="bonus-container2" style="display: none;" class="footer-container">
-                <div class="card">
-                    <p id="bonus-text2"></p>
-                </div>
-                <div class="card copy-button-card">
-                    <button id="copy-bonus-button2" class="copy-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg>
-                        <span data-translate-key="copy_button"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="personal" class="tariff-content">
-             <div class="container-personal">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title" data-translate-key="personal_config_title"></h2>
-                    </div>
-                    <div class="configurator-grid">
-                        <div class="input-group">
-                            <label for="price" data-translate-key="personal_price_label"></label>
-                            <input type="number" id="price" value="" step="0.01">
-                            <span class="input-unit" data-translate-key="personal_price_unit"></span>
-                        </div>
-                        <div class="input-group">
-                            <label for="minutes" data-translate-key="personal_minutes_label"></label>
-                            <input type="number" id="minutes" value="">
-                            <span class="input-unit" data-translate-key="personal_minutes_unit"></span>
-                        </div>
-                        <div class="input-group">
-                            <label for="gigabytes" data-translate-key="personal_gb_label"></label>
-                            <input type="number" id="gigabytes" value="">
-                            <span class="input-unit" data-translate-key="personal_gb_unit"></span>
-                        </div>
-                        <div class="input-group">
-                            <label for="sms" data-translate-key="personal_sms_label"></label>
-                            <input type="number" id="sms" value="">
-                            <span class="input-unit" data-translate-key="personal_sms_unit"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title" data-translate-key="personal_preview_title"></h2>
-                        <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/icon.jpg" alt="Megafon Logo" style="height: 30px; border-radius: 50%;">
-                    </div>
-                    <ul class="tariff-preview-list">
-                        <li class="tariff-item">
-                            <span class="tariff-label" data-translate-key="personal_preview_price"></span>
-                            <span class="tariff-value"><span id="price-display">0</span> <span data-translate-key="personal_price_unit"></span></span>
-                        </li>
-                        <li class="tariff-item">
-                            <span class="tariff-label" data-translate-key="personal_preview_minutes"></span>
-                            <span class="tariff-value"><span id="minutes-display">0</span> <span data-translate-key="personal_minutes_unit"></span></span>
-                        </li>
-                        <li class="tariff-item">
-                            <span class="tariff-label" data-translate-key="personal_preview_gb"></span>
-                            <span class="tariff-value"><span id="gb-display">0</span> <span data-translate-key="personal_gb_unit"></span></span>
-                        </li>
-                        <li class="tariff-item">
-                            <span class="tariff-label" data-translate-key="personal_preview_sms"></span>
-                            <span class="tariff-value"><span id="sms-display">0</span> <span data-translate-key="personal_sms_unit_plural"></span></span>
-                        </li>
-                         <li class="tariff-item">
-                            <span class="tariff-label" data-translate-key="personal_preview_night"></span>
-                            <span class="tariff-value" data-translate-key="personal_preview_unlimited"></span>
-                        </li>
-                    </ul>
-                    <button class="btn btn-primary" id="copyAndSaveBtn" data-translate-key="personal_copy_save_btn"></button>
-                </div>
-                <div class="card" id="historyCard" style="display: none;">
-                    <div class="card-header">
-                        <h2 class="card-title" data-translate-key="personal_history_title"></h2>
-                        <button class="clear-all-btn" id="clearAllHistoryBtn" data-translate-key="personal_history_clear"></button>
-                    </div>
-                    <ul id="historyList"></ul>
-                </div>
-            </div>
-        </div>
+        <div id="life1" class="tariff-content active"><div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span></div><div class="options-grid" id="minutes-options1"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span></div><div class="options-grid" id="sms-options1"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span></div><div class="options-grid" id="internet-options1"></div></div><div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div><div class="options-card"><div class="card-header" data-translate-key="additional_options"></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div></div><div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container1"></div></div><div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container1" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text1"></p></div><div class="card copy-button-card"><button id="copy-bonus-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div></div>
+        <div id="life2" class="tariff-content"><div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div><div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div><div id="grid-view-life2"><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span></div><div class="options-grid" id="minutes-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span></div><div class="options-grid" id="sms-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span></div><div class="options-grid" id="internet-options2"></div></div></div><div id="slider-view-life2" style="display: none;"><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div><input type="range" id="internet-slider" class="slider" step="1"><div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div><input type="range" id="minutes-slider" class="slider" step="1"><div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div><input type="range" id="sms-slider" class="slider" step="1"><div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div></div></div><div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div><div class="options-card"><div class="card-header" data-translate-key="additional_options"></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div><div class="item-details"><div class="item-title" data-translate-key="oila_tv"></div><div class="item-description" data-translate-key="oila_tv_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div><div class="item-details"><div class="item-title" data-translate-key="ivi_cinema"></div><div class="item-description" data-translate-key="ivi_cinema_desc"></div></div></div></div><div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container2"></div></div><div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container2" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text2"></p></div><div class="card copy-button-card"><button id="copy-bonus-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div></div>
+        <div id="personal" class="tariff-content"><div class="container-personal"><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_config_title"></h2></div><div class="configurator-grid"><div class="input-group"><label for="price" data-translate-key="personal_price_label"></label><input type="number" id="price" value="" step="0.01"><span class="input-unit" data-translate-key="personal_price_unit"></span></div><div class="input-group"><label for="minutes" data-translate-key="personal_minutes_label"></label><input type="number" id="minutes" value=""><span class="input-unit" data-translate-key="personal_minutes_unit"></span></div><div class="input-group"><label for="gigabytes" data-translate-key="personal_gb_label"></label><input type="number" id="gigabytes" value=""><span class="input-unit" data-translate-key="personal_gb_unit"></span></div><div class="input-group"><label for="sms" data-translate-key="personal_sms_label"></label><input type="number" id="sms" value=""><span class="input-unit" data-translate-key="personal_sms_unit"></span></div></div></div><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_preview_title"></h2><img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/icon.jpg" alt="Megafon Logo" style="height: 30px; border-radius: 50%;"></div><ul class="tariff-preview-list"><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_price"></span><span class="tariff-value"><span id="price-display">0</span> <span data-translate-key="personal_price_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_minutes"></span><span class="tariff-value"><span id="minutes-display">0</span> <span data-translate-key="personal_minutes_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_gb"></span><span class="tariff-value"><span id="gb-display">0</span> <span data-translate-key="personal_gb_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_sms"></span><span class="tariff-value"><span id="sms-display">0</span> <span data-translate-key="personal_sms_unit_plural"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_night"></span><span class="tariff-value" data-translate-key="personal_preview_unlimited"></span></li></ul><button class="btn btn-primary" id="copyAndSaveBtn" data-translate-key="personal_copy_save_btn"></button></div><div class="card" id="historyCard" style="display: none;"><div class="card-header"><h2 class="card-title" data-translate-key="personal_history_title"></h2><button class="clear-all-btn" id="clearAllHistoryBtn" data-translate-key="personal_history_clear"></button></div><ul id="historyList"></ul></div></div></div>
     </div>
 
     <div id="modal-minutes1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="minutes_rt"></h3><p data-translate-key="modal_minutes_body1"></p><button class="modal-button" onclick="hideModal('modal-minutes1')" data-translate-key="modal_ok"></button></div></div>
@@ -699,6 +247,7 @@
     <div class="toast" id="personal-toast"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
@@ -718,42 +267,79 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
+        const auth = firebase.auth(); // V24: Auth
+        
         // --- 2. GLOBAL VARIABLES ---
         let translations = {};
         let config1 = {};
         let config2 = {};
+        let currentUserRole = null; // V24: 'admin', 'operator', or null
 
-        // --- 3. FETCH DATA & INITIALIZE APP ---
-        database.ref('/').once('value').then((snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                translations = data.translations;
-                config1 = {
-                    ...data.tariffConfigs.life1,
-                    state: {},
-                    elements: { minutes: 'minutes-options1', sms: 'sms-options1', internet: 'internet-options1', totalPrice: 'total-price1', footerText: 'footer-text-container1' }
-                };
-                config2 = {
-                    ...data.tariffConfigs.life2,
-                    state: {},
-                    elements: { minutes: 'minutes-options2', sms: 'sms-options2', internet: 'internet-options2', totalPrice: 'total-price2', footerText: 'footer-text-container2' }
-                };
-
-                document.querySelector('.header img').src = data.ui.headerImageUrl;
-                initializeAppLogic();
-
+        // =========================================================
+        // ==   ИЗМЕНЕНИЕ V25: ОБНОВЛЕННАЯ ПРОВЕРКА AUTH          ==
+        // =========================================================
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Пользователь вошел. Загружаем данные и приложение.
+                fetchDataAndInitialize(user);
             } else {
-                console.error("Could not fetch data from Firebase.");
-                document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Ошибка загрузки данных. Пожалуйста, обновите страницу.</p>';
+                // V25: Пользователь не вошел.
+                // Перенаправляем на login.html И сообщаем ему,
+                // куда вернуться после входа.
+                window.location.href = 'login.html?redirect=index.html';
             }
-        }).catch(error => {
-            console.error("Firebase fetch error:", error);
-            document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Не удалось подключиться к базе данных.</p>';
         });
 
-        // --- 4. APPLICATION LOGIC ---
-        function initializeAppLogic() {
+        // --- 4. V24: FETCH DATA & INITIALIZE APP (WRAPPED) ---
+        function fetchDataAndInitialize(user) {
+            // V24: Сначала получаем роль пользователя
+            database.ref('/users/' + user.uid).once('value').then(roleSnapshot => {
+                if (roleSnapshot.exists()) {
+                    currentUserRole = roleSnapshot.val().isAdmin ? 'admin' : 'operator';
+                } else {
+                    console.error("User authenticated but not found in database. Logging out.");
+                    auth.signOut(); 
+                    return;
+                }
+
+                // V24: Роль получена, теперь загружаем остальное приложение
+                database.ref('/').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        translations = data.translations;
+                        config1 = {
+                            ...data.tariffConfigs.life1,
+                            state: {},
+                            elements: { minutes: 'minutes-options1', sms: 'sms-options1', internet: 'internet-options1', totalPrice: 'total-price1', footerText: 'footer-text-container1' }
+                        };
+                        config2 = {
+                            ...data.tariffConfigs.life2,
+                            state: {},
+                            elements: { minutes: 'minutes-options2', sms: 'sms-options2', internet: 'internet-options2', totalPrice: 'total-price2', footerText: 'footer-text-container2' }
+                        };
+
+                        document.querySelector('.header img').src = data.ui.headerImageUrl;
+                        
+                        // V24: Инициализируем приложение
+                        initializeAppLogic(user);
+
+                    } else {
+                        console.error("Could not fetch app data from Firebase.");
+                        document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Ошибка загрузки данных. Пожалуйста, обновите страницу.</p>';
+                    }
+                }).catch(error => {
+                    console.error("Firebase app data fetch error:", error);
+                    document.getElementById('loading-skeleton').innerHTML = '<p style="text-align:center; padding: 40px;">Не удалось подключиться к базе данных.</p>';
+                });
+
+            }).catch(error => {
+                console.error("Firebase user role fetch error:", error);
+                auth.signOut();
+            });
+        }
+        
+        // --- 5. APPLICATION LOGIC ---
+        function initializeAppLogic(user) { // V24: Принимает 'user'
             let currentLang = 'tj';
             let currentTheme = 'light';
             let life2ViewMode = 'grid';
@@ -871,7 +457,6 @@
                 handleBonusDisplay(config, total);
             }
             
-            // ИСПРАВЛЕНО: Более надежный метод определения конфигурации
             function handleBonusDisplay(config, total) {
                 let bonusContainerId, bonusTextId;
                 
@@ -882,7 +467,7 @@
                     bonusContainerId = 'bonus-container2';
                     bonusTextId = 'bonus-text2';
                 } else {
-                    return; // Не применять для других тарифов (например, Персональный)
+                    return;
                 }
 
                 const bonusContainer = document.getElementById(bonusContainerId);
@@ -1054,6 +639,26 @@
                     renderPersonalHistory();
                 }
             });
+            
+                        // V27: ЛОГИКА ССЫЛКИ "ШАБЛОНЫ" (Открытие в новой вкладке)
+            document.getElementById('templates-link').addEventListener('click', (e) => {
+                e.preventDefault(); // Запрещаем переход по ссылке в этой вкладке
+                
+                if (currentUserRole === 'admin') {
+                    // Открываем admin.html в новой вкладке
+                    window.open('admin.html', '_blank');
+                    
+                } else if (currentUserRole === 'operator') {
+                    // Открываем operator.html в новой вкладке
+                    window.open('operator.html', '_blank');
+                    
+                } else {
+                    // Если роль не найдена, выходим (как и раньше)
+                    console.warn('Role not determined, redirecting to login.');
+                    auth.signOut();
+                }
+            });
+
 
             loadPersonalHistory();
             renderPersonalHistory();
@@ -1065,9 +670,11 @@
                 });
             }
 
+            // V24: Показываем контент только после всех проверок
             document.getElementById('loading-skeleton').style.display = 'none';
             document.querySelector('.container').style.display = 'block';
         }
+        
     });
     </script>
 
