@@ -41,7 +41,7 @@
         .form-container {
             background: var(--white);
             padding: 40px;
-            border-radius: 12px;
+            border-radius: 12px; /* Уже было 12px, отлично */
             box-shadow: var(--shadow-medium);
             width: 100%;
             max-width: 450px;
@@ -68,9 +68,10 @@
             color: var(--white);
             background-color: var(--primary-color);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px; /* V28: Изменено с 8px на 12px */
             cursor: pointer;
             transition: background-color 0.3s;
+            min-height: 45px; 
         }
         .btn-primary:hover { background-color: #00a34c; }
         .form-group { margin-bottom: 20px; text-align: left; }
@@ -79,7 +80,7 @@
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px; /* V28: Изменено с 8px на 12px */
             font-size: 16px;
             background: var(--white);
         }
@@ -93,7 +94,7 @@
             font-size: 14px;
             background-color: var(--bg-main);
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 12px; /* V28: Изменено с 8px на 12px */
             border: 1px solid var(--border-color);
             margin: 10px 0;
             text-align: left;
@@ -117,7 +118,7 @@
         }
         .toast {
             padding: 15px 20px;
-            border-radius: 8px;
+            border-radius: 12px; /* V28: Изменено с 8px на 12px для консистентности */
             box-shadow: var(--shadow-medium);
             color: var(--white);
             font-weight: 500;
@@ -132,6 +133,35 @@
         .toast.success { background-color: var(--primary-color); }
         .toast.error { background-color: var(--red); }
         .toast.info { background-color: #882af3; }
+        
+        /* === СТИЛИ СПИННЕРА ЗАГРУЗКИ (V27) === */
+        .btn-primary .spinner {
+            display: none; 
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-top-color: var(--white);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .btn-primary.loading .btn-text {
+            display: none; 
+        }
+
+        .btn-primary.loading .spinner {
+            display: inline-block; 
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
@@ -151,7 +181,12 @@
                     <label for="login-password">Пароль</label>
                     <input type="password" id="login-password" required>
                 </div>
-                <button type="submit" class="btn-primary">Войти</button>
+                
+                <button type="submit" class="btn-primary" id="login-button">
+                    <span class="btn-text">Войти</span>
+                    <span class="spinner"></span>
+                </button>
+                
                 <div class="auth-toggle">
                     Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a>
                 </div>
@@ -181,7 +216,12 @@
                     <label for="reg-password-confirm">Подтвердите пароль</label>
                     <input type="password" id="reg-password-confirm" required>
                 </div>
-                <button type="submit" class="btn-primary">Отправить заявку</button>
+                
+                <button type="submit" class="btn-primary" id="register-button">
+                    <span class="btn-text">Отправить заявку</span>
+                    <span class="spinner"></span>
+                </button>
+
                 <div class="auth-toggle">
                     Уже есть аккаунт? <a href="#" id="show-login">Войти</a>
                 </div>
@@ -197,13 +237,186 @@
     authDomain: "bisoz-682b8.firebaseapp.com",
     databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "bisoz-682b8",
-    storageBucket: "bisoz-682b8.firebasestorage.app",
+    storageBucket: "bisoz-682b8.appspot.com",
     messagingSenderId: "90545419911",
     appId: "1:90545419911:web:217b288ff83fa1e204ea22",
     measurementId: "G-WYNYL1RCX2"
   };
       firebase.initializeApp(firebaseConfig);
+    
+    document.addEventListener("DOMContentLoaded", () => {
+    
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // Селекторы
+    const loginPage = document.getElementById("login-page");
+    const registerPage = document.getElementById("register-page");
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const loginError = document.getElementById("login-error");
+    const registerError = document.getElementById("register-error");
+    const registerMessage = document.getElementById("register-message");
+    const showRegisterLink = document.getElementById("show-register");
+    const showLoginLink = document.getElementById("show-login");
+    
+    // V27: Селектор для кнопки входа
+    const loginButton = document.getElementById("login-button");
+    // V28: Селектор для кнопки регистрации
+    const registerButton = document.getElementById("register-button");
+
+    let registrationInProgress = false;
+
+    // V25: Проверка URL для редиректа
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect');
+
+
+    // --- ЛОГИКА TOAST-УВЕДОМЛЕНИЙ ---
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`; 
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add("show");
+        }, 100); 
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => {
+                toastContainer.removeChild(toast);
+            }, 500); 
+        }, 3000);
+    }
+
+    // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ФОРМ ---
+    showRegisterLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loginPage.style.display = "none";
+        registerPage.style.display = "flex";
+    });
+    showLoginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loginPage.style.display = "flex";
+        registerPage.style.display = "none";
+    });
+
+    // --- ПРОВЕРКА ДЛЯ ТЕХ, КТО УЖЕ ВОШЕЛ ---
+    auth.onAuthStateChanged(user => {
+        if (user && !registrationInProgress) {
+            checkUserRoleAndRedirect(user, redirectUrl);
+        }
+    });
+
+    // --- ВХОД (V27) ---
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        loginError.style.display = "none";
+        
+        loginButton.classList.add("loading");
+        loginButton.disabled = true;
+
+        const email = document.getElementById("login-email").value;
+        const pass = document.getElementById("login-password").value;
+
+        auth.signInWithEmailAndPassword(email, pass)
+            .catch(error => {
+                loginError.textContent = "Ошибка: Неверный почта или пароль.";
+                loginError.style.display = "block";
+            })
+            .finally(() => {
+                loginButton.classList.remove("loading");
+                loginButton.disabled = false;
+            });
+    });
+
+    // --- РЕГИСТРАЦИЯ (V28: Добавлена логика спиннера) ---
+    registerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        registerError.style.display = "none";
+        registerMessage.style.display = "none";
+        
+        // V28: Показываем спиннер и блокируем кнопку
+        registerButton.classList.add("loading");
+        registerButton.disabled = true;
+
+        registrationInProgress = true;
+
+        const name = document.getElementById("reg-name").value;
+        const email = document.getElementById("reg-email").value;
+        const pass = document.getElementById("reg-password").value;
+        const passConfirm = document.getElementById("reg-password-confirm").value;
+
+        if (pass !== passConfirm) {
+            registerError.textContent = "Пароли не совпадают.";
+            registerError.style.display = "block";
+            registrationInProgress = false; 
+            
+            // V28: Прячем спиннер при ошибке
+            registerButton.classList.remove("loading");
+            registerButton.disabled = false;
+            return;
+        }
+
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then(userCredential => {
+                const user = userCredential.user;
+                return db.ref('users/' + user.uid).set({
+                    name: name,
+                    email: email,
+                    isAdmin: false,
+                    approved: false 
+                });
+            })
+            .then(() => {
+                registerForm.reset();
+                showToast("Заявка отправлена! Ожидайте одобрения.", "success");
+                
+                // Перенаправляем на index.html. 
+                // Кнопку разблокировать не нужно, т.к. уходим со страницы.
+                window.location.href = "index.html";
+            })
+            .catch(error => {
+                registerError.textContent = `Ошибка: ${error.message}`;
+                registerError.style.display = "block";
+                registrationInProgress = false; 
+                
+                // V28: Прячем спиннер при ошибке
+                registerButton.classList.remove("loading");
+                registerButton.disabled = false;
+            });
+    });
+
+    // --- ФУНКЦИЯ РЕДИРЕКТА (V25) ---
+    function checkUserRoleAndRedirect(user, redirectUrl) {
+        
+        if (redirectUrl) {
+            window.location.href = redirectUrl; 
+            return; 
+        }
+
+        db.ref('/users/' + user.uid).once('value').then(snapshot => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                
+                if (userData.isAdmin) {
+                    window.location.href = "admin.html";
+                } 
+                else {
+                    window.location.href = "operator.html";
+                }
+            } else {
+                loginError.textContent = "Ошибка: не найдены данные пользователя.";
+                loginError.style.display = "block";
+                auth.signOut();
+            }
+        });
+    }
+});
+
     </script>
-    <script src="login.js"></script>
 </body>
 </html>
