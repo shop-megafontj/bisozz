@@ -1,5 +1,4 @@
 
-
 {
   "name": "Тариф MegaFon",
   "short_name": "Life",
@@ -10,18 +9,18 @@
   "description": "Создайте свой идеальный тариф Life.",
   "icons": [
     {
-      "src": "logo_life.jpg",
+      "src": "icon_app.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/jpg"
+      "type": "image/png"
     },
     {
-      "src": "logo_life.jpg",
-      "type": "image/jpg",
+      "src": "icon_app.png",
+      "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo_life.jpg",
-      "type": "image/jpg",
+      "src": "icon_app.png",
+      "type": "image/png",
       "sizes": "512x512"
     }
   ]
