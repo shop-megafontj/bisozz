@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель Оператора - MegaFon TJ</title>
-        <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
+    
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
     <link rel="manifest" href="manifest1.json">
-    <meta name="theme-color" content="#00B956">
+    <meta name="theme-color" content="#00B956"> 
     <script src="https://unpkg.com/feather-icons"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -16,7 +17,7 @@
     <style>
         :root {
             --primary-color: #00B956;
-            --secondary-color: #9726ee;
+            --secondary-color: #6410a5;
             --text-dark: #222;
             --text-light: #666;
             --bg-main: #f4f7f6;
@@ -29,7 +30,9 @@
             --yellow: #f39c12;
             --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
             --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.08);
+            
             --sidebar-width: 260px;
+            --sidebar-width-collapsed: 88px; 
             --header-height: 70px;
         }
         [data-theme="dark"] {
@@ -45,7 +48,7 @@
         }
         [data-theme="dark"] .btn-secondary,
         [data-theme="dark"] .card-lang-toggle {
-            background-color: #a505e4; color: var(--text-dark); border-color: #444;
+            background-color: #333; color: var(--text-dark); border-color: #444;
         }
         [data-theme="dark"] .template-card,
         [data-theme="dark"] .form-container-card { background: var(--bg-sidebar); }
@@ -82,13 +85,17 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-dark);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        
         .app-container {
-            display: grid; grid-template-columns: var(--sidebar-width) 1fr;
+            display: grid; 
+            grid-template-columns: var(--sidebar-width) 1fr;
             grid-template-rows: var(--header-height) 1fr;
             grid-template-areas: "header header" "sidebar content";
             height: 100vh; overflow: hidden;
             visibility: hidden; 
+            transition: grid-template-columns 0.3s ease; 
         }
         .app-container.loaded { visibility: visible; }
         
@@ -106,17 +113,86 @@
         }
         
         .hamburger-btn { background: none; border: none; cursor: pointer; padding: 5px; display: none; color: var(--text-light); }
-        .logo-small { height: 30px; width: auto; }
+        .logo-small { height: 30px; width: auto; transition: all 0.3s ease; }
         #page-title { font-size: 22px; font-weight: 600; color: var(--text-dark); }
         .user-info span { font-size: 15px; font-weight: 500; }
-        .btn-secondary { padding: 8px 16px; font-size: 14px; font-weight: 600; color: var(--text-dark); background-color: var(--secondary-color); border: 1px solid var(--border-color); border-radius: 18px; cursor: pointer; }
+        
+        .btn-secondary { 
+            padding: 8px 16px; font-size: 14px; font-weight: 600; 
+            color: var(--white); 
+            background-color: var(--secondary-color); 
+            border: none;
+            border-radius: 18px; cursor: pointer; 
+        }
         .theme-switcher { display: flex; align-items: center; color: var(--text-light); cursor: pointer; }
-        .app-sidebar { grid-area: sidebar; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 20px; overflow-y: auto; }
-        .app-sidebar nav { display: flex; flex-direction: column; gap: 8px; }
-        .app-sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 15px; font-size: 16px; font-weight: 500; color: var(--text-light); text-decoration: none; }
+        
+        .app-sidebar { 
+            grid-area: sidebar; background: var(--bg-sidebar); 
+            border-right: 1px solid var(--border-color); 
+            padding: 20px; 
+            overflow-y: auto;
+            overflow-x: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            transition: width 0.3s ease, transform 0.3s ease, padding 0.3s ease; /* V32: Добавлено padding */
+        }
+        .app-sidebar nav { 
+            display: flex; flex-direction: column; gap: 8px; 
+            flex-grow: 1; 
+        }
+        
+        .app-sidebar nav a { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 16px; 
+            border-radius: 15px; 
+            font-size: 16px; 
+            font-weight: 500; 
+            color: var(--text-light); 
+            text-decoration: none; 
+            transition: all 0.2s ease;
+        }
         .app-sidebar nav a:hover { background-color: var(--bg-main); color: var(--text-dark); }
         .app-sidebar nav a.active { background-color: var(--primary-color); color: var(--white); }
-        .app-sidebar nav a .icon { width: 20px; height: 20px; }
+        .app-sidebar nav a .icon { width: 20px; height: 20px; flex-shrink: 0; }
+        
+        .nav-link-text {
+            opacity: 1;
+            transition: opacity 0.2s 0.1s ease, transform 0.2s 0.1s ease;
+            white-space: nowrap;
+            transform: translateX(0);
+        }
+
+        .sidebar-toggle-wrapper {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            transition: border 0.3s ease, padding 0.3s ease; /* V32: Добавлено padding */
+        }
+        .sidebar-toggle {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            margin: 0 auto 0 16px; 
+        }
+        .sidebar-toggle:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+        .sidebar-toggle .icon {
+             transition: transform 0.3s ease;
+        }
+        
         .app-content { grid-area: content; overflow-y: auto; padding: 30px; }
         .page-section { display: none; }
         .page-section.active { display: block; }
@@ -161,7 +237,23 @@
             background: var(--white); border: 1px solid var(--border-color);
             border-radius: 16px; display: flex; flex-direction: column;
             height: 100%;
+            position: relative;
         }
+        
+        .status-badge-overlay { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            padding: 4px 10px; 
+            border-radius: 16px; 
+            color: var(--white); 
+            z-index: 5; 
+        }
+        .status-badge-overlay.pending { background-color: var(--yellow); }
+        .status-badge-overlay.rejected { background-color: var(--red); }
+        
         .card-header {
             display: flex; justify-content: space-between;
             align-items: center; padding: 12px 16px;
@@ -191,9 +283,28 @@
         .card-body.expanded {
             max-height: 1000px;
         }
-        .card-body.is-truncated {
+        .card-body.is-truncated { 
              padding-bottom: 35px;
         }
+        
+        .card-rejection-notice {
+            background-color: #fbeeeC;
+            border: 1px solid #e74c3c6b;
+            color: var(--red);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        [data-theme="dark"] .card-rejection-notice {
+             background-color: #e74c3c30;
+             border-color: var(--red);
+        }
+        .card-rejection-notice strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
         .lang-content {
             font-size: 15px; white-space: pre-wrap; word-wrap: break-word;
             flex-grow: 1; min-height: 0;
@@ -215,11 +326,11 @@
             color: var(--primary-color);
             font-size: 14px;
         }
-        [data-theme="dark"] .card-body-expander {
+        [data-theme="dark"] .card-body-expander { 
              background: linear-gradient(to bottom, transparent 0%, var(--bg-sidebar) 50%);
         }
         .card-body-expander.visible { display: block; }
-       
+        
         .card-footer {
             padding: 12px 16px;
             border-top: 1px solid var(--border-color);
@@ -319,6 +430,7 @@
         .rejection-notice { padding: 20px; background-color: #fbeeeC; border: 1px solid var(--red); color: var(--red); border-radius: 8px; margin-bottom: 20px; }
         .rejection-notice h4 { font-size: 18px; margin-bottom: 10px; }
         .rejection-notice p { font-size: 15px; line-height: 1.6; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; display: grid; place-items: center; overflow-y: auto; padding: 20px; animation: fadeIn 0.3s forwards; }
         .modal-content { background: var(--bg-sidebar); padding: 24px 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px; z-index: 1001; max-height: 90vh; overflow-y: auto; transform: scale(0.95); opacity: 0; animation: zoomInModal 0.3s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px; }
@@ -326,35 +438,107 @@
         .modal-close-btn { background: none; border: none; cursor: pointer; color: var(--text-light); padding: 4px; border-radius: 50%; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes zoomInModal { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
         .toast { padding: 15px 20px; border-radius: 8px; box-shadow: var(--shadow-medium); color: var(--white); font-weight: 500; opacity: 0; transform: translateX(100%); transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1); }
         .toast.show { opacity: 1; transform: translateX(0); }
         .toast.success { background-color: var(--primary-color); } .toast.error { background-color: var(--red); } .toast.info { background-color: #3498db; }
         
-        @media (max-width: 900px) {
-            .app-container { grid-template-columns: 1fr; grid-template-areas: "header" "content"; }
-            .app-sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-width); z-index: 1001; transform: translateX(-100%); }
-            .app-sidebar.visible { transform: translateX(0); }
-            .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; }
-            .hamburger-btn { display: block; z-index: 1002; }
-            .app-header { 
-                padding: 10px 20px; 
-                flex-wrap: wrap; 
-                height: auto;
+        /* V32: ИСПРАВЛЕНИЕ ОШИБКИ С ИКОНКАМИ МЕНЮ */
+        @media (min-width: 901px) {
+            body.sidebar-collapsed .app-container {
+                grid-template-columns: var(--sidebar-width-collapsed) 1fr;
             }
-            .app-header .header-right {
-                margin-left: auto;
+            body.sidebar-collapsed .app-sidebar {
+                width: var(--sidebar-width-collapsed);
+                /* V32-Fix: Уменьшаем padding, чтобы иконки поместились */
+                padding-left: 10px;
+                padding-right: 10px;
             }
-            .app-header .search-bar {
-                order: 3;
-                width: 100%; 
-                max-width: none; 
-                margin-top: 10px;
+            body.sidebar-collapsed .app-sidebar nav a {
+                justify-content: center;
+                padding-left: 0;
+                padding-right: 0;
             }
-            .app-content, .content { padding: 20px; }
-            .content-header { flex-direction: column; align-items: stretch; }
-            .filter-bar { flex-direction: column; }
+            body.sidebar-collapsed .nav-link-text {
+                opacity: 0;
+                transform: translateX(-10px);
+                transition: opacity 0.1s ease, transform 0.1s ease;
+                pointer-events: none;
+            }
+            body.sidebar-collapsed .sidebar-toggle-wrapper {
+                /* V32-Fix: Уменьшаем padding-top и прячем рамку */
+                padding-top: 20px; 
+                border-top-color: transparent;
+            }
+            body.sidebar-collapsed .sidebar-toggle {
+                margin: 0 auto; 
+            }
+            body.sidebar-collapsed .sidebar-toggle .icon {
+                transform: rotate(180deg);
+            }
+            body.sidebar-collapsed .header-left {
+                gap: 15px;
+            }
         }
+        
+      /* --- V35 FIX: Исправленная логика свернутого меню --- */
+@media (min-width: 901px) {
+    /* 1. Изменяем ширину сетки */
+    body.sidebar-collapsed .app-container {
+        grid-template-columns: var(--sidebar-width-collapsed) 1fr;
+    }
+
+    /* 2. Настройка самой панели */
+    body.sidebar-collapsed .app-sidebar {
+        width: var(--sidebar-width-collapsed);
+        padding: 20px 0; /* Убираем боковые отступы, центрируем через flex */
+        align-items: center; /* Принудительно центрируем всё содержимое */
+    }
+
+    /* 3. Настройка контейнера навигации */
+    body.sidebar-collapsed .app-sidebar nav {
+        width: 100%;
+        align-items: center; /* Центрируем ссылки внутри nav */
+    }
+
+    /* 4. Ссылки превращаем в квадратные кнопки */
+    body.sidebar-collapsed .app-sidebar nav a {
+        justify-content: center; /* Центрируем иконку внутри ссылки */
+        padding: 0;              /* Убираем внутренние отступы */
+        width: 50px;             /* Фиксированная ширина */
+        height: 50px;            /* Фиксированная высота */
+        margin: 0 auto 8px auto; /* Центрируем саму кнопку и даем отступ снизу */
+        border-radius: 14px;
+    }
+
+    /* 5. ГЛАВНОЕ ИСПРАВЛЕНИЕ: Полностью удаляем текст из потока */
+    body.sidebar-collapsed .nav-link-text {
+        display: none !important; 
+    }
+
+    /* 6. Кнопка сворачивания */
+    body.sidebar-collapsed .sidebar-toggle-wrapper {
+        padding-top: 20px;
+        border-top: none;
+        width: 100%;
+        display: flex;
+        justify-content: center; /* Центрируем кнопку */
+    }
+
+    body.sidebar-collapsed .sidebar-toggle {
+        margin: 0;
+    }
+
+    body.sidebar-collapsed .sidebar-toggle .icon {
+        transform: rotate(180deg);
+    }
+
+    body.sidebar-collapsed .header-left {
+        gap: 15px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -366,6 +550,7 @@
     <div id="toast-container"></div>
     
     <div class="app-container" id="app-container">
+        
         <header class="app-header">
             <div class="header-left">
                 <button class="hamburger-btn" id="hamburger-btn"><i data-feather="menu"></i></button>
@@ -387,13 +572,29 @@
 
         <aside class="app-sidebar" id="app-sidebar">
             <nav>
-                <a href="#" class="nav-link active" data-target="templates-page"><i data-feather="grid" class="icon"></i> Шаблоны</a>
-                <a href="#" class="nav-link" data-target="favorites-page"><i data-feather="star" class="icon"></i> Избранное</a>
-                <a href="#" class="nav-link" data-target="profile-page"><i data-feather="user" class="icon"></i> Профиль</a>
+                <a href="#" class="nav-link active" data-target="templates-page">
+                    <i data-feather="grid" class="icon"></i> 
+                    <span class="nav-link-text">Шаблоны</span>
+                </a>
+                <a href="#" class="nav-link" data-target="favorites-page">
+                    <i data-feather="star" class="icon"></i> 
+                    <span class="nav-link-text">Избранное</span>
+                </a>
+                <a href="#" class="nav-link" data-target="profile-page">
+                    <i data-feather="user" class="icon"></i> 
+                    <span class="nav-link-text">Профиль</span>
+                </a>
             </nav>
+            
+            <div class="sidebar-toggle-wrapper">
+                <button class="sidebar-toggle" id="sidebar-toggle" title="Свернуть меню">
+                    <i data-feather="chevrons-left" class="icon"></i>
+                </button>
+            </div>
         </aside>
 
         <main class="app-content">
+            
             <div id="templates-page" class="page-section active">
                 <div class="content-header">
                     <div class="filter-bar">
@@ -414,13 +615,10 @@
                     </div>
                     <button id="open-add-modal-btn" class="btn-primary" style="display: none;"><i data-feather="plus" class="icon"></i> Добавить</button>
                 </div>
+                
                 <div id="operator-pending-message" class="info-message" style="display: none; margin-bottom: 20px;"></div>
                 
                 <div class="template-grid" id="template-skeleton-loader">
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
                     <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
                     <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
                 </div>
@@ -433,20 +631,20 @@
                 </div>
                 <div class="template-grid" id="favorites-skeleton-loader">
                     <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
-                    <div class="skeleton-card"><div class="card-header"><div class="skeleton-line"></div></div><div class="card-body"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div><div class="card-footer"><div class="skeleton-line"></div><div class="skeleton-avatar"></div></div></div>
                 </div>
                 <div class="template-grid" id="favorites-template-list" style="display: none;"></div>
             </div>
 
             <div id="profile-page" class="page-section">
                 <div class="content-header"><h2>Ваш профиль</h2></div>
+                
                 <div id="rejection-notice" class="rejection-notice" style="display: none;">
                     <h4>Ваша заявка отклонена</h4>
                     <p><strong>Причина:</strong> <span id="rejection-reason"></span></p>
                     <p style="margin-top: 15px;">Вы можете исправить данные в профиле (если требуется) и отправить заявку повторно.</p>
                     <button id="resubmit-application-btn" class="btn-primary" style="width: 100%; margin-top: 15px; background-color: var(--blue);">Отправить заявку повторно</button>
                 </div>
+                
                 <div class="form-container-card">
                     <h3>Данные</h3>
                     <form id="profile-data-form">
@@ -455,6 +653,7 @@
                         <button type="submit" class="btn-primary" id="profile-data-btn" disabled>Сохранить ФИО</button>
                     </form>
                 </div>
+                
                 <div class="form-container-card">
                     <h3>Изменить пароль</h3>
                     <form id="profile-password-form">
@@ -464,6 +663,7 @@
                     </form>
                 </div>
             </div>
+            
         </main>
     </div>
     
@@ -490,728 +690,820 @@
     
     <script>
        const firebaseConfig = {
-     apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
-     authDomain: "bisoz-682b8.firebaseapp.com",
-     databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
-     projectId: "bisoz-682b8",
-     storageBucket: "bisoz-682b8.firebasestorage.app",
-     messagingSenderId: "90545419911",
-     appId: "1:90545419911:web:217b288ff83fa1e204ea22",
-     measurementId: "G-WYNYL1RCX2"
-   };
+         apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+         authDomain: "bisoz-682b8.firebaseapp.com",
+         databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+         projectId: "bisoz-682b8",
+         storageBucket: "bisoz-682b8.firebasestorage.app",
+         messagingSenderId: "90545419911",
+         appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+         measurementId: "G-WYNYL1RCX2"
+       };
     </script>
     
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
     
-    // --- 1. НЕМЕДЛЕННО УБИРАЕМ ЛОАДЕР ---
-    const loader = document.getElementById("page-loader");
-    const appContainer = document.getElementById("app-container");
-    if (loader && appContainer) {
-        appContainer.classList.add("loaded");
-        loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 300);
-    } else {
-        alert("Критическая ошибка: не найдены #page-loader или #app-container.");
-        return;
-    }
-
-    // --- 2. ПРОВЕРЯЕМ FIREBASE CONFIG ---
-    if (typeof firebaseConfig === 'undefined') {
-        alert("ОШИБКА (operator.js): 'firebaseConfig' не найден! \n\nПожалуйста, вставьте ваш firebaseConfig в operator.html.");
-        return;
-    }
-    
-    // --- 3. БЕЗОПАСНО ИНИЦИАЛИЗИРУЕМ FIREBASE ---
-    try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-    } catch (e) {
-         alert("ОШИБКА: " + e.message);
-         console.error("Ошибка инициализации Firebase:", e);
-         return;
-    }
-
-    const auth = firebase.auth();
-    const db = firebase.database();
-    
-    // Глобальные переменные
-    let currentUser = null; 
-    let allTemplates = {};
-    let allUsers = {};
-    let forcedToProfile = false;
-    let currentFilters = { title: '', tag: 'all', author: 'all' };
-    let allAvailableTags = new Set();
-    let currentGlobalLang = 'tj';
-    
-    // ================================================
-    // ====      ЛОГИКА ВХОДА (V20)                ====
-    // ================================================
-    
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.ref('/users/' + user.uid).once('value', snapshot => {
-                if (snapshot.exists() && !snapshot.val().isAdmin) {
-                    
-                    try {
-                        // Инициализируем панель (формы пока заблокированы)
-                        initOperatorPanel();
-                    } catch (e) {
-                        console.error("Критическая ошибка инициализации панели:", e);
-                        showToast("Критическая ошибка. Обновите страницу.", "error"); 
-                    }
-                    
-                    // V20: Запускаем постоянный слушатель. Он обновит UI и разблокирует формы
-                    db.ref('/users/' + user.uid).on('value', userSnapshot => {
-                        currentUser = { uid: user.uid, email: user.email, ...userSnapshot.val() };
-                        
-                        // Обновляем статус (одобрен/нет)
-                        updateOperatorStatusUI();
-                        
-                        // V20: Активируем формы профиля, когда данные currentUser загружены
-                        const profileNameInput = document.getElementById("profile-name");
-                        const profileEmailInput = document.getElementById("profile-email");
-                        
-                        if (profileNameInput.value === "") profileNameInput.value = currentUser.name || '';
-                        if (profileEmailInput.value === "") profileEmailInput.value = currentUser.email || '';
-                        
-                        profileNameInput.disabled = false;
-                        document.getElementById("profile-old-pass").disabled = false;
-                        document.getElementById("profile-new-pass").disabled = false;
-                        document.getElementById("profile-data-btn").disabled = false;
-                        document.getElementById("profile-pass-btn").disabled = false;
-                    });
-                    
-                } else if (snapshot.val() && snapshot.val().isAdmin) {
-                    window.location.href = "admin.html";
-                } else {
-                    showToast("Ошибка: не найдены данные пользователя.", "error");
-                    auth.signOut();
-                }
-            }).catch(error => {
-                console.error("Ошибка чтения данных (Проверьте Firebase Rules):", error);
-                showToast("Ошибка прав доступа к базе данных.", "error");
-                auth.signOut();
-            });
+        // --- 1. ЛОАДЕР ---
+        const loader = document.getElementById("page-loader");
+        const appContainer = document.getElementById("app-container");
+        if (loader && appContainer) {
+            appContainer.classList.add("loaded");
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 300);
         } else {
-            window.location.href = "login.html";
+            alert("Критическая ошибка: не найдены #page-loader или #app-container.");
+            return;
         }
-    });
 
-    // ================================================
-    // ====  ИНИЦИАЛИЗАЦИЯ ПАНЕЛИ ОПЕРАТОРА (V19)  ====
-    // ================================================
-    
-    function initOperatorPanel() {
-        if (window.listenersInitialized) return;
+        // --- 2. FIREBASE CONFIG ---
+        if (typeof firebaseConfig === 'undefined') {
+            alert("ОШИБКА (operator.js): 'firebaseConfig' не найден!");
+            return;
+        }
         
-        const operatorLogoutBtn = document.getElementById("operator-logout");
-        const hamburgerBtn = document.getElementById("hamburger-btn");
-        const sidebar = document.getElementById("app-sidebar");
-        const sidebarOverlay = document.getElementById("sidebar-overlay");
-        const navLinks = document.querySelectorAll(".nav-link");
-        const themeSwitcher = document.getElementById("theme-switcher");
-        const themeIcon = themeSwitcher.querySelector('i');
-        const openAddModalBtn = document.getElementById("open-add-modal-btn");
-        const operatorTemplateList = document.getElementById("operator-template-list");
-        const titleSearchInput = document.getElementById("title-search-input");
-        const favoritesTemplateList = document.getElementById("favorites-template-list");
-        const resubmitBtn = document.getElementById("resubmit-application-btn");
-        const profileDataForm = document.getElementById("profile-data-form");
-        const profilePasswordForm = document.getElementById("profile-password-form");
-        const modal = document.getElementById("template-modal");
-        const closeModalBtn = document.getElementById("close-modal-btn");
-        const operatorTemplateForm = document.getElementById("operator-template-form");
+        // --- 3. FIREBASE INIT ---
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+        } catch (e) {
+             alert("ОШИБКА: " + e.message);
+             console.error("Ошибка инициализации Firebase:", e);
+             return;
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.database();
         
-        themeSwitcher.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            setTeam(currentTheme === 'dark' ? 'light' : 'dark');
+        let currentUser = null; 
+        let userPermissions = {}; 
+        let allTemplates = {};
+        let allUsers = {};
+        let forcedToProfile = false;
+        let currentFilters = { title: '', tag: 'all', author: 'all' };
+        let allAvailableTags = new Set();
+        let currentGlobalLang = 'tj';
+        
+        // ================================================
+        // ====      ЛОГИКА ВХОДА (V32)                ====
+        // ================================================
+        
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                db.ref('/users/' + user.uid).once('value', snapshot => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        
+                        if (userData.role === "admin") {
+                            window.location.href = "admin.html"; return;
+                        }
+
+                        const perms = userData.permissions || {};
+                        if (userData.role === "moderator" || perms.canApproveTemplates || perms.canManageAccess) {
+                            window.location.href = "moderator.html"; return;
+                        }
+                        
+                        db.ref('/users/' + user.uid).on('value', userSnapshot => {
+                            currentUser = { uid: user.uid, email: user.email, ...userSnapshot.val() };
+                            userPermissions = currentUser.permissions || {}; 
+
+                            if (!window.listenersInitialized) {
+                                initOperatorPanel(); 
+                            }
+                            
+                            updateOperatorStatusUI(); 
+                            
+                            if (document.getElementById('profile-page').classList.contains('active')) {
+                                updateProfilePageFields(); 
+                            }
+                        });
+
+                    } else {
+                        showToast("Ошибка: не найдены данные пользователя.", "error");
+                        auth.signOut();
+                    }
+                }).catch(error => {
+                    console.error("Ошибка чтения данных:", error);
+                    showToast("Ошибка прав доступа к базе данных.", "error");
+                    auth.signOut();
+                });
+            } else {
+                window.location.href = "login.html";
+            }
         });
-        setTeam(localStorage.getItem('theme') || 'light');
+
+        // ================================================
+        // ====  ИНИЦИАЛИЗАЦИЯ ПАНЕЛИ ОПЕРАТОРА (V32)  ====
+        // ================================================
+        
+        function initOperatorPanel() {
+            if (window.listenersInitialized) return;
+            
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            const operatorLogoutBtn = document.getElementById("operator-logout");
+            const hamburgerBtn = document.getElementById("hamburger-btn");
+            const sidebar = document.getElementById("app-sidebar");
+            const sidebarOverlay = document.getElementById("sidebar-overlay");
+            const navLinks = document.querySelectorAll(".nav-link");
+            const themeSwitcher = document.getElementById("theme-switcher");
+            const openAddModalBtn = document.getElementById("open-add-modal-btn");
+            const operatorTemplateList = document.getElementById("operator-template-list");
+            const titleSearchInput = document.getElementById("title-search-input");
+            const favoritesTemplateList = document.getElementById("favorites-template-list");
+            const resubmitBtn = document.getElementById("resubmit-application-btn");
+            const profileDataForm = document.getElementById("profile-data-form");
+            const profilePasswordForm = document.getElementById("profile-password-form");
+            const modal = document.getElementById("template-modal");
+            const closeModalBtn = document.getElementById("close-modal-btn");
+            const operatorTemplateForm = document.getElementById("operator-template-form");
+
+            sidebarToggle.addEventListener("click", () => {
+                document.body.classList.toggle("sidebar-collapsed");
+                const isCollapsed = document.body.classList.contains("sidebar-collapsed");
+                localStorage.setItem("sidebarCollapsed", isCollapsed);
+            });
+            
+            if (localStorage.getItem("sidebarCollapsed") === "true") {
+                document.body.classList.add("sidebar-collapsed");
+            }
+            
+            themeSwitcher.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                setTeam(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+            setTeam(localStorage.getItem('theme') || 'light');
+            
+            hamburgerBtn.addEventListener("click", () => {
+                sidebar.classList.toggle("visible");
+                sidebarOverlay.style.display = sidebar.classList.contains("visible") ? "block" : "none";
+            });
+            sidebarOverlay.addEventListener("click", () => {
+                sidebar.classList.remove("visible");
+                sidebarOverlay.style.display = "none";
+            });
+            navLinks.forEach(link => {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    navigateToPage(link.getAttribute("data-target"));
+                });
+            });
+            
+            setupFilterListeners();
+
+            db.ref('users').on('value', snapshot => {
+                allUsers = snapshot.val() || {};
+                populateAuthorFilter();
+            }, err => { showToast("Ошибка загрузки пользователей.", "error"); console.error(err); });
+            
+            listenForTemplates();
+
+            operatorLogoutBtn.addEventListener("click", handleLogout);
+            resubmitBtn.addEventListener("click", handleResubmit);
+            operatorTemplateForm.addEventListener("submit", handleOperatorFormSubmit);
+            profileDataForm.addEventListener("submit", handleProfileDataSubmit);
+            profilePasswordForm.addEventListener("submit", handleProfilePasswordSubmit);
+            
+            titleSearchInput.addEventListener("input", (e) => {
+                currentFilters.title = e.target.value.toLowerCase();
+                renderAllLists();
+            });
+            
+            operatorTemplateList.addEventListener("click", handleCardClick);
+            favoritesTemplateList.addEventListener("click", handleCardClick);
+            
+            openAddModalBtn.addEventListener("click", () => openTemplateModal('add'));
+            closeModalBtn.addEventListener("click", closeTemplateModal);
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) closeTemplateModal();
+            });
+            
+            updateProfilePageFields();
+            profileDataForm.querySelector('button').disabled = false;
+            profilePasswordForm.querySelector('button').disabled = false;
+
+            navigateToPage("templates-page");
+            window.listenersInitialized = true;
+        }
+        
         function setTeam(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            themeIcon.setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
+            document.querySelector('#theme-switcher i').setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
             feather.replace();
         }
 
-        hamburgerBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("visible");
-            sidebarOverlay.style.display = sidebar.classList.contains("visible") ? "block" : "none";
-        });
-        sidebarOverlay.addEventListener("click", () => {
-            sidebar.classList.remove("visible");
-            sidebarOverlay.style.display = "none";
-        });
-        navLinks.forEach(link => {
-            link.addEventListener("click", (e) => {
-                e.preventDefault();
-                navigateToPage(link.getAttribute("data-target"));
-            });
-        });
-        
-        setupFilterListeners();
-
-        // V20: Загрузка пользователей (для фильтра авторов)
-        db.ref('users').on('value', snapshot => {
-            allUsers = snapshot.val() || {};
-            populateAuthorFilter();
-            // V20: renderAllLists() отсюда убран, он вызывается в listenForTemplates
-        }, err => { showToast("Ошибка загрузки пользователей.", "error"); console.error(err); });
-        
-        // V20: Загрузка шаблонов (основная функция)
-        listenForTemplates();
-
-        operatorLogoutBtn.addEventListener("click", handleLogout);
-        resubmitBtn.addEventListener("click", handleResubmit);
-        operatorTemplateForm.addEventListener("submit", handleOperatorFormSubmit);
-        profileDataForm.addEventListener("submit", handleProfileDataSubmit);
-        profilePasswordForm.addEventListener("submit", handleProfilePasswordSubmit);
-        
-        titleSearchInput.addEventListener("input", (e) => {
-            currentFilters.title = e.target.value.toLowerCase();
-            renderAllLists();
-        });
-        
-        operatorTemplateList.addEventListener("click", handleCardClick);
-        favoritesTemplateList.addEventListener("click", handleCardClick);
-        
-        openAddModalBtn.addEventListener("click", () => openTemplateModal('add'));
-        closeModalBtn.addEventListener("click", closeTemplateModal);
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) closeTemplateModal();
-        });
-        
-        // V20: UI статуса и навигация запускаются сразу
-        updateOperatorStatusUI();
-        navigateToPage("templates-page");
-        
-        window.listenersInitialized = true;
-    }
-    
-    function updateOperatorStatusUI() {
-        if (!currentUser) return; // V20: Выйдем, если currentUser еще не загружен
-        
-        const openAddModalBtn = document.getElementById("open-add-modal-btn");
-        const operatorPendingMessage = document.getElementById("operator-pending-message");
-        const rejectionNotice = document.getElementById("rejection-notice");
-        const rejectionReasonSpan = document.getElementById("rejection-reason");
-        document.getElementById("operator-user-email").textContent = currentUser.email;
-
-        if (currentUser.approved === true) {
-            openAddModalBtn.style.display = "inline-flex";
-            operatorPendingMessage.style.display = "none";
-            rejectionNotice.style.display = "none";
-        } else if (currentUser.approved === false) {
-            openAddModalBtn.style.display = "none";
-            operatorPendingMessage.textContent = "Ваш аккаунт ожидает подтверждения администратором.";
-            operatorPendingMessage.style.display = "block";
-            rejectionNotice.style.display = "none";
-        } else if (currentUser.approved === 'rejected') {
-            openAddModalBtn.style.display = "none";
-            operatorPendingMessage.style.display = "none";
-            rejectionNotice.style.display = "block";
-            rejectionReasonSpan.textContent = currentUser.rejectionReason || "Причина не указана.";
-            if (!forcedToProfile) { navigateToPage("profile-page"); forcedToProfile = true; }
-        }
-    }
-
-    function navigateToPage(targetId) {
-        document.querySelectorAll(".page-section").forEach(section => {
-            section.classList.toggle("active", section.id === targetId);
-        });
-        const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
-        if (activeLink) {
-            document.getElementById("page-title").textContent = activeLink.textContent.trim();
-            document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-            activeLink.classList.add("active");
-        }
-        
-        const headerSearch = document.querySelector('.app-header .search-bar');
-        if (targetId === 'templates-page' || targetId === 'favorites-page') {
-            if(headerSearch) headerSearch.style.visibility = 'visible';
-        } else {
-            if(headerSearch) headerSearch.style.visibility = 'hidden';
-        }
-        
-        if (window.innerWidth <= 900) {
-            document.getElementById("app-sidebar").classList.remove("visible");
-            document.getElementById("sidebar-overlay").style.display = "none";
-        }
-        
-        // V20: Убедимся, что renderAllLists() вызывается *после* того, как
-        // allTemplates и allUsers были хотя бы раз загружены.
-        if (Object.keys(allTemplates).length > 0 && Object.keys(allUsers).length > 0) {
-            if(targetId === 'templates-page' || targetId === 'favorites-page') { 
-                renderAllLists(); 
+        function updateProfilePageFields() {
+            if (!currentUser) return;
+            const profileNameInput = document.getElementById("profile-name");
+            const profileEmailInput = document.getElementById("profile-email");
+            
+            if (profileNameInput) {
+                profileNameInput.value = currentUser.name || '';
+                profileNameInput.disabled = false;
             }
-        }
-    }
-    
-    // ... (handleLogout, handleResubmit, handleProfile... и т.д. без изменений)
-    function handleLogout() { auth.signOut(); }
-    function handleResubmit() {
-        db.ref('users/' + currentUser.uid).update({ approved: false, rejectionReason: null })
-        .then(() => { showToast("Ваша заявка отправлена повторно.", "success"); });
-    }
-    function handleProfileDataSubmit(e) {
-        e.preventDefault();
-        db.ref('users/' + currentUser.uid).update({ name: document.getElementById("profile-name").value })
-            .then(() => { showToast("ФИО успешно обновлено.", "success"); })
-            .catch(err => { showToast(`Ошибка: ${err.message}`, "error"); });
-    }
-    function handleProfilePasswordSubmit(e) {
-        e.preventDefault();
-        const oldPass = document.getElementById("profile-old-pass").value;
-        const newPass = document.getElementById("profile-new-pass").value;
-        const user = auth.currentUser;
-        const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPass);
-        user.reauthenticateWithCredential(credential)
-            .then(() => user.updatePassword(newPass))
-            .then(() => {
-                document.getElementById("profile-password-form").reset();
-                showToast("Пароль успешно обновлен.", "success");
-            })
-            .catch(error => {
-                let msg = (error.code === 'auth/wrong-password') ? "Текущий пароль введен неверно." : `Ошибка: ${error.message}`;
-                showToast(msg, "error");
-            });
-    }
-    function openTemplateModal(mode, templateId = null, data = {}) {
-        const modal = document.getElementById("template-modal");
-        if (!modal) return; 
-        const modalTitle = modal.querySelector("#modal-title");
-        const templateIdInput = modal.querySelector("#op-template-id");
-        const templateForm = document.getElementById("operator-template-form");
-        if (mode === 'edit') {
-            if(modalTitle) modalTitle.textContent = "Изменить шаблон";
-            if(templateIdInput) templateIdInput.value = templateId;
-            modal.querySelector("#op-template-title").value = data.title || '';
-            modal.querySelector("#op-template-ru").value = data.text_ru;
-            modal.querySelector("#op-template-tj").value = data.text_tj;
-            modal.querySelector("#op-template-tags").value = data.tags ? data.tags.join(", ") : '';
-        } else {
-            if(modalTitle) modalTitle.textContent = "Добавить шаблон";
-            if(templateForm) templateForm.reset();
-            if(templateIdInput) templateIdInput.value = "";
-        }
-        modal.style.display = "grid";
-        feather.replace(); 
-    }
-    function closeTemplateModal() { document.getElementById("template-modal").style.display = "none"; }
-    function handleOperatorFormSubmit(e) {
-        e.preventDefault();
-        if (currentUser.approved !== true) { showToast("У вас нет прав на добавление шаблонов.", "error"); return; }
-        let title = document.getElementById("op-template-title").value.trim();
-        const textTj = document.getElementById("op-template-tj").value.trim();
-        if (!title) { title = textTj.substring(0, 40) + (textTj.length > 40 ? "..." : ""); }
-        if (!title) { title = "Без названия"; }
-        const templateData = {
-            title: title,
-            text_ru: document.getElementById("op-template-ru").value,
-            text_tj: textTj,
-            tags: document.getElementById("op-template-tags").value.split(",").map(t => t.trim()).filter(t => t),
-        };
-        const templateId = document.getElementById("op-template-id").value;
-        const action = templateId 
-            ? db.ref('templates/' + templateId).update(templateData)
-            : db.ref('templates').push({ ...templateData, authorId: currentUser.uid, createdAt: new Date().toISOString() });
-        action.then(() => {
-            closeTemplateModal();
-            showToast(templateId ? "Шаблон обновлен" : "Шаблон добавлен", "success");
-        }).catch(err => showToast(`Ошибка: ${err.message}`, "error"));
-    }
-    
-    // V17: (6 Цветов)
-    function getTagColor(tag) {
-        let hash = 0;
-        for (let i = 0; i < tag.length; i++) { hash = tag.charCodeAt(i) + ((hash << 5) - hash); }
-        return `tag-color-${Math.abs(hash % 6)}`;
-    }
-    
-    function setupFilterListeners() {
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const dropdowns = document.querySelectorAll('.filter-dropdown');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const filterName = btn.dataset.filter;
-                const dropdown = document.querySelector(`.filter-dropdown[data-filter-list="${filterName}"]`);
-                dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
-                dropdown.classList.toggle('active');
-            });
-        });
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.filter-group')) {
-                dropdowns.forEach(d => d.classList.remove('active'));
+            if (profileEmailInput) {
+                profileEmailInput.value = currentUser.email || '';
             }
-        });
-        document.querySelector('.filter-dropdown[data-filter-list="tags"]').addEventListener('click', (e) => {
-            const item = e.target.closest('.filter-dropdown-item');
-            if (!item) return;
-            currentFilters.tag = item.dataset.value;
-            updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="tags"]'), item.textContent, currentFilters.tag !== 'all');
-            renderAllLists();
-            document.querySelector('.filter-dropdown[data-filter-list="tags"]').classList.remove('active');
-        });
-        document.querySelector('.filter-dropdown[data-filter-list="authors"]').addEventListener('click', (e) => {
-            const item = e.target.closest('.filter-dropdown-item');
-            if (!item) return;
-            currentFilters.author = item.dataset.value;
-            updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="authors"]'), item.textContent, currentFilters.author !== 'all');
-            renderAllLists();
-            document.querySelector('.filter-dropdown[data-filter-list="authors"]').classList.remove('active');
-        });
-    }
-    function updateFilterButtonUI(btnElement, text, isActive) {
-        btnElement.querySelector('.filter-btn-text').textContent = text;
-        btnElement.classList.toggle('active-filter', isActive);
-    }
-    
-    // ================================================
-    // ====      ЛОГИКА ФИЛЬТРОВ (V20)             ====
-    // ================================================
-    function populateTagFilter() {
-        const dropdownTagList = document.querySelector('.filter-dropdown[data-filter-list="tags"]');
-        dropdownTagList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.tag === 'all' ? 'active' : ''}" data-value="all">Все метки</div>`;
-        allAvailableTags.forEach(tag => {
-            dropdownTagList.insertAdjacentHTML('beforeend', `
-                <div class="filter-dropdown-item ${currentFilters.tag === tag ? 'active' : ''}" data-value="${tag}">
-                    <span class="tag-color-preview ${getTagColor(tag)}"></span> ${tag}
-                </div>
-            `);
-        });
-        
-        // V20: Активируем кнопку фильтра
-        const tagsFilterBtn = document.getElementById("tags-filter-btn");
-        if(tagsFilterBtn) tagsFilterBtn.disabled = false;
-    }
-    function populateAuthorFilter() {
-        if (Object.keys(allUsers).length === 0) return;
-        const dropdownAuthorList = document.querySelector('.filter-dropdown[data-filter-list="authors"]');
-        dropdownAuthorList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.author === 'all' ? 'active' : ''}" data-value="all">Все операторы</div>`;
-        for (const uid in allUsers) {
-            const user = allUsers[uid];
-            if (user && user.name && !user.isAdmin) {
-                dropdownAuthorList.insertAdjacentHTML('beforeend', `
-                    <div class="filter-dropdown-item ${currentFilters.author === uid ? 'active' : ''}" data-value="${uid}">${user.name}</div>
-                `);
+            document.getElementById("profile-old-pass").disabled = false;
+            document.getElementById("profile-new-pass").disabled = false;
+        }
+
+        function updateOperatorStatusUI() {
+            if (!currentUser) return; 
+            
+            const openAddModalBtn = document.getElementById("open-add-modal-btn");
+            const operatorPendingMessage = document.getElementById("operator-pending-message");
+            const rejectionNotice = document.getElementById("rejection-notice");
+            const rejectionReasonSpan = document.getElementById("rejection-reason");
+            document.getElementById("operator-user-email").textContent = currentUser.email;
+
+            if (currentUser.approved === true) {
+                openAddModalBtn.style.display = "inline-flex";
+                operatorPendingMessage.style.display = "none";
+                rejectionNotice.style.display = "none";
+            } else if (currentUser.approved === false) {
+                openAddModalBtn.style.display = "none";
+                operatorPendingMessage.textContent = "Ваш аккаунт ожидает подтверждения администратором.";
+                operatorPendingMessage.style.display = "block";
+                rejectionNotice.style.display = "none";
+            } else if (currentUser.approved === 'rejected') {
+                openAddModalBtn.style.display = "none";
+                operatorPendingMessage.style.display = "none";
+                rejectionNotice.style.display = "block";
+                rejectionReasonSpan.textContent = currentUser.rejectionReason || "Причина не указана.";
+                if (!forcedToProfile) { navigateToPage("profile-page"); forcedToProfile = true; }
             }
         }
         
-        // V20: Активируем кнопку фильтра
-        const authorsFilterBtn = document.getElementById("authors-filter-btn");
-        if(authorsFilterBtn) authorsFilterBtn.disabled = false;
-    }
-    
-    // ================================================
-    // ====      ЛОГИКА РЕНДЕРА (V20)             ====
-    // ================================================
-    
-    function listenForTemplates() {
-        // V20: Скелетоны уже отображаются через HTML
-        db.ref('templates').on('value', snapshot => {
-            allTemplates = snapshot.val() || {};
-            allAvailableTags.clear();
-            for (const id in allTemplates) {
-                if (allTemplates[id].tags) {
-                    allTemplates[id].tags.forEach(tag => allAvailableTags.add(tag));
+        function navigateToPage(targetId) {
+            document.querySelectorAll(".page-section").forEach(section => {
+                section.classList.toggle("active", section.id === targetId);
+            });
+            const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+            if (activeLink) {
+                const linkText = activeLink.querySelector('.nav-link-text').textContent.trim();
+                document.getElementById("page-title").textContent = linkText;
+                
+                document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+                activeLink.classList.add("active");
+            }
+            
+            const headerSearch = document.querySelector('.app-header .search-bar');
+            if (targetId === 'templates-page' || targetId === 'favorites-page') {
+                if(headerSearch) headerSearch.style.visibility = 'visible';
+            } else {
+                if(headerSearch) headerSearch.style.visibility = 'hidden';
+            }
+            
+            if (window.innerWidth <= 900) {
+                document.getElementById("app-sidebar").classList.remove("visible");
+                document.getElementById("sidebar-overlay").style.display = "none";
+            }
+            
+            if (Object.keys(allTemplates).length > 0 && Object.keys(allUsers).length > 0) {
+                if(targetId === 'templates-page' || targetId === 'favorites-page') { 
+                    renderAllLists(); 
                 }
             }
-            populateTagFilter();
+        }
+        
+        function handleLogout() { auth.signOut(); }
+        
+        function handleResubmit() {
+            db.ref('users/' + currentUser.uid).update({ approved: false, rejectionReason: null })
+            .then(() => { showToast("Ваша заявка отправлена повторно.", "success"); });
+        }
+        
+        function handleProfileDataSubmit(e) {
+            e.preventDefault();
+            db.ref('users/' + currentUser.uid).update({ name: document.getElementById("profile-name").value })
+                .then(() => { showToast("ФИО успешно обновлено.", "success"); })
+                .catch(err => { showToast(`Ошибка: ${err.message}`, "error"); });
+        }
+        
+        function handleProfilePasswordSubmit(e) {
+            e.preventDefault();
+            const oldPass = document.getElementById("profile-old-pass").value;
+            const newPass = document.getElementById("profile-new-pass").value;
+            const user = auth.currentUser;
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPass);
             
-            // V20: Рендерим ВСЕ списки.
-            renderAllLists();
-        }, err => { 
-            showToast("Ошибка загрузки шаблонов.", "error"); 
-            console.error(err);
-            // V20: Скрываем скелетоны даже при ошибке
-            document.getElementById("template-skeleton-loader").style.display = "none";
-            document.getElementById("favorites-skeleton-loader").style.display = "none";
-        });
-    }
-    
-    function renderAllLists() {
-        // V20: Убедимся, что оба источника данных загружены
-        if (Object.keys(allTemplates).length === 0 || Object.keys(allUsers).length === 0) {
-            // Данные еще не готовы (или их нет), рендерить пока нечего
-            // Скелетоны останутся видимыми
-            return;
+            user.reauthenticateWithCredential(credential)
+                .then(() => user.updatePassword(newPass))
+                .then(() => {
+                    document.getElementById("profile-password-form").reset();
+                    showToast("Пароль успешно обновлен.", "success");
+                })
+                .catch(error => {
+                    let msg = (error.code === 'auth/wrong-password') ? "Текущий пароль введен неверно." : `Ошибка: ${error.message}`;
+                    showToast(msg, "error");
+                });
         }
         
-        renderTemplates(document.getElementById("operator-template-list"), 'all');
-        renderTemplates(document.getElementById("favorites-template-list"), 'favorites');
-    }
-    
-    // ================================================
-    // ====   ИСПРАВЛЕНИЕ V22 (checkCardOverflow)  ====
-    // ================================================
-    function checkCardOverflow(card) {
-        const body = card.querySelector('.card-body');
-        const activeContent = card.querySelector('.lang-content.active');
-        if (!body || !activeContent) return;
-        const expander = body.querySelector('.card-body-expander');
-        
-        const isExpanded = body.classList.contains('expanded');
-        expander.classList.remove('visible');
-        body.classList.remove('is-truncated'); 
-
-        if (activeContent.scrollHeight > 120) {
-            expander.classList.add('visible');
-            if (isExpanded) {
-                expander.textContent = "Свернуть"; // V21: Текст "Свернуть"
-                body.classList.remove('is-truncated'); 
+        function openTemplateModal(mode, templateId = null, data = {}) {
+            const modal = document.getElementById("template-modal");
+            if (!modal) return; 
+            const modalTitle = modal.querySelector("#modal-title");
+            const templateIdInput = modal.querySelector("#op-template-id");
+            const templateForm = document.getElementById("operator-template-form");
+            if (mode === 'edit') {
+                if(modalTitle) modalTitle.textContent = "Изменить шаблон";
+                if(templateIdInput) templateIdInput.value = templateId;
+                modal.querySelector("#op-template-title").value = data.title || '';
+                modal.querySelector("#op-template-ru").value = data.text_ru;
+                modal.querySelector("#op-template-tj").value = data.text_tj;
+                modal.querySelector("#op-template-tags").value = data.tags ? data.tags.join(", ") : '';
             } else {
-                expander.textContent = "Развернуть"; // V21: Текст "Развернуть"
-                body.classList.add('is-truncated');
+                if(modalTitle) modalTitle.textContent = "Добавить шаблон";
+                if(templateForm) templateForm.reset();
+                if(templateIdInput) templateIdInput.value = "";
             }
-        } else {
-            expander.classList.remove('visible');
-            body.classList.remove('is-truncated');
-            body.classList.remove('expanded'); 
+            modal.style.display = "grid";
+            feather.replace(); 
         }
-    }
-    function updateCardLanguage(cardElement, newLang) {
-        if (!cardElement) return;
-        const otherLang = (newLang === 'ru') ? 'tj' : 'ru';
-        const contentNew = cardElement.querySelector(`.lang-content[data-content="${newLang}"]`);
-        const contentOld = cardElement.querySelector(`.lang-content[data-content="${otherLang}"]`);
-        if (contentNew) contentNew.classList.add('active');
-        if (contentOld) contentOld.classList.remove('active');
-        const toggleBtn = cardElement.querySelector('.card-lang-toggle');
-        if (toggleBtn) {
-            toggleBtn.dataset.lang = otherLang;
-            toggleBtn.textContent = otherLang.toUpperCase();
-        }
-        checkCardOverflow(cardElement); 
-    }
-    
-    function renderTemplates(targetListElement, filterMode) {
-        if (!currentUser || !allUsers) return; 
         
-        // V20: Определяем, какой скелетон прятать
-        let skeletonLoader;
-        if (targetListElement.id === 'operator-template-list') {
-            skeletonLoader = document.getElementById("template-skeleton-loader");
-        } else if (targetListElement.id === 'favorites-template-list') {
-            skeletonLoader = document.getElementById("favorites-skeleton-loader");
-        }
+        function closeTemplateModal() { document.getElementById("template-modal").style.display = "none"; }
 
-        // V20: Прячем скелетон и показываем реальный список
-        if (skeletonLoader) skeletonLoader.style.display = "none";
-        targetListElement.style.display = "grid";
-        targetListElement.innerHTML = "";
-        
-        let filteredTemplates = [];
-        for (const id in allTemplates) {
-            filteredTemplates.push({ id: id, ...allTemplates[id] });
-        }
-        
-        if (filterMode === 'favorites') {
-            filteredTemplates = filteredTemplates.filter(t => t.favorites && t.favorites[currentUser.uid]);
-        }
-        
-        // V17: "Супер-поиск"
-        if (currentFilters.title) {
-            const searchTerm = currentFilters.title;
-            filteredTemplates = filteredTemplates.filter(t => {
-                const titleMatch = (t.title || '').toLowerCase().includes(searchTerm);
-                const textRuMatch = (t.text_ru || '').toLowerCase().includes(searchTerm);
-                const textTjMatch = (t.text_tj || '').toLowerCase().includes(searchTerm);
-                const tagsMatch = t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+        // V32: ИСПРАВЛЕНИЕ ОШИБКИ (Повторная отправка)
+        function handleOperatorFormSubmit(e) {
+            e.preventDefault();
+            if (currentUser.approved !== true) { 
+                // V32-Fix: Разрешаем редактировать, даже если не одобрен (для исправления)
+                // Но проверяем, есть ли ID. Если ID нет (новая), то запрещаем.
+                const templateId = document.getElementById("op-template-id").value;
+                if (!templateId) {
+                    showToast("Только одобренные операторы могут добавлять новые шаблоны.", "error"); 
+                    return; 
+                }
+            }
+            
+            let title = document.getElementById("op-template-title").value.trim();
+            const textTj = document.getElementById("op-template-tj").value.trim();
+            if (!title) { title = textTj.substring(0, 40) + (textTj.length > 40 ? "..." : ""); }
+            if (!title) { title = "Без названия"; }
+            
+            const templateData = {
+                title: title,
+                text_ru: document.getElementById("op-template-ru").value,
+                text_tj: textTj,
+                tags: document.getElementById("op-template-tags").value.split(",").map(t => t.trim()).filter(t => t),
+            };
+            
+            const templateId = document.getElementById("op-template-id").value;
+            let action;
+            let msg;
+
+            if (templateId) {
+                // --- РЕДАКТИРОВАНИЕ ---
+                const currentStatus = (allTemplates[templateId] && allTemplates[templateId].status) ? allTemplates[templateId].status : 'approved';
                 
-                const author = allUsers[t.authorId];
-                const authorName = author ? author.name.toLowerCase() : "";
-                const authorMatch = authorName.includes(searchTerm);
+                // V32-Fix: Если шаблон был отклонен, он АВТОМАТИЧЕСКИ уходит на модерацию
+                if (currentStatus === 'rejected') {
+                    templateData.status = "pending";
+                    templateData.rejectionReason = null; // Очищаем причину
+                    msg = "Шаблон отправлен на повторную модерацию";
+                } else {
+                    templateData.status = currentStatus; // Сохраняем статус
+                    msg = "Шаблон обновлен";
+                }
+                action = db.ref('templates/' + templateId).update(templateData);
+            } else {
+                // --- ДОБАВЛЕНИЕ НОВОГО ---
+                // V32-Fix: Дополнительная проверка, т.к. мы пустили неодобренных
+                if (currentUser.approved !== true) {
+                     showToast("Только одобренные операторы могут добавлять новые шаблоны.", "error"); 
+                     return;
+                }
+                
+                templateData.authorId = currentUser.uid;
+                templateData.createdAt = new Date().toISOString();
+                
+                templateData.status = userPermissions.canApproveTemplates ? "approved" : "pending"; 
+                msg = templateData.status === 'pending' ? "Шаблон отправлен на модерацию" : "Шаблон добавлен";
+                
+                action = db.ref('templates').push(templateData);
+            }
 
-                return titleMatch || textRuMatch || textTjMatch || tagsMatch || authorMatch;
+            action.then(() => {
+                closeTemplateModal();
+                showToast(msg, "success");
+            }).catch(err => showToast(`Ошибка: ${err.message}`, "error"));
+        }
+
+        function getTagColor(tag) {
+            let hash = 0;
+            for (let i = 0; i < tag.length; i++) { hash = tag.charCodeAt(i) + ((hash << 5) - hash); }
+            return `tag-color-${Math.abs(hash % 6)}`;
+        }
+        
+        function setupFilterListeners() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const dropdowns = document.querySelectorAll('.filter-dropdown');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filterName = btn.dataset.filter;
+                    const dropdown = document.querySelector(`.filter-dropdown[data-filter-list="${filterName}"]`);
+                    dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
+                    dropdown.classList.toggle('active');
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.filter-group')) {
+                    dropdowns.forEach(d => d.classList.remove('active'));
+                }
+            });
+            document.querySelector('.filter-dropdown[data-filter-list="tags"]').addEventListener('click', (e) => {
+                const item = e.target.closest('.filter-dropdown-item');
+                if (!item) return;
+                currentFilters.tag = item.dataset.value;
+                updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="tags"]'), item.textContent, currentFilters.tag !== 'all');
+                renderAllLists();
+                document.querySelector('.filter-dropdown[data-filter-list="tags"]').classList.remove('active');
+            });
+            document.querySelector('.filter-dropdown[data-filter-list="authors"]').addEventListener('click', (e) => {
+                const item = e.target.closest('.filter-dropdown-item');
+                if (!item) return;
+                currentFilters.author = item.dataset.value;
+                updateFilterButtonUI(document.querySelector('.filter-btn[data-filter="authors"]'), item.textContent, currentFilters.author !== 'all');
+                renderAllLists();
+                document.querySelector('.filter-dropdown[data-filter-list="authors"]').classList.remove('active');
             });
         }
         
-        if (currentFilters.tag !== 'all') {
-            filteredTemplates = filteredTemplates.filter(t => t.tags && t.tags.includes(currentFilters.tag));
-        }
-        if (currentFilters.author !== 'all') {
-            filteredTemplates = filteredTemplates.filter(t => t.authorId === currentFilters.author);
-        }
-        
-        filteredTemplates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-        // V20: Улучшенное "Пустое состояние"
-        if (filteredTemplates.length === 0) {
-            let message;
-            if (filterMode === 'favorites') {
-                message = (currentFilters.title || currentFilters.tag !== 'all' || currentFilters.author !== 'all')
-                    ? "В избранном нет совпадений по вашему запросу."
-                    : "У вас пока нет избранных шаблонов.";
-            } else {
-                message = (currentFilters.title || currentFilters.tag !== 'all' || currentFilters.author !== 'all')
-                    ? "Шаблоны не найдены. Попробуйте изменить поиск или фильтры."
-                    : "Шаблоны пока не добавлены.";
+        function updateFilterButtonUI(btnElement, text, isActive) {
+            if (btnElement) {
+                btnElement.querySelector('.filter-btn-text').textContent = text;
+                btnElement.classList.toggle('active-filter', isActive);
             }
-            targetListElement.innerHTML = `<p>${message}</p>`;
-            targetListElement.style.display = "block"; // 'grid' смотрится плохо для <p>
-            return;
         }
         
-        // V20: Убедимся, что display: grid, если есть карточки
-        targetListElement.style.display = "grid";
-
-        filteredTemplates.forEach(template => {
-            const author = allUsers[template.authorId];
-            const authorName = author ? author.name : "Неизвестно";
-            const isFavorite = template.favorites && template.favorites[currentUser.uid];
-            const canEdit = (template.authorId === currentUser.uid) && (currentUser.approved === true);
-            
-            const tagsHtml = (template.tags || []).map(tag => `<span class="tag ${getTagColor(tag)}">${tag}</span>`).join("");
-
-            const editButtons = canEdit ? `
-                <button class="card-action-btn" data-action="edit" title="Редактировать"><i data-feather="edit-2" class="icon-small"></i></button>
-                <button class="card-action-btn" data-action="delete" title="Удалить"><i data-feather="trash-2" class="icon-small"></i></button>
-            ` : '';
-
-            const activeLang = currentGlobalLang;
-            const inactiveLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
-
-            const card = document.createElement("div");
-            card.className = "template-card";
-            card.setAttribute("data-id", template.id);
-            card.innerHTML = `
-                <div class="card-header">
-                    <h4>${template.title}</h4>
-                    <button class="card-lang-toggle" data-action="toggle-lang" data-lang="${inactiveLang}" title="Сменить язык">${inactiveLang.toUpperCase()}</button>
-                </div>
-                
-                <div class="card-body">
-                    <div class="lang-content ${activeLang === 'tj' ? 'active' : ''}" data-content="tj">${template.text_tj}</div>
-                    <div class="lang-content ${activeLang === 'ru' ? 'active' : ''}" data-content="ru">${template.text_ru}</div>
-                    <div class="card-body-expander" data-action="expand">Развернуть</div>
-                </div>
-                
-                <div class="card-footer">
-                    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
-                    <div class="card-meta">
-                        <div class="card-author" title="Добавил: ${authorName}">
-                            <i data-feather="user" class="icon-small"></i>
-                        </div>
-                        <div class="card-footer-actions">
-                            <span class="card-favorite ${isFavorite ? 'favorited' : ''}" data-action="favorite" title="В избранное">
-                                <i data-feather="star" class="icon-small"></i>
-                            </span>
-                            ${editButtons}
-                            <button class="card-action-btn" data-action="copy" title="Копировать">
-                                <i data-feather="copy" class="icon-small"></i>
-                            </button>
-                        </div>
+        function populateTagFilter() {
+            const dropdownTagList = document.querySelector('.filter-dropdown[data-filter-list="tags"]');
+            if (!dropdownTagList) return;
+            dropdownTagList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.tag === 'all' ? 'active' : ''}" data-value="all">Все метки</div>`;
+            allAvailableTags.forEach(tag => {
+                dropdownTagList.insertAdjacentHTML('beforeend', `
+                    <div class="filter-dropdown-item ${currentFilters.tag === tag ? 'active' : ''}" data-value="${tag}">
+                        <span class="tag-color-preview ${getTagColor(tag)}"></span> ${tag}
                     </div>
-                </div>
-            `;
-            targetListElement.appendChild(card);
-            checkCardOverflow(card);
-        });
-        feather.replace();
-    }
-    
-    // ================================================
-    // ====   ИСПРАВЛЕНИЕ V22 (handleCardClick)    ====
-    // ================================================
-    function handleCardClick(e) {
-        const card = e.target.closest(".template-card");
-        if (!card) return;
-        const templateId = card.getAttribute("data-id");
-        if (!templateId) return;
-        const template = allTemplates[templateId];
-        if (!template) return;
+                `);
+            });
+            const tagsFilterBtn = document.getElementById("tags-filter-btn");
+            if(tagsFilterBtn) tagsFilterBtn.disabled = false;
+        }
         
-        const actionTarget = e.target.closest("[data-action]");
-        if (!actionTarget) return;
+        function populateAuthorFilter() {
+            if (Object.keys(allUsers).length === 0) return;
+            const dropdownAuthorList = document.querySelector('.filter-dropdown[data-filter-list="authors"]');
+            if (!dropdownAuthorList) return;
+            dropdownAuthorList.innerHTML = `<div class="filter-dropdown-item ${currentFilters.author === 'all' ? 'active' : ''}" data-value="all">Все операторы</div>`;
+            for (const uid in allUsers) {
+                const user = allUsers[uid];
+                if (user && user.name && (user.role === 'operator' || user.role === 'moderator')) {
+                    dropdownAuthorList.insertAdjacentHTML('beforeend', `
+                        <div class="filter-dropdown-item ${currentFilters.author === uid ? 'active' : ''}" data-value="${uid}">${user.name}</div>
+                    `);
+                }
+            }
+            const authorsFilterBtn = document.getElementById("authors-filter-btn");
+            if(authorsFilterBtn) authorsFilterBtn.disabled = false;
+        }
         
-        const action = actionTarget.dataset.action;
+        // ================================================
+        // ====      ЛОГИКА РЕНДЕРА (V32)             ====
+        // ================================================
 
-        switch (action) {
-            
-            case 'expand': {
-                const parentGrid = card.closest('.template-grid');
-                if (!parentGrid) break;
-                
-                const clickedCardOffsetTop = card.offsetTop;
-                
-                const bodyOfClickedCard = card.querySelector('.card-body');
-                const shouldExpand = !bodyOfClickedCard.classList.contains('expanded');
+        // V32: ИСПРАВЛЕНИЕ ОШИБКИ (Не все шаблоны видны)
+        function listenForTemplates() {
+            db.ref('templates').on('value', snapshot => {
+                const allData = snapshot.val() || {};
+                allTemplates = {}; // Начинаем с чистого списка
+                allAvailableTags.clear();
 
-                const allCardsInGrid = parentGrid.querySelectorAll('.template-card');
+                for (const id in allData) {
+                    const t = allData[id];
+                    // V32-Fix: Старые шаблоны без статуса считаем одобренными
+                    const status = t.status || 'approved'; 
 
-                allCardsInGrid.forEach(otherCard => {
-                    if (otherCard.offsetTop === clickedCardOffsetTop) {
-                        const body = otherCard.querySelector('.card-body');
-                        const expander = otherCard.querySelector('.card-body-expander');
-                        
-                        if (body) {
-                            body.classList.toggle('expanded', shouldExpand);
-                            body.classList.toggle('is-truncated', !shouldExpand);
-                        }
-                        if (expander && expander.classList.contains('visible')) {
-                            // V21: Текст "Развернуть" / "Свернуть"
-                            expander.textContent = shouldExpand ? "Свернуть" : "Развернуть";
+                    // V32-Fix: Показываем шаблон, ЕСЛИ:
+                    // 1. Это НАШ шаблон (любой статус - 'pending', 'rejected', 'approved')
+                    // 2. Это ЧУЖОЙ, но ОДОБРЕННЫЙ шаблон
+                    if ((currentUser && t.authorId === currentUser.uid) || status === 'approved') {
+                        allTemplates[id] = t; // Добавляем в список
+                        if (t.tags) {
+                            t.tags.forEach(tag => allAvailableTags.add(tag));
                         }
                     }
-                });
-                break;
+                }
+                
+                populateTagFilter();
+                renderAllLists();
+            }, err => { 
+                showToast("Ошибка загрузки шаблонов.", "error"); 
+                console.error(err);
+                document.getElementById("template-skeleton-loader").style.display = "none";
+                document.getElementById("favorites-skeleton-loader").style.display = "none";
+            });
+        }
+        
+        function renderAllLists() {
+            if (!allUsers || Object.keys(allUsers).length === 0) {
+                return;
             }
-            
-            case 'toggle-lang': {
-                currentGlobalLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
-                const allGrids = document.querySelectorAll('.template-grid');
-                allGrids.forEach(grid => {
-                    grid.querySelectorAll('.template-card').forEach(cardElement => {
-                        updateCardLanguage(cardElement, currentGlobalLang);
-                    });
-                });
-                break;
-            }
-            case 'edit': {
-                if ((template.authorId === currentUser.uid) && (currentUser.approved === true)) { openTemplateModal('edit', templateId, template); }
-                else if (currentUser.approved !== true) { showToast("Только одобренные операторы могут редактировать.", "error"); }
-                break;
-            }
-            case 'delete': {
-                if ((template.authorId === currentUser.uid) && (currentUser.approved === true)) {
-                    if (confirm(`Удалить шаблон "${template.title}"?`)) { db.ref('templates/' + templateId).remove().then(() => showToast("Шаблон удален", "info")); }
-                } else if (currentUser.approved !== true) { showToast("Только одобренные операторы могут удалять.", "error"); }
-                break;
-            }
-            case 'favorite': {
-                const isFavorite = template.favorites && template.favorites[currentUser.uid];
-                db.ref(`templates/${templateId}/favorites/${currentUser.uid}`).set(isFavorite ? null : true);
-                break;
-            }
-            case 'copy': {
-                const activeLangContent = card.querySelector(".lang-content.active").textContent;
-                navigator.clipboard.writeText(activeLangContent).then(() => {
-                    actionTarget.style.color = "var(--primary-color)";
-                    setTimeout(() => {
-                        actionTarget.style.color = "var(--text-light)";
-                    }, 1500);
-                });
-                break;
+            renderTemplates(document.getElementById("operator-template-list"), 'all');
+            renderTemplates(document.getElementById("favorites-template-list"), 'favorites');
+        }
+
+        function checkCardOverflow(card) {
+            const body = card.querySelector('.card-body');
+            const activeContent = card.querySelector('.lang-content.active');
+            if (!body || !activeContent) return;
+            const expander = body.querySelector('.card-body-expander');
+            const isExpanded = body.classList.contains('expanded');
+            expander.classList.remove('visible');
+            body.classList.remove('is-truncated'); 
+            if (activeContent.scrollHeight > 120) {
+                expander.classList.add('visible');
+                if (isExpanded) {
+                    expander.textContent = "Свернуть"; 
+                    body.classList.remove('is-truncated'); 
+                } else {
+                    expander.textContent = "Развернуть"; 
+                    body.classList.add('is-truncated');
+                }
+            } else {
+                expander.classList.remove('visible');
+                body.classList.remove('is-truncated');
+                body.classList.remove('expanded'); 
             }
         }
-    }
-    
-    function showToast(message, type = 'info') {
-        const toastContainer = document.getElementById("toast-container");
-        if (!toastContainer) return;
-        const toast = document.createElement("div");
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        toastContainer.appendChild(toast);
-        setTimeout(() => toast.classList.add("show"), 100);
-        setTimeout(() => {
-            toast.classList.remove("show");
-            setTimeout(() => toastContainer.removeChild(toast), 500);
-        }, 3000);
-    }
-});
+        
+        function updateCardLanguage(cardElement, newLang) {
+            if (!cardElement) return;
+            const otherLang = (newLang === 'ru') ? 'tj' : 'ru';
+            const contentNew = cardElement.querySelector(`.lang-content[data-content="${newLang}"]`);
+            const contentOld = cardElement.querySelector(`.lang-content[data-content="${otherLang}"]`);
+            if (contentNew) contentNew.classList.add('active');
+            if (contentOld) contentOld.classList.remove('active');
+            const toggleBtn = cardElement.querySelector('.card-lang-toggle');
+            if (toggleBtn) {
+                toggleBtn.dataset.lang = otherLang;
+                toggleBtn.textContent = otherLang.toUpperCase();
+            }
+            checkCardOverflow(cardElement); 
+        }
+
+        // V32: ИСПРАВЛЕНИЕ ОШИБКИ (Показ статуса и причины)
+        function renderTemplates(targetListElement, filterMode) {
+            if (!currentUser || !allUsers) return; 
+            
+            let skeletonLoader;
+            if (targetListElement.id === 'operator-template-list') {
+                skeletonLoader = document.getElementById("template-skeleton-loader");
+            } else if (targetListElement.id === 'favorites-template-list') {
+                skeletonLoader = document.getElementById("favorites-skeleton-loader");
+            }
+            if (skeletonLoader) skeletonLoader.style.display = "none";
+            targetListElement.style.display = "grid";
+            targetListElement.innerHTML = "";
+            
+            let filteredTemplates = [];
+            for (const id in allTemplates) {
+                filteredTemplates.push({ id: id, ...allTemplates[id] });
+            }
+            
+            if (filterMode === 'favorites') {
+                filteredTemplates = filteredTemplates.filter(t => t.favorites && t.favorites[currentUser.uid]);
+            }
+            
+            if (currentFilters.title) {
+                const searchTerm = currentFilters.title;
+                filteredTemplates = filteredTemplates.filter(t => {
+                    const titleMatch = (t.title || '').toLowerCase().includes(searchTerm);
+                    const textRuMatch = (t.text_ru || '').toLowerCase().includes(searchTerm);
+                    const textTjMatch = (t.text_tj || '').toLowerCase().includes(searchTerm);
+                    const tagsMatch = t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                    const author = allUsers[t.authorId];
+                    const authorName = author ? author.name.toLowerCase() : "";
+                    const authorMatch = authorName.includes(searchTerm);
+                    return titleMatch || textRuMatch || textTjMatch || tagsMatch || authorMatch;
+                });
+            }
+            
+            if (currentFilters.tag !== 'all') {
+                filteredTemplates = filteredTemplates.filter(t => t.tags && t.tags.includes(currentFilters.tag));
+            }
+            if (currentFilters.author !== 'all') {
+                filteredTemplates = filteredTemplates.filter(t => t.authorId === currentFilters.author);
+            }
+            
+            filteredTemplates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (filteredTemplates.length === 0) {
+                let message = "Шаблоны не найдены.";
+                if (filterMode === 'favorites') {
+                    message = "У вас пока нет избранных шаблонов.";
+                }
+                if (filterMode === 'all' && (currentFilters.title || currentFilters.tag !== 'all' || currentFilters.author !== 'all')) {
+                     message = "Шаблоны не найдены. Попробуйте изменить поиск или фильтры.";
+                }
+                targetListElement.innerHTML = `<p>${message}</p>`;
+                targetListElement.style.display = "block";
+                return;
+            }
+            
+            targetListElement.style.display = "grid";
+
+            filteredTemplates.forEach(template => {
+                const author = allUsers[template.authorId];
+                const authorName = author ? author.name : (template.authorEmail || "Неизвестно");
+                const isFavorite = template.favorites && template.favorites[currentUser.uid];
+                
+                // V32-Fix: Проверяем права на кнопки
+                const canEdit = (template.authorId === currentUser.uid || userPermissions.canEditAll === true) && (currentUser.approved === true);
+                const canDelete = (template.authorId === currentUser.uid || userPermissions.canDeleteAll === true) && (currentUser.approved === true);
+                
+                // V32-Fix: Особое право на редактирование (если свой, но отклонен)
+                const canEditRejected = (template.authorId === currentUser.uid && (template.status === 'rejected' || template.status === 'pending'));
+
+                const editButtonHtml = (canEdit || canEditRejected) ? `<button class="card-action-btn" data-action="edit" title="Редактировать"><i data-feather="edit-2" class="icon-small"></i></button>` : '';
+                const deleteButtonHtml = (canDelete || canEditRejected) ? `<button class="card-action-btn" data-action="delete" title="Удалить"><i data-feather="trash-2" class="icon-small"></i></button>` : '';
+                
+                const tagsHtml = (template.tags || []).map(tag => `<span class="tag ${getTagColor(tag)}">${tag}</span>`).join("");
+                const activeLang = currentGlobalLang;
+                const inactiveLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
+
+                // V32-Fix: Показываем статус и причину
+                const status = template.status || "approved"; 
+                let statusBadgeHtml = "";
+                let rejectionNoticeHtml = "";
+                
+                if (template.authorId === currentUser.uid) {
+                    if (status === "pending") {
+                        statusBadgeHtml = '<span class="status-badge-overlay pending">Ожидание</span>';
+                    } else if (status === "rejected") {
+                        statusBadgeHtml = '<span class="status-badge-overlay rejected">Отклонено</span>';
+                        if (template.rejectionReason) {
+                            rejectionNoticeHtml = `
+                                <div class="card-rejection-notice">
+                                    <strong>Причина:</strong> ${template.rejectionReason}
+                                </div>`;
+                        }
+                    }
+                }
+
+                const card = document.createElement("div");
+                card.className = "template-card";
+                card.setAttribute("data-id", template.id);
+                card.innerHTML = `
+                    ${statusBadgeHtml}
+                    <div class="card-header">
+                        <h4>${template.title}</h4>
+                        <button class="card-lang-toggle" data-action="toggle-lang" data-lang="${inactiveLang}" title="Сменить язык">${inactiveLang.toUpperCase()}</button>
+                    </div>
+                    
+                    <div class="card-body">
+                        ${rejectionNoticeHtml}
+                        <div class="lang-content ${activeLang === 'tj' ? 'active' : ''}" data-content="tj">${template.text_tj}</div>
+                        <div class="lang-content ${activeLang === 'ru' ? 'active' : ''}" data-content="ru">${template.text_ru}</div>
+                        <div class="card-body-expander" data-action="expand">Развернуть</div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+                        <div class="card-meta">
+                            <div class="card-author" title="Добавил: ${authorName}">
+                                <i data-feather="user" class="icon-small"></i>
+                            </div>
+                            <div class="card-footer-actions">
+                                <span class="card-favorite ${isFavorite ? 'favorited' : ''}" data-action="favorite" title="В избранное">
+                                    <i data-feather="star" class="icon-small"></i>
+                                </span>
+                                ${editButtonHtml}
+                                ${deleteButtonHtml}
+                                <button class="card-action-btn" data-action="copy" title="Копировать">
+                                    <i data-feather="copy" class="icon-small"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                targetListElement.appendChild(card);
+                checkCardOverflow(card);
+            });
+            feather.replace();
+        }
+
+        function handleCardClick(e) {
+            const card = e.target.closest(".template-card");
+            if (!card) return;
+            const templateId = card.getAttribute("data-id");
+            if (!templateId || !allTemplates[templateId]) return;
+            const template = allTemplates[templateId];
+            
+            const actionTarget = e.target.closest("[data-action]");
+            if (!actionTarget) return;
+            
+            const action = actionTarget.dataset.action;
+
+            switch (action) {
+                case 'expand': {
+                    const parentGrid = card.closest('.template-grid');
+                    if (!parentGrid) break;
+                    const clickedCardOffsetTop = card.offsetTop;
+                    const bodyOfClickedCard = card.querySelector('.card-body');
+                    const shouldExpand = !bodyOfClickedCard.classList.contains('expanded');
+                    const allCardsInGrid = parentGrid.querySelectorAll('.template-card');
+                    allCardsInGrid.forEach(otherCard => {
+                        if (otherCard.offsetTop === clickedCardOffsetTop) {
+                            const body = otherCard.querySelector('.card-body');
+                            const expander = otherCard.querySelector('.card-body-expander');
+                            if (body) {
+                                body.classList.toggle('expanded', shouldExpand);
+                                body.classList.toggle('is-truncated', !shouldExpand);
+                            }
+                            if (expander && expander.classList.contains('visible')) {
+                                expander.textContent = shouldExpand ? "Свернуть" : "Развернуть";
+                            }
+                        }
+                    });
+                    break;
+                }
+                case 'toggle-lang': {
+                    currentGlobalLang = (currentGlobalLang === 'tj') ? 'ru' : 'tj';
+                    const allGrids = document.querySelectorAll('.template-grid');
+                    allGrids.forEach(grid => {
+                        grid.querySelectorAll('.template-card').forEach(cardElement => {
+                            updateCardLanguage(cardElement, currentGlobalLang);
+                        });
+                    });
+                    break;
+                }
+                case 'edit': {
+                    const canEdit = (template.authorId === currentUser.uid || userPermissions.canEditAll === true) && (currentUser.approved === true);
+                    const canEditRejected = (template.authorId === currentUser.uid && (template.status === 'rejected' || template.status === 'pending'));
+
+                    if (canEdit || canEditRejected) {
+                         openTemplateModal('edit', templateId, template);
+                    } else if (currentUser.approved !== true) {
+                         showToast("Только одобренные операторы могут редактировать.", "error");
+                    } else {
+                         showToast("У вас нет прав на редактирование чужого шаблона.", "error");
+                    }
+                    break;
+                }
+                case 'delete': {
+                    const canDelete = (template.authorId === currentUser.uid || userPermissions.canDeleteAll === true) && (currentUser.approved === true);
+                    const canDeleteRejected = (template.authorId === currentUser.uid && (template.status === 'rejected' || template.status === 'pending'));
+
+                    if (canDelete || canDeleteRejected) {
+                        if (confirm(`Удалить шаблон "${template.title}"?`)) { 
+                            db.ref('templates/' + templateId).remove().then(() => showToast("Шаблон удален", "info")); 
+                        }
+                    } else if (currentUser.approved !== true) {
+                         showToast("Только одобренные операторы могут удалять.", "error");
+                    } else {
+                         showToast("У вас нет прав на удаление чужого шаблона.", "error");
+                    }
+                    break;
+                }
+                case 'favorite': {
+                    const isFavorite = template.favorites && template.favorites[currentUser.uid];
+                    db.ref(`templates/${templateId}/favorites/${currentUser.uid}`).set(isFavorite ? null : true);
+                    break;
+                }
+                case 'copy': {
+                    const activeLangContent = card.querySelector(".lang-content.active").textContent;
+                    navigator.clipboard.writeText(activeLangContent).then(() => {
+                        actionTarget.style.color = "var(--primary-color)";
+                        setTimeout(() => {
+                            if (actionTarget) actionTarget.style.color = "var(--text-light)";
+                        }, 1500);
+                    });
+                    break;
+                }
+            }
+        }
+        
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById("toast-container");
+            if (!toastContainer) return;
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.add("show"), 100);
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => { 
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                    }
+                }, 500);
+            }, 3000);
+        }
+    });
     </script>
     <script>
       if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/service-worker.js'); }); }
