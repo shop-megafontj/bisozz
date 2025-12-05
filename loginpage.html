@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
+    <meta name="theme-color" content="#00B956">
+    <title>Вход - MegaFon Templates</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #00B956; /* МегаФон Зеленый */
+            --primary-hover: #00a34c;
+            --text-dark: #222;
+            --text-light: #666;
+            --bg-main: #f4f7f6;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --red: #e74c3c;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- КОНТЕЙНЕРЫ СТРАНИЦ --- */
+        .page {
+            display: none; /* Скрыты по умолчанию */
+            width: 100%;
+            padding: 20px;
+            justify-content: center;
+        }
+        .page.active {
+            display: flex;
+        }
+
+        .form-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 455px;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo { width: 180px; margin-bottom: 24px; }
+        h2 { margin-bottom: 24px; font-size: 24px; font-weight: 700; }
+        p.desc { color: var(--text-light); margin-bottom: 20px; font-size: 14px; line-height: 1.5; }
+
+        /* --- ПОЛЯ ВВОДА --- */
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.15);
+        }
+
+        /* --- КНОПКИ И ССЫЛКИ --- */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 19px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .auth-toggle { margin-top: 24px; font-size: 14px; color: var(--text-light); }
+        .auth-toggle a { color: var(--primary-color); font-weight: 600; text-decoration: none; }
+        .auth-toggle a:hover { text-decoration: underline; }
+
+        .forgot-password-link {
+            text-align: right;
+            margin-top: -12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .forgot-password-link a { color: var(--text-light); text-decoration: none; }
+        .forgot-password-link a:hover { color: var(--primary-color); }
+
+        /* --- СООБЩЕНИЯ --- */
+        .error-message, .info-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: left;
+            display: none;
+        }
+        .error-message { background-color: #fdeaea; color: var(--red); border: 1px solid #fadbd8; }
+        .info-message { background-color: #eafaf1; color: #155724; border: 1px solid #d4edda; }
+
+        /* --- СПИННЕР --- */
+        .spinner {
+            display: none;
+            width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-primary.loading .btn-text { display: none; }
+        .btn-primary.loading .spinner { display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- TOAST --- */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            padding: 16px 24px; border-radius: 12px; color: white; font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transform: translateX(100%); transition: all 0.4s ease;
+        }
+        .toast.show { opacity: 1; transform: translateX(0); }
+        .toast.success { background-color: var(--primary-color); }
+        .toast.error { background-color: var(--red); }
+    </style>
+</head>
+<body>
+    
+    <div id="toast-container"></div>
+
+    <div id="login-page" class="page active">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon" class="logo">
+            <h2>Вход</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" required placeholder="name@megafon.tj">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="login-password" required placeholder="Введите пароль">
+                </div>
+                
+                <div class="forgot-password-link">
+                    <a href="#" id="go-to-reset">Забыли пароль?</a>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-login">
+                    <span class="btn-text">Войти</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <p id="login-error" class="error-message"></p>
+
+                <div class="auth-toggle">
+                    Нет аккаунта? <a href="#" id="go-to-register">Зарегистрироваться</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="register-page" class="page">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon" class="logo">
+            <h2>Регистрация</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <input type="text" id="reg-name" required placeholder="Иванов Иван">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" required placeholder="name@megafon.tj">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="reg-pass" required placeholder="Минимум 6 символов">
+                </div>
+                <div class="form-group">
+                    <label>Повторите пароль</label>
+                    <input type="password" id="reg-pass-confirm" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-register">
+                    <span class="btn-text">Отправить заявку</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <p id="reg-error" class="error-message"></p>
+
+                <div class="auth-toggle">
+                    Уже есть аккаунт? <a href="#" id="back-to-login-reg">Войти</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="reset-request-page" class="page">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon" class="logo">
+            <h2>Восстановление</h2>
+            <p class="desc">Введите почту, привязанную к аккаунту. Мы отправим ссылку для создания нового пароля.</p>
+            
+            <form id="reset-request-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reset-email" required placeholder="name@megafon.tj">
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-reset-request">
+                    <span class="btn-text">Отправить ссылку</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <p id="reset-req-message" class="info-message"></p>
+                <p id="reset-req-error" class="error-message"></p>
+
+                <div class="auth-toggle">
+                    <a href="#" id="back-to-login-reset">Вернуться ко входу</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="new-password-page" class="page">
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/horizontal-logo.png" alt="MegaFon" class="logo">
+            <h2>Новый пароль</h2>
+            <p class="desc">Придумайте надежный пароль для входа в систему.</p>
+            
+            <form id="new-password-form">
+                <div class="form-group">
+                    <label>Новый пароль</label>
+                    <input type="password" id="new-pass" required>
+                </div>
+                <div class="form-group">
+                    <label>Подтвердите пароль</label>
+                    <input type="password" id="new-pass-confirm" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-new-pass">
+                    <span class="btn-text">Сохранить пароль</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <p id="new-pass-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+            authDomain: "bisoz-682b8.firebaseapp.com",
+            databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bisoz-682b8",
+            storageBucket: "bisoz-682b8.appspot.com",
+            messagingSenderId: "90545419911",
+            appId: "1:90545419911:web:217b288ff83fa1e204ea22"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // UI References
+            const pages = {
+                login: document.getElementById("login-page"),
+                register: document.getElementById("register-page"),
+                resetRequest: document.getElementById("reset-request-page"),
+                newPassword: document.getElementById("new-password-page")
+            };
+
+            // URL Params Check (Handling Reset Link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode'); // resetPassword
+            const actionCode = urlParams.get('oobCode'); // Token
+            const redirectUrl = urlParams.get('redirect');
+
+            // --- 2. VIEW SWITCHING LOGIC ---
+            function showPage(pageName) {
+                Object.values(pages).forEach(p => p.classList.remove('active'));
+                if(pages[pageName]) pages[pageName].classList.add('active');
+                
+                // Очистка ошибок при смене страниц
+                document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.info-message').forEach(el => el.style.display = 'none');
+            }
+
+            // Event Listeners for switching
+            document.getElementById("go-to-register").onclick = (e) => { e.preventDefault(); showPage('register'); };
+            document.getElementById("go-to-reset").onclick = (e) => { e.preventDefault(); showPage('resetRequest'); };
+            document.getElementById("back-to-login-reg").onclick = (e) => { e.preventDefault(); showPage('login'); };
+            document.getElementById("back-to-login-reset").onclick = (e) => { e.preventDefault(); showPage('login'); };
+
+            // --- 3. TOAST NOTIFICATION ---
+            function showToast(text, type = 'success') {
+                const container = document.getElementById("toast-container");
+                const toast = document.createElement("div");
+                toast.className = `toast ${type}`;
+                toast.textContent = text;
+                container.appendChild(toast);
+                setTimeout(() => toast.classList.add("show"), 100);
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                    setTimeout(() => container.removeChild(toast), 300);
+                }, 4000);
+            }
+
+            function toggleLoading(btnId, isLoading) {
+                const btn = document.getElementById(btnId);
+                if(isLoading) {
+                    btn.classList.add('loading');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+            }
+
+            // --- 4. AUTH LOGIC: INITIAL CHECK ---
+            // Если в URL есть 'mode', значит мы пришли из письма, НЕ делаем авто-вход
+            if (mode === 'resetPassword' && actionCode) {
+                showPage('newPassword');
+                handlePasswordReset(actionCode);
+            } else {
+                // Обычный вход: проверяем, авторизован ли уже
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        checkUserRoleAndRedirect(user);
+                    }
+                });
+            }
+
+            // --- 5. LOGIC: LOGIN ---
+            document.getElementById("login-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const email = document.getElementById("login-email").value;
+                const pass = document.getElementById("login-password").value;
+                const errorEl = document.getElementById("login-error");
+
+                toggleLoading("btn-login", true);
+                errorEl.style.display = 'none';
+
+                auth.signInWithEmailAndPassword(email, pass)
+                    .catch(err => {
+                        toggleLoading("btn-login", false);
+                        errorEl.textContent = getErrorMessage(err.code);
+                        errorEl.style.display = 'block';
+                    });
+            });
+
+            // --- 6. LOGIC: REGISTER ---
+            document.getElementById("register-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const name = document.getElementById("reg-name").value;
+                const email = document.getElementById("reg-email").value;
+                const pass = document.getElementById("reg-pass").value;
+                const confirm = document.getElementById("reg-pass-confirm").value;
+                const errorEl = document.getElementById("reg-error");
+
+                if (pass !== confirm) {
+                    errorEl.textContent = "Пароли не совпадают";
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                toggleLoading("btn-register", true);
+
+                auth.createUserWithEmailAndPassword(email, pass)
+                    .then((cred) => {
+                        return db.ref('users/' + cred.user.uid).set({
+                            name: name,
+                            email: email,
+                            isAdmin: false,
+                            approved: false
+                        });
+                    })
+                    .then(() => {
+                        showToast("Регистрация успешна! Перенаправление...", "success");
+                        setTimeout(() => window.location.href = "index.html", 1500);
+                    })
+                    .catch(err => {
+                        toggleLoading("btn-register", false);
+                        errorEl.textContent = getErrorMessage(err.code);
+                        errorEl.style.display = 'block';
+                    });
+            });
+
+            // --- 7. LOGIC: SEND RESET EMAIL ---
+            document.getElementById("reset-request-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const email = document.getElementById("reset-email").value;
+                const msgEl = document.getElementById("reset-req-message");
+                const errEl = document.getElementById("reset-req-error");
+
+                toggleLoading("btn-reset-request", true);
+                msgEl.style.display = 'none';
+                errEl.style.display = 'none';
+
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        msgEl.textContent = "Ссылка отправлена! Проверьте почту (и папку спам).";
+                        msgEl.style.display = 'block';
+                        document.getElementById("reset-request-form").reset();
+                    })
+                    .catch(err => {
+                        errEl.textContent = getErrorMessage(err.code);
+                        errEl.style.display = 'block';
+                    })
+                    .finally(() => {
+                        toggleLoading("btn-reset-request", false);
+                    });
+            });
+
+            // --- 8. LOGIC: CONFIRM NEW PASSWORD (Hidden Page) ---
+            function handlePasswordReset(code) {
+                document.getElementById("new-password-form").addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const newPass = document.getElementById("new-pass").value;
+                    const confirm = document.getElementById("new-pass-confirm").value;
+                    const errorEl = document.getElementById("new-pass-error");
+
+                    if(newPass.length < 6) {
+                        errorEl.textContent = "Пароль слишком короткий (минимум 6 символов)";
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+                    if (newPass !== confirm) {
+                        errorEl.textContent = "Пароли не совпадают";
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+
+                    toggleLoading("btn-new-pass", true);
+
+                    auth.confirmPasswordReset(code, newPass)
+                        .then(() => {
+                            showToast("Пароль успешно изменен!", "success");
+                            // Очищаем URL
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                            setTimeout(() => showPage('login'), 2000);
+                        })
+                        .catch(err => {
+                            errorEl.textContent = err.code === 'auth/invalid-action-code' 
+                                ? "Ссылка устарела или уже использована." 
+                                : getErrorMessage(err.code);
+                            errorEl.style.display = 'block';
+                        })
+                        .finally(() => {
+                            toggleLoading("btn-new-pass", false);
+                        });
+                });
+            }
+
+            // --- HELPERS ---
+            function checkUserRoleAndRedirect(user) {
+                if (redirectUrl) { window.location.href = redirectUrl; return; }
+                
+                db.ref('/users/' + user.uid).once('value').then(snapshot => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        window.location.href = data.isAdmin ? "admin.html" : "operator.html";
+                    } else {
+                        // Если юзера нет в базе (редкий кейс)
+                        window.location.href = "index.html"; 
+                    }
+                });
+            }
+
+            function getErrorMessage(code) {
+                switch (code) {
+                    case 'auth/user-not-found': return "Пользователь с такой почтой не найден.";
+                    case 'auth/wrong-password': return "Неверный пароль.";
+                    case 'auth/invalid-email': return "Некорректный Email.";
+                    case 'auth/email-already-in-use': return "Эта почта уже зарегистрирована.";
+                    case 'auth/weak-password': return "Пароль слишком простой.";
+                    case 'auth/too-many-requests': return "Слишком много попыток. Попробуйте позже.";
+                    default: return "Произошла ошибка: " + code;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
