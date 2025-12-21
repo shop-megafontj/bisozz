@@ -107,10 +107,10 @@
         .sk-footer-card { padding: 24px; margin-top: 24px; border-radius: 24px; }
         .sk-copy-btn { width: 160px; height: 50px; margin: 24px auto; border-radius: 28px; }
         body { font-family: "Manrope", sans-serif; background-color: var(--background-color); margin: 0; padding: 0; font-weight: bold; color: var(--text-color); }
-        .container { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); box-shadow: 0 0 20px var(--shadow-color); }
+        .container { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); box-shadow: 0 0 20px var(--shadow-color); z-index: 10; position: relative; } /* Added z-index */
         .header { position: relative; }
         .header img { width: 100%; height: auto; display: block; }
-        .lang-switcher, .theme-switcher { position: absolute; top: 10px; background-color: var(--header-bg); border-radius: 20px; border: 1px solid var(--primary-color); padding: 4px; display: flex; box-shadow: 0 2px 5px var(--shadow-color); }
+        .lang-switcher, .theme-switcher { position: absolute; top: 10px; background-color: var(--header-bg); border-radius: 20px; border: 1px solid var(--primary-color); padding: 4px; display: flex; box-shadow: 0 2px 5px var(--shadow-color); z-index: 20; }
         .lang-switcher { right: 10px; }
         .theme-switcher { left: 10px; }
         .lang-btn, .theme-btn { background-color: transparent; border: none; padding: 8px 16px; border-radius: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; font-size: 12px; }
@@ -132,13 +132,24 @@
         .option-button:hover { box-shadow: var(--button-shadow); border-color: var(--primary-color); }
         .option-button.active { background-color: var(--active-bg); color: var(--active-text); border-color: var(--primary-color); }
         .total-price-display { text-align: center; font-size: 15px; font-weight: bold; padding: 20px 15px; }
-        .options-card { background-color: var(--light-gray); border-radius: 25px; margin: 20px; padding: 15px; }
-        .card-header { font-weight: bold; margin-bottom: 15px; }
+        
+        /* --- ACCORDION STYLES --- */
+        .options-card { background-color: var(--light-gray); border-radius: 25px; margin: 20px; padding: 15px; transition: all 0.3s ease; }
+        .card-header { font-weight: bold; margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: 0; }
+        .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.4s ease-out, opacity 0.4s ease, margin-top 0.4s ease; opacity: 0; margin-top: 0; }
+        /* Класс open добавляется JS для открытия */
+        .options-card.open .accordion-content { max-height: 1000px; opacity: 1; margin-top: 15px; }
+        .options-card.open .card-header { margin-bottom: 0; }
+        /* Стрелочка */
+        .card-header::after { content: '❯'; font-size: 14px; color: var(--primary-color); transform: rotate(90deg); transition: transform 0.3s ease; }
+        .options-card.open .card-header::after { transform: rotate(-90deg); }
+
         .card-item { display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
         .card-item:last-child { border-bottom: none; }
         .item-icon img { width: 50px; height: 50px; border-radius: 20px; margin-right: 15px; }
         .item-title { font-weight: bold; }
         .item-description { font-size: 14px; color: #666; line-height: 1.4; }
+        
         .footer-container { padding: 10px 20px 20px; }
         .card { background-color: var(--light-gray); border-radius: 20px; padding: 20px; margin-top: 15px; box-shadow: var(--card-shadow); font-size: 14px; line-height: 1.5; }
         .copy-button-card { padding: 15px; text-align: center; }
@@ -199,6 +210,37 @@
         #personal-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--brand-purple); color: white; padding: 12px 25px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
         #personal-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px); }
         @media (max-width: 480px) { #personal .configurator-grid { grid-template-columns: 1fr; } }
+        
+        /* --- SNOWFLAKES STYLE --- */
+        #snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicking through snow */
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #aad4ff; /* Slightly blueish white for visibility on light bg */
+            font-size: 1em;
+            opacity: 0.8;
+            user-select: none;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        /* Make snow pure white in dark mode */
+        body.dark .snowflake {
+            color: #fff;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(105vh) translateX(20px); opacity: 0.3; }
+        }
     </style>
 </head>
 
@@ -231,8 +273,42 @@
             <a class="nav-link" id="templates-link" href="#" data-translate-key="nav_templates">Шаблоны</a>
         </div>
 
-        <div id="life1" class="tariff-content active"><div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span></div><div class="options-grid" id="minutes-options1"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span></div><div class="options-grid" id="sms-options1"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span></div><div class="options-grid" id="internet-options1"></div></div><div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div><div class="options-card"><div class="card-header" data-translate-key="additional_options"></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div></div><div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container1"></div></div><div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container1" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text1"></p></div><div class="card copy-button-card"><button id="copy-bonus-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div></div>
-        <div id="life2" class="tariff-content"><div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div><div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div><div id="grid-view-life2"><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span></div><div class="options-grid" id="minutes-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span></div><div class="options-grid" id="sms-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span></div><div class="options-grid" id="internet-options2"></div></div></div><div id="slider-view-life2" style="display: none;"><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div><input type="range" id="internet-slider" class="slider" step="1"><div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div><input type="range" id="minutes-slider" class="slider" step="1"><div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div><input type="range" id="sms-slider" class="slider" step="1"><div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div></div></div><div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div><div class="options-card"><div class="card-header" data-translate-key="additional_options"></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div><div class="item-details"><div class="item-title" data-translate-key="oila_tv"></div><div class="item-description" data-translate-key="oila_tv_desc"></div></div></div><div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div><div class="item-details"><div class="item-title" data-translate-key="ivi_cinema"></div><div class="item-description" data-translate-key="ivi_cinema_desc"></div></div></div></div><div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container2"></div></div><div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container2" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text2"></p></div><div class="card copy-button-card"><button id="copy-bonus-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div></div>
+        <div id="life1" class="tariff-content active">
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span></div><div class="options-grid" id="minutes-options1"></div></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span></div><div class="options-grid" id="sms-options1"></div></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span></div><div class="options-grid" id="internet-options1"></div></div>
+            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div>
+            
+            <div class="options-card" onclick="toggleAccordion(this)">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="accordion-content">
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div>
+                </div>
+            </div>
+            <div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container1"></div></div><div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container1" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text1"></p></div><div class="card copy-button-card"><button id="copy-bonus-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div>
+        </div>
+
+        <div id="life2" class="tariff-content">
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div>
+            <div id="grid-view-life2"><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span></div><div class="options-grid" id="minutes-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span></div><div class="options-grid" id="sms-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span></div><div class="options-grid" id="internet-options2"></div></div></div>
+            <div id="slider-view-life2" style="display: none;"><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div><input type="range" id="internet-slider" class="slider" step="1"><div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div><input type="range" id="minutes-slider" class="slider" step="1"><div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div><input type="range" id="sms-slider" class="slider" step="1"><div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div></div></div>
+            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div>
+            
+            <div class="options-card" onclick="toggleAccordion(this)">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="accordion-content">
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div><div class="item-details"><div class="item-title" data-translate-key="oila_tv"></div><div class="item-description" data-translate-key="oila_tv_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div><div class="item-details"><div class="item-title" data-translate-key="ivi_cinema"></div><div class="item-description" data-translate-key="ivi_cinema_desc"></div></div></div>
+                </div>
+            </div>
+            <div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container2"></div></div><div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container2" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text2"></p></div><div class="card copy-button-card"><button id="copy-bonus-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div>
+        </div>
+
         <div id="personal" class="tariff-content"><div class="container-personal"><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_config_title"></h2></div><div class="configurator-grid"><div class="input-group"><label for="price" data-translate-key="personal_price_label"></label><input type="number" id="price" value="" step="0.01"><span class="input-unit" data-translate-key="personal_price_unit"></span></div><div class="input-group"><label for="minutes" data-translate-key="personal_minutes_label"></label><input type="number" id="minutes" value=""><span class="input-unit" data-translate-key="personal_minutes_unit"></span></div><div class="input-group"><label for="gigabytes" data-translate-key="personal_gb_label"></label><input type="number" id="gigabytes" value=""><span class="input-unit" data-translate-key="personal_gb_unit"></span></div><div class="input-group"><label for="sms" data-translate-key="personal_sms_label"></label><input type="number" id="sms" value=""><span class="input-unit" data-translate-key="personal_sms_unit"></span></div></div></div><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_preview_title"></h2><img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/icon.jpg" alt="Megafon Logo" style="height: 30px; border-radius: 50%;"></div><ul class="tariff-preview-list"><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_price"></span><span class="tariff-value"><span id="price-display">0</span> <span data-translate-key="personal_price_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_minutes"></span><span class="tariff-value"><span id="minutes-display">0</span> <span data-translate-key="personal_minutes_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_gb"></span><span class="tariff-value"><span id="gb-display">0</span> <span data-translate-key="personal_gb_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_sms"></span><span class="tariff-value"><span id="sms-display">0</span> <span data-translate-key="personal_sms_unit_plural"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_night"></span><span class="tariff-value" data-translate-key="personal_preview_unlimited"></span></li></ul><button class="btn btn-primary" id="copyAndSaveBtn" data-translate-key="personal_copy_save_btn"></button></div><div class="card" id="historyCard" style="display: none;"><div class="card-header"><h2 class="card-title" data-translate-key="personal_history_title"></h2><button class="clear-all-btn" id="clearAllHistoryBtn" data-translate-key="personal_history_clear"></button></div><ul id="historyList"></ul></div></div></div>
     </div>
 
@@ -267,32 +343,24 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const auth = firebase.auth(); // V24: Auth
+        const auth = firebase.auth(); 
         
         // --- 2. GLOBAL VARIABLES ---
         let translations = {};
         let config1 = {};
         let config2 = {};
-        let currentUserRole = null; // V24: 'admin', 'operator', or null
+        let currentUserRole = null; 
 
-        // =========================================================
-        // ==   ИЗМЕНЕНИЕ V25: ОБНОВЛЕННАЯ ПРОВЕРКА AUTH          ==
-        // =========================================================
         auth.onAuthStateChanged(user => {
             if (user) {
-                // Пользователь вошел. Загружаем данные и приложение.
                 fetchDataAndInitialize(user);
             } else {
-                // V25: Пользователь не вошел.
-                // Перенаправляем на login.html И сообщаем ему,
-                // куда вернуться после входа.
                 window.location.href = 'login.html?redirect=index.html';
             }
         });
 
-        // --- 4. V24: FETCH DATA & INITIALIZE APP (WRAPPED) ---
+        // --- 4. FETCH DATA & INITIALIZE APP ---
         function fetchDataAndInitialize(user) {
-            // V24: Сначала получаем роль пользователя
             database.ref('/users/' + user.uid).once('value').then(roleSnapshot => {
                 if (roleSnapshot.exists()) {
                     currentUserRole = roleSnapshot.val().isAdmin ? 'admin' : 'operator';
@@ -302,7 +370,6 @@
                     return;
                 }
 
-                // V24: Роль получена, теперь загружаем остальное приложение
                 database.ref('/').once('value').then((snapshot) => {
                     const data = snapshot.val();
                     if (data) {
@@ -320,7 +387,6 @@
 
                         document.querySelector('.header img').src = data.ui.headerImageUrl;
                         
-                        // V24: Инициализируем приложение
                         initializeAppLogic(user);
 
                     } else {
@@ -339,10 +405,13 @@
         }
         
         // --- 5. APPLICATION LOGIC ---
-        function initializeAppLogic(user) { // V24: Принимает 'user'
+        function initializeAppLogic(user) { 
             let currentLang = 'tj';
             let currentTheme = 'light';
             let life2ViewMode = 'grid';
+
+            // --- INIT SNOWFLAKES ---
+            createSnowflakes();
 
             function setLanguage(lang) {
                 currentLang = lang;
@@ -378,12 +447,15 @@
                 document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`).classList.add('active');
             }
 
-            function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
-            function hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-
-            window.showModal = showModal;
-            window.hideModal = hideModal;
+            // Expose to window for onclick HTML attributes
+            window.showModal = function(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+            window.hideModal = function(modalId) { document.getElementById(modalId).style.display = 'none'; }
             window.switchTab = switchTab;
+            
+            // --- ACCORDION TOGGLE FUNCTION ---
+            window.toggleAccordion = function(element) {
+                element.classList.toggle('open');
+            }
 
             function showToast(messageKey) {
                 const toast = document.getElementById('toast-notification');
@@ -540,6 +612,28 @@
                 syncViews();
                 toggleBtn.innerText = translations[currentLang][toggleBtn.dataset.translateKey];
             }
+            
+            // --- SNOWFLAKE LOGIC ---
+            function createSnowflakes() {
+                const container = document.createElement('div');
+                container.id = 'snow-container';
+                document.body.appendChild(container);
+                
+                const symbols = ['❄', '❅', '❆', '•'];
+                const flakeCount = 40; // Number of flakes
+
+                for (let i = 0; i < flakeCount; i++) {
+                    const flake = document.createElement('div');
+                    flake.className = 'snowflake';
+                    flake.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                    flake.style.left = Math.random() * 100 + 'vw';
+                    flake.style.animationDuration = Math.random() * 5 + 5 + 's'; // 5-10s fall duration
+                    flake.style.animationDelay = Math.random() * 5 + 's';
+                    flake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                    flake.style.opacity = Math.random() * 0.7 + 0.3;
+                    container.appendChild(flake);
+                }
+            }
 
             // --- Personal Tariff Functions ---
             let personalHistory = [];
@@ -640,25 +734,17 @@
                 }
             });
             
-                        // V27: ЛОГИКА ССЫЛКИ "ШАБЛОНЫ" (Открытие в новой вкладке)
             document.getElementById('templates-link').addEventListener('click', (e) => {
-                e.preventDefault(); // Запрещаем переход по ссылке в этой вкладке
-                
+                e.preventDefault(); 
                 if (currentUserRole === 'admin') {
-                    // Открываем admin.html в новой вкладке
                     window.open('admin.html', '_blank');
-                    
                 } else if (currentUserRole === 'operator') {
-                    // Открываем operator.html в новой вкладке
                     window.open('operator.html', '_blank');
-                    
                 } else {
-                    // Если роль не найдена, выходим (как и раньше)
                     console.warn('Role not determined, redirecting to login.');
                     auth.signOut();
                 }
             });
-
 
             loadPersonalHistory();
             renderPersonalHistory();
@@ -670,7 +756,6 @@
                 });
             }
 
-            // V24: Показываем контент только после всех проверок
             document.getElementById('loading-skeleton').style.display = 'none';
             document.querySelector('.container').style.display = 'block';
         }
