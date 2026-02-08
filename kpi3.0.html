@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaFon WFM 6.0 | Min-Avg-Out</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mfGreen: '#00B956',
+                        mfPurple: '#731982',
+                        glass: 'rgba(30, 41, 59, 0.8)',
+                        glassBorder: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: radial-gradient(circle at top, #1e293b, #0f172a); color: #e2e8f0; font-size: 13px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glassBorder);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .nav-btn.active {
+            background: linear-gradient(90deg, rgba(115, 25, 130, 0.4) 0%, transparent 100%);
+            border-left: 3px solid #00B956;
+            color: white;
+        }
+        /* Стили для 3-х инпутов */
+        .config-group input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #475569;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 11px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .config-group input:focus { border-color: #00B956; outline: none; }
+        .edit-active { outline: 2px dashed #eab308; background: rgba(234, 179, 8, 0.1); }
+        th { font-weight: 600; text-transform: uppercase; font-size: 10px; color: #94a3b8; letter-spacing: 0.05em; }
+        td { border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col z-20 shrink-0">
+        <div class="p-6 flex items-center gap-3 border-b border-slate-800">
+            <div class="w-8 h-8 bg-gradient-to-br from-mfGreen to-emerald-600 rounded flex items-center justify-center font-bold text-white shadow-lg">M</div>
+            <div>
+                <h1 class="font-bold text-base text-white tracking-wide">KPI Admin</h1>
+                <p class="text-[10px] text-gray-500">v6.0 Pro</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+            <button onclick="router('dashboard')" class="nav-btn active w-full text-left px-4 py-3 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-columns w-5 text-center"></i> Дашборд
+            </button>
+            
+            <div class="pt-6 pb-2 px-4 text-[10px] font-bold text-gray-600 uppercase">Настройки (Min/Avg/Out)</div>
+            
+            <button onclick="router('config', 'aht')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-clock w-5 text-center text-blue-400"></i> AHT (Время)
+            </button>
+            <button onclick="router('config', 'csi')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-smile w-5 text-center text-yellow-400"></i> CSI (Качество)
+            </button>
+            <button onclick="router('config', 'revenue')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-wallet w-5 text-center text-mfGreen"></i> Выручка
+            </button>
+            <button onclick="router('config', 'crm')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-database w-5 text-center text-purple-400"></i> CRM Рег.
+            </button>
+            <button onclick="router('config', 'ol')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-slate-800 transition flex items-center gap-3 text-gray-400">
+                <i class="fas fa-bolt w-5 text-center text-orange-500"></i> ОЛ (Лидерство)
+            </button>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-hidden relative flex flex-col">
+        
+        <header class="h-16 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between px-6 shrink-0">
+            <div class="flex items-center gap-4">
+                <div class="relative group">
+                    <i class="fas fa-calendar-alt absolute left-3 top-2.5 text-gray-500"></i>
+                    <input type="date" id="date-picker" class="bg-slate-800 border border-slate-700 text-white text-xs rounded pl-9 pr-3 py-2 outline-none focus:border-mfGreen hover:border-slate-600 transition">
+                </div>
+                <button onclick="exportCleanExcel()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded border border-slate-700 transition flex items-center gap-2 text-xs h-[34px]">
+                    <i class="fas fa-file-excel text-green-500"></i> Скачать (Факт)
+                </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button id="btn-edit-toggle" onclick="toggleEditMode()" class="bg-slate-800 hover:bg-slate-700 text-gray-300 px-4 py-2 rounded text-xs border border-slate-700 transition flex items-center gap-2">
+                    <i class="fas fa-pen"></i> Ввод данных
+                </button>
+                <button id="btn-save-changes" onclick="commitChanges()" class="hidden bg-mfGreen hover:bg-green-600 text-white px-5 py-2 rounded text-xs font-bold shadow-lg shadow-green-900/20 flex items-center gap-2 animate-bounce">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+            </div>
+        </header>
+
+        <div id="view-dashboard" class="flex-1 overflow-auto p-6 fade-in">
+            <div class="glass-panel rounded-xl overflow-hidden min-w-[1200px]">
+                <div class="p-4 border-b border-white/5 flex justify-between items-center bg-slate-800/30">
+                    <h2 class="font-bold text-sm text-gray-200">Мониторинг KPI (Сравнение с Avg)</h2>
+                    <button onclick="toggleModal('modal-add', true)" class="bg-mfPurple hover:bg-purple-700 text-white px-3 py-1.5 rounded text-xs transition shadow-lg shadow-purple-900/30">
+                        + Сотрудник
+                    </button>
+                </div>
+                
+                <table class="w-full" id="main-table">
+                    <thead class="bg-slate-900/80 sticky top-0 z-10">
+                        <tr>
+                            <th class="p-3 text-left w-48">Сотрудник</th>
+                            <th class="p-3 text-center w-24 border-l border-slate-800">Канал</th>
+                            
+                            <th class="p-3 text-center w-32 border-l border-slate-800 bg-blue-900/10 text-blue-300">AHT (сек)</th>
+                            <th class="p-3 text-center w-32 border-l border-slate-800 bg-yellow-900/10 text-yellow-300">CSI (%)</th>
+                            <th class="p-3 text-center w-32 border-l border-slate-800 bg-green-900/10 text-green-300">Выручка</th>
+                            <th class="p-3 text-center w-32 border-l border-slate-800 bg-purple-900/10 text-purple-300">CRM</th>
+                            <th class="p-3 text-center w-32 border-l border-slate-800 bg-orange-900/10 text-orange-300">ОЛ (%)</th>
+                            
+                            <th class="p-3 text-center w-24 border-l border-slate-800 text-white">ВЫП. ПЛАНА</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-white/5 text-xs">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-config" class="hidden flex-1 overflow-auto p-8 fade-in">
+            <div class="max-w-5xl mx-auto glass-panel p-8 rounded-xl border-t-4 border-mfPurple">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                    <i id="conf-icon" class="fas fa-cogs"></i>
+                    <span id="conf-title">Настройки Целей</span>
+                </h2>
+                <div class="bg-blue-900/20 p-4 rounded mb-6 text-xs text-blue-200 border border-blue-500/30">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <b>Логика:</b> 
+                    <span class="text-yellow-400">Min</span> - минимальный допуск, 
+                    <span class="text-green-400">Avg</span> - целевой план (100%), 
+                    <span class="text-purple-400">Out</span> - выдающийся результат.
+                </div>
+                
+                <div id="config-matrix" class="space-y-8"></div>
+                
+                <div class="mt-8 flex justify-end pt-6 border-t border-slate-700">
+                    <button onclick="saveConfigToDb()" class="bg-mfGreen hover:bg-green-600 text-white font-bold py-3 px-8 rounded shadow-lg">
+                        Применить настройки
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-add" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="glass-panel p-6 rounded-lg w-96 border border-slate-600">
+            <h3 class="font-bold text-lg mb-4 text-white">Добавить в Справочник</h3>
+            <form onsubmit="addEmployee(event)" class="space-y-3">
+                <input id="add-name" required placeholder="ФИО сотрудника" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white text-xs outline-none focus:border-mfGreen">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="add-grade" class="bg-slate-800 border border-slate-600 rounded p-2 text-white text-xs">
+                        <option value="newbie">Новичок</option>
+                        <option value="experienced">Опытный</option>
+                        <option value="master">Магистр</option>
+                    </select>
+                    <select id="add-dir" class="bg-slate-800 border border-slate-600 rounded p-2 text-white text-xs">
+                        <option value="chat">Чат</option>
+                        <option value="voice">Голос</option>
+                        <option value="fspd">ФШПД</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 mt-4 pt-2">
+                    <button type="button" onclick="toggleModal('modal-add', false)" class="flex-1 py-2 bg-slate-700 text-gray-300 rounded text-xs">Отмена</button>
+                    <button type="submit" class="flex-1 py-2 bg-mfGreen text-white font-bold rounded text-xs">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        // ============================================
+        // 1. КОНФИГУРАЦИЯ (ВСТАВЬ СВОИ ДАННЫЕ)
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNatD2yzoi58Q7tkwFZnCfNmbtM9Brtq0", // <-- Пример ключа (замени на свой рабочий!)
+            authDomain: "taqvim-555f9.firebaseapp.com",
+            databaseURL: "https://taqvim-555f9-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "taqvim-555f9",
+        };
+
+        const KPI_TYPES = ['aht', 'csi', 'revenue', 'crm', 'ol'];
+        const GRADES = { newbie: "Новичок", experienced: "Опытный", master: "Магистр" };
+        const DIRECTIONS = { chat: "Чат", voice: "Голос", fspd: "ФШПД" };
+
+        let db;
+        let allEmployees = {};
+        let dailyStats = {};
+        let configRules = {}; // Теперь хранит { min, avg, out }
+        let isEditMode = false;
+        let pendingChanges = {};
+        let currentConfigType = 'aht';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('date-picker').valueAsDate = new Date();
+
+            try {
+                // Инициализация
+                const app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
+
+                onValue(ref(db, 'employees'), snap => {
+                    allEmployees = snap.val() || {};
+                    renderTable();
+                });
+                onValue(ref(db, 'config'), snap => {
+                    configRules = snap.val() || {};
+                    renderTable();
+                    if(currentConfigType) renderConfigMatrix(currentConfigType);
+                });
+                listenToDate(getDateStr());
+
+            } catch(e) {
+                console.warn("Ошибка подключения:", e);
+                alert("Ошибка подключения к БД. Проверьте консоль.");
+            }
+
+            document.getElementById('date-picker').addEventListener('change', () => {
+                if(db) listenToDate(getDateStr());
+            });
+        });
+
+        function listenToDate(dateStr) {
+            onValue(ref(db, `daily_stats/${dateStr}`), snap => {
+                dailyStats = snap.val() || {};
+                renderTable();
+            });
+        }
+
+        // ============================================
+        // 2. ТАБЛИЦА С НОВОЙ ЛОГИКОЙ
+        // ============================================
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            if(Object.keys(allEmployees).length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-8 text-gray-500">Справочник пуст.</td></tr>`;
+                return;
+            }
+
+            Object.entries(allEmployees).forEach(([empId, emp]) => {
+                const stats = dailyStats[empId] || {}; 
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition group";
+
+                let html = `
+                    <td class="p-3 pl-4">
+                        <div class="font-bold text-gray-200 text-sm">${emp.name}</div>
+                        <div class="text-[10px] text-gray-500 uppercase flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full ${getGradeColor(emp.grade)}"></span>
+                            ${GRADES[emp.grade]}
+                        </div>
+                    </td>
+                    <td class="p-3 text-center border-l border-slate-800/50">
+                        <span class="bg-slate-800 px-2 py-1 rounded text-[10px] text-gray-400 border border-slate-700">${DIRECTIONS[emp.direction]}</span>
+                    </td>
+                `;
+
+                let totalPercentSum = 0;
+                KPI_TYPES.forEach(kpi => {
+                    // Получаем объект {min, avg, out}
+                    const targets = configRules[kpi]?.[emp.direction]?.[emp.grade] || { min:0, avg:0, out:0 };
+                    const val = stats[kpi] || 0;
+                    
+                    // 1. Расчет цвета (3 уровня)
+                    let barColor = 'bg-slate-600';
+                    let percent = 0;
+                    
+                    if (targets.avg > 0) {
+                        if (kpi === 'aht') {
+                            // AHT (Меньше = Лучше)
+                            // avg = план. 
+                            // Если val <= out (супер результат) -> Purple
+                            // Если val <= avg (норма) -> Green
+                            // Если val <= min (допуск) -> Yellow
+                            // Иначе -> Red
+                            percent = val > 0 ? (targets.avg / val) * 100 : 0;
+                            
+                            if (val > 0 && val <= targets.out) barColor = 'bg-mfPurple';
+                            else if (val > 0 && val <= targets.avg) barColor = 'bg-mfGreen';
+                            else if (val > 0 && val <= targets.min) barColor = 'bg-yellow-400';
+                            else barColor = 'bg-red-500';
+
+                        } else {
+                            // Остальные (Больше = Лучше)
+                            percent = (val / targets.avg) * 100;
+                            
+                            if (val >= targets.out) barColor = 'bg-mfPurple';
+                            else if (val >= targets.avg) barColor = 'bg-mfGreen';
+                            else if (val >= targets.min) barColor = 'bg-yellow-400';
+                            else barColor = 'bg-red-500';
+                        }
+                    }
+
+                    if(percent > 120) percent = 120;
+                    totalPercentSum += percent;
+
+                    html += `
+                        <td class="p-3 border-l border-slate-800/50 relative group/cell">
+                            <div class="flex justify-between items-end mb-1">
+                                <span class="text-xs font-mono font-bold text-gray-300 ${isEditMode ? 'cursor-text hover:text-white border-b border-dashed border-gray-600' : ''}" 
+                                      ${isEditMode ? `contenteditable="true" oninput="bufferEdit('${empId}', '${kpi}', this)"` : ''}>
+                                    ${val}
+                                </span>
+                                <span class="text-[9px] text-gray-500 font-mono">${Math.round(percent)}%</span>
+                            </div>
+                            <div class="bg-white/10 h-1 rounded-sm overflow-hidden">
+                                <div class="h-full rounded-sm ${barColor}" style="width: ${percent}%"></div>
+                            </div>
+                            <div class="text-[9px] text-gray-600 mt-0.5 text-right flex justify-end gap-2 opacity-0 group-hover/cell:opacity-100 transition-opacity">
+                                <span class="text-yellow-600">${targets.min}</span>
+                                <span class="text-green-600">${targets.avg}</span>
+                                <span class="text-purple-600">${targets.out}</span>
+                            </div>
+                        </td>
+                    `;
+                });
+
+                const avgTotal = totalPercentSum / KPI_TYPES.length;
+                html += `
+                    <td class="p-3 text-center border-l border-slate-800/50">
+                        <div class="text-lg font-bold ${avgTotal >= 100 ? 'text-mfGreen' : (avgTotal >= 80 ? 'text-yellow-400' : 'text-red-400')}">
+                            ${Math.round(avgTotal)}%
+                        </div>
+                    </td>
+                `;
+
+                tr.innerHTML = html;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ============================================
+        // 3. НАСТРОЙКИ (МАТРИЦА 3-Х ПОЛЕЙ)
+        // ============================================
+        window.router = function(view, configType = null) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-config').classList.add('hidden');
+            
+            if(view === 'dashboard') {
+                document.getElementById('view-dashboard').classList.remove('hidden');
+            } else {
+                currentConfigType = configType;
+                renderConfigMatrix(configType);
+                document.getElementById('view-config').classList.remove('hidden');
+            }
+        }
+
+        function renderConfigMatrix(type) {
+            const container = document.getElementById('config-matrix');
+            const titleMap = { aht: 'AHT', csi: 'CSI', revenue: 'Выручка', crm: 'CRM', ol: 'ОЛ' };
+            document.getElementById('conf-title').innerText = titleMap[type];
+            container.innerHTML = '';
+
+            Object.keys(DIRECTIONS).forEach(dirKey => {
+                const block = document.createElement('div');
+                block.className = "bg-slate-800/50 p-6 rounded-lg border border-slate-700";
+                let html = `<h3 class="font-bold text-mfGreen text-sm mb-4 uppercase flex items-center gap-2">${DIRECTIONS[dirKey]}</h3><div class="grid grid-cols-3 gap-6">`;
+                
+                Object.keys(GRADES).forEach(gradeKey => {
+                    // Берем объект значений или нули
+                    const vals = configRules[type]?.[dirKey]?.[gradeKey] || { min:0, avg:0, out:0 };
+                    
+                    html += `
+                        <div class="flex flex-col gap-2 config-group">
+                            <label class="text-[10px] text-gray-400 uppercase font-bold">${GRADES[gradeKey]}</label>
+                            <div class="grid grid-cols-3 gap-1">
+                                <input type="number" step="0.01" id="cfg-${dirKey}-${gradeKey}-min" value="${vals.min}" placeholder="Min" class="text-yellow-200">
+                                <input type="number" step="0.01" id="cfg-${dirKey}-${gradeKey}-avg" value="${vals.avg}" placeholder="Avg" class="text-green-200 font-bold border-b-2 border-green-500/50">
+                                <input type="number" step="0.01" id="cfg-${dirKey}-${gradeKey}-out" value="${vals.out}" placeholder="Out" class="text-purple-200">
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+                block.innerHTML = html;
+                container.appendChild(block);
+            });
+        }
+
+        window.saveConfigToDb = function() {
+            if(!db) return;
+            const updates = {};
+            Object.keys(DIRECTIONS).forEach(dir => {
+                Object.keys(GRADES).forEach(grade => {
+                    const min = parseFloat(document.getElementById(`cfg-${dir}-${grade}-min`).value) || 0;
+                    const avg = parseFloat(document.getElementById(`cfg-${dir}-${grade}-avg`).value) || 0;
+                    const out = parseFloat(document.getElementById(`cfg-${dir}-${grade}-out`).value) || 0;
+                    
+                    updates[`config/${currentConfigType}/${dir}/${grade}`] = { min, avg, out };
+                });
+            });
+            update(ref(db), updates).then(() => alert('Цели (Min/Avg/Out) сохранены!'));
+        }
+
+        // ============================================
+        // 4. ЭКСПОРТ EXCEL (ТОЛЬКО ЦИФРЫ)
+        // ============================================
+        window.exportCleanExcel = function() {
+            if(Object.keys(allEmployees).length === 0) return alert("Нет данных");
+
+            const exportData = [];
+            
+            Object.entries(allEmployees).forEach(([id, emp]) => {
+                const stats = dailyStats[id] || {};
+                
+                // Создаем плоский объект ТОЛЬКО с цифрами
+                const row = {
+                    "ФИО": emp.name,
+                    "Грейд": GRADES[emp.grade],
+                    "Направление": DIRECTIONS[emp.direction],
+                    "AHT (Факт)": stats.aht || 0,
+                    "CSI (Факт)": stats.csi || 0,
+                    "Выручка (Факт)": stats.revenue || 0,
+                    "CRM (Факт)": stats.crm || 0,
+                    "ОЛ (Факт)": stats.ol || 0
+                };
+                exportData.push(row);
+            });
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "KPI Fact Data");
+            
+            const dateStr = document.getElementById('date-picker').value;
+            XLSX.writeFile(wb, `MegaFon_KPI_Fact_${dateStr}.xlsx`);
+        }
+
+        // ============================================
+        // 5. УТИЛИТЫ И РЕДАКТИРОВАНИЕ
+        // ============================================
+        window.toggleEditMode = () => {
+            isEditMode = !isEditMode;
+            document.getElementById('btn-save-changes').classList.toggle('hidden');
+            document.getElementById('btn-edit-toggle').classList.toggle('bg-red-500');
+            renderTable();
+        }
+
+        window.bufferEdit = (id, kpi, el) => {
+            if(!pendingChanges[id]) pendingChanges[id] = {};
+            let cleanVal = el.innerText.replace(/[^0-9.]/g, ''); 
+            pendingChanges[id][kpi] = parseFloat(cleanVal);
+            el.classList.add('edit-active');
+        }
+
+        window.commitChanges = () => {
+            if(!db) return;
+            const updates = {};
+            const dateStr = getDateStr();
+            Object.keys(pendingChanges).forEach(id => {
+                Object.keys(pendingChanges[id]).forEach(kpi => {
+                    updates[`daily_stats/${dateStr}/${id}/${kpi}`] = pendingChanges[id][kpi];
+                });
+            });
+            update(ref(db), updates).then(() => {
+                pendingChanges = {};
+                toggleEditMode();
+            });
+        }
+
+        window.addEmployee = (e) => {
+            e.preventDefault();
+            const newEmp = {
+                name: document.getElementById('add-name').value,
+                grade: document.getElementById('add-grade').value,
+                direction: document.getElementById('add-dir').value,
+            };
+            if(db) set(ref(db, `employees/${Date.now()}`), newEmp);
+            toggleModal('modal-add', false);
+            e.target.reset();
+        }
+
+        function getDateStr() { return document.getElementById('date-picker').value; }
+        window.toggleModal = (id, show) => document.getElementById(id).classList.toggle('hidden', !show);
+        function getGradeColor(g) { return { master: 'bg-purple-500', experienced: 'bg-blue-500', newbie: 'bg-gray-500' }[g]; }
+
+    </script>
+</body>
+</html>

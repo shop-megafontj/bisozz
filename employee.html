@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои Показатели | MegaFon KPI</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mfGreen: '#00B956',
+                        mfPurple: '#731982',
+                        glass: 'rgba(255, 255, 255, 0.08)',
+                        glassBorder: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #0f172a; color: white; min-height: 100vh; }
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glassBorder);
+            border-radius: 16px;
+        }
+        .progress-bar-bg { background: rgba(255,255,255,0.1); border-radius: 4px; height: 8px; overflow: hidden; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bg-blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 relative overflow-x-hidden">
+
+    <div class="bg-blob bg-mfPurple w-64 h-64 rounded-full top-0 left-0"></div>
+    <div class="bg-blob bg-mfGreen w-64 h-64 rounded-full bottom-0 right-0"></div>
+
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/90 backdrop-blur-md">
+        <div class="glass-card p-8 w-full max-w-md text-center shadow-2xl border-t-4 border-mfGreen">
+            <div class="w-16 h-16 bg-gradient-to-br from-mfGreen to-emerald-600 rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-green-500/30">
+                <i class="fas fa-chart-line text-3xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold mb-2">Личный кабинет</h1>
+            <p class="text-gray-400 mb-6 text-sm">Выберите свое имя для входа</p>
+            
+            <div class="relative mb-6 text-left">
+                <select id="employee-select" class="w-full mt-1 bg-slate-800 border border-slate-600 text-white rounded-xl p-4 outline-none focus:border-mfGreen transition appearance-none cursor-pointer">
+                    <option value="" disabled selected>Загрузка списка...</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-4 top-5 text-gray-500 pointer-events-none"></i>
+            </div>
+
+            <button onclick="login()" class="w-full bg-mfGreen hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-95">
+                Войти
+            </button>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden max-w-4xl mx-auto fade-in">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div class="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center text-xl font-bold border border-white/10" id="user-avatar">?</div>
+                <div>
+                    <h2 class="text-xl font-bold" id="user-name">...</h2>
+                    <p class="text-xs text-gray-400 flex items-center gap-2">
+                        <span id="user-grade" class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">...</span>
+                        <span id="user-direction" class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">...</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-slate-800/50 p-2 rounded-xl border border-white/5">
+                <button onclick="changeDate(-1)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-gray-400"><i class="fas fa-chevron-left"></i></button>
+                <input type="date" id="date-picker" class="bg-transparent text-white text-sm font-bold outline-none text-center w-28">
+                <button onclick="changeDate(1)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-gray-400"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </header>
+
+        <div class="glass-card p-6 mb-6 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10">
+                <i class="fas fa-trophy text-9xl text-white transform rotate-12 translate-x-4 -translate-y-4"></i>
+            </div>
+            <p class="text-gray-400 text-sm font-bold uppercase mb-1">Эффективность смены</p>
+            <div class="flex items-end gap-3">
+                <h1 class="text-5xl font-bold text-white" id="total-percent">0%</h1>
+                <span class="text-gray-400 mb-2 text-sm" id="total-message">Загрузка данных...</span>
+            </div>
+            <div class="w-full bg-slate-700/50 h-2 rounded-full mt-4 overflow-hidden">
+                <div id="total-bar" class="h-full bg-gradient-to-r from-mfGreen to-emerald-400 transition-all duration-1000" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="kpi-grid">
+            </div>
+
+        <button onclick="logout()" class="mt-8 text-gray-500 text-sm hover:text-white flex items-center gap-2 mx-auto pb-8">
+            <i class="fas fa-sign-out-alt"></i> Выйти
+        </button>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        // ТВОЙ КОНФИГ
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNatD2yzoi58Q7tkwFZnCfNmbtM9Brtq0",
+            authDomain: "taqvim-555f9.firebaseapp.com",
+            databaseURL: "https://taqvim-555f9-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "taqvim-555f9",
+            storageBucket: "taqvim-555f9.firebasestorage.app",
+            messagingSenderId: "771274880277",
+            appId: "1:771274880277:web:58c4e1b1f595c5a513251c"
+        };
+
+        const KPI_META = {
+            aht: { label: "Среднее время (AHT)", icon: "fa-clock", color: "text-blue-400", unit: "сек" },
+            csi: { label: "Оценка качества (CSI)", icon: "fa-smile", color: "text-yellow-400", unit: "%" },
+            revenue: { label: "Выручка", icon: "fa-wallet", color: "text-green-400", unit: "с." },
+            crm: { label: "CRM Регистрации", icon: "fa-database", color: "text-purple-400", unit: "шт" },
+            ol: { label: "Оценка Лидера (ОЛ)", icon: "fa-bolt", color: "text-orange-400", unit: "%" }
+        };
+
+        const GRADES = { newbie: "Новичок", experienced: "Опытный", master: "Магистр" };
+        const DIRECTIONS = { chat: "Чат", voice: "Голос", fspd: "ФШПД" };
+
+        let db;
+        let allEmployees = {};
+        let configRules = {};
+        let currentEmpId = localStorage.getItem('my_emp_id');
+        
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('date-picker');
+            dateInput.valueAsDate = new Date();
+            dateInput.addEventListener('change', loadStats);
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
+                
+                // 1. Загружаем справочник (для входа)
+                onValue(ref(db, 'employees'), snap => {
+                    allEmployees = snap.val() || {};
+                    renderLoginList();
+                    if(currentEmpId && allEmployees[currentEmpId]) {
+                        showDashboard();
+                    }
+                });
+
+                // 2. Загружаем настройки целей (Min/Avg/Out)
+                onValue(ref(db, 'config'), snap => {
+                    configRules = snap.val() || {};
+                    if(currentEmpId) loadStats(); // Пересчитать, если правила изменились
+                });
+
+            } catch(e) {
+                console.error("Firebase Init Error:", e);
+                alert("Ошибка подключения к базе данных. Проверьте интернет.");
+            }
+        });
+
+        // --- ЛОГИКА ВХОДА ---
+        function renderLoginList() {
+            const select = document.getElementById('employee-select');
+            select.innerHTML = '<option value="" disabled selected>Нажмите чтобы выбрать себя</option>';
+            
+            Object.entries(allEmployees).forEach(([id, emp]) => {
+                const opt = document.createElement('option');
+                opt.value = id;
+                opt.textContent = `${emp.name} | ${DIRECTIONS[emp.direction] || ''}`;
+                select.appendChild(opt);
+            });
+        }
+
+        window.login = function() {
+            const select = document.getElementById('employee-select');
+            if(!select.value) return alert("Пожалуйста, выберите имя");
+            
+            currentEmpId = select.value;
+            localStorage.setItem('my_emp_id', currentEmpId);
+            showDashboard();
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('my_emp_id');
+            currentEmpId = null;
+            document.getElementById('dashboard-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            const emp = allEmployees[currentEmpId];
+            if(!emp) return logout();
+
+            // Заполняем шапку
+            document.getElementById('user-name').innerText = emp.name;
+            document.getElementById('user-avatar').innerText = emp.name.charAt(0);
+            document.getElementById('user-grade').innerText = GRADES[emp.grade] || emp.grade;
+            document.getElementById('user-direction').innerText = DIRECTIONS[emp.direction] || emp.direction;
+            
+            // Переключаем экран
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+
+            loadStats();
+        }
+
+        // --- ЛОГИКА СТАТИСТИКИ (ИСПРАВЛЕНА ПОД MIN/AVG/OUT) ---
+        function loadStats() {
+            if(!db || !currentEmpId) return;
+            const dateStr = document.getElementById('date-picker').value;
+            
+            onValue(ref(db, `daily_stats/${dateStr}/${currentEmpId}`), snap => {
+                const stats = snap.val() || {};
+                renderKPIs(stats);
+            });
+        }
+
+        function renderKPIs(stats) {
+            const emp = allEmployees[currentEmpId];
+            if (!emp) return;
+
+            const container = document.getElementById('kpi-grid');
+            container.innerHTML = '';
+            
+            let totalPercentSum = 0;
+            let count = 0;
+
+            Object.entries(KPI_META).forEach(([key, meta]) => {
+                count++;
+                
+                // Получаем ЦЕЛИ (объект {min, avg, out})
+                const targets = configRules[key]?.[emp.direction]?.[emp.grade] || { min: 0, avg: 0, out: 0 };
+                const fact = stats[key] || 0;
+
+                // Расчет процента и цвета
+                let percent = 0;
+                let barColor = 'bg-slate-600';
+                let textColor = 'text-gray-400';
+                let statusText = "Нет плана";
+
+                // Проверка, установлены ли цели
+                if (targets.avg > 0) {
+                    if(key === 'aht') {
+                        // AHT (Меньше = Лучше)
+                        percent = fact > 0 ? (targets.avg / fact) * 100 : 0;
+                        
+                        // Логика цвета для AHT
+                        if (fact > 0 && fact <= targets.out) { barColor = 'bg-mfPurple'; textColor = 'text-purple-400'; statusText = "Супер!"; }
+                        else if (fact > 0 && fact <= targets.avg) { barColor = 'bg-mfGreen'; textColor = 'text-mfGreen'; statusText = "Норма"; }
+                        else if (fact > 0 && fact <= targets.min) { barColor = 'bg-yellow-400'; textColor = 'text-yellow-400'; statusText = "Риск"; }
+                        else { barColor = 'bg-red-500'; textColor = 'text-red-400'; statusText = "Плохо"; }
+                    } else {
+                        // Остальные (Больше = Лучше)
+                        percent = (fact / targets.avg) * 100;
+                        
+                        // Логика цвета стандартная
+                        if (fact >= targets.out) { barColor = 'bg-mfPurple'; textColor = 'text-purple-400'; statusText = "Супер!"; }
+                        else if (fact >= targets.avg) { barColor = 'bg-mfGreen'; textColor = 'text-mfGreen'; statusText = "Норма"; }
+                        else if (fact >= targets.min) { barColor = 'bg-yellow-400'; textColor = 'text-yellow-400'; statusText = "Риск"; }
+                        else { barColor = 'bg-red-500'; textColor = 'text-red-400'; statusText = "Плохо"; }
+                    }
+                }
+
+                let displayPercent = Math.round(percent);
+                totalPercentSum += Math.min(displayPercent, 120);
+
+                // Отрисовка карточки
+                const card = document.createElement('div');
+                card.className = "glass-card p-5 hover:bg-white/5 transition flex flex-col justify-between";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-slate-800 w-10 h-10 rounded-lg flex items-center justify-center border border-white/5">
+                            <i class="fas ${meta.icon} ${meta.color} text-lg"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">План (Avg)</p>
+                            <p class="text-sm font-mono text-gray-300 font-bold">${targets.avg} <span class="text-[10px] text-gray-500">${meta.unit}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between items-end mb-1">
+                            <p class="text-xs text-gray-400">${meta.label}</p>
+                            <p class="text-[10px] font-bold ${textColor}">${statusText}</p>
+                        </div>
+                        
+                        <div class="flex items-end gap-2 mb-3">
+                            <h3 class="text-3xl font-bold text-white">${fact}</h3>
+                            <span class="text-sm mb-1 font-bold ${textColor}">${displayPercent}%</span>
+                        </div>
+
+                        <div class="progress-bar-bg">
+                            <div class="h-full rounded ${barColor}" style="width: ${Math.min(displayPercent, 100)}%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mt-1 text-[9px] text-gray-600 font-mono">
+                            <span>Min: ${targets.min}</span>
+                            <span>Out: ${targets.out}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Общий итог
+            const totalAvg = Math.round(totalPercentSum / count);
+            document.getElementById('total-percent').innerText = totalAvg + '%';
+            
+            const totalBar = document.getElementById('total-bar');
+            totalBar.style.width = Math.min(totalAvg, 100) + '%';
+            
+            // Цвет общего итога
+            const msgEl = document.getElementById('total-message');
+            if(totalAvg >= 100) {
+                msgEl.innerText = "План смены перевыполнен!";
+                msgEl.className = "text-mfGreen mb-2 text-sm font-bold animate-pulse";
+                totalBar.className = "h-full bg-gradient-to-r from-mfGreen to-emerald-300 transition-all duration-1000";
+            } else if (totalAvg >= 80) {
+                msgEl.innerText = "Хороший результат.";
+                msgEl.className = "text-yellow-400 mb-2 text-sm font-bold";
+                totalBar.className = "h-full bg-gradient-to-r from-yellow-500 to-yellow-300 transition-all duration-1000";
+            } else {
+                msgEl.innerText = "Ниже целевых значений.";
+                msgEl.className = "text-red-400 mb-2 text-sm font-bold";
+                totalBar.className = "h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000";
+            }
+        }
+
+        window.changeDate = (days) => {
+            const input = document.getElementById('date-picker');
+            const date = new Date(input.value);
+            date.setDate(date.getDate() + days);
+            input.valueAsDate = date;
+            loadStats();
+        }
+    </script>
+</body>
+</html>
