@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создавай Life & Персональный + AI</title>
+    <meta name="author" content="Komronbek Sharipov">
+    <link rel="website icon" type="png" href="https://shop.megafon.tj/favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Lato:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        /* --- General and Life Tariff Styles --- */
+        :root {
+            --primary-color: #00aa44;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+            --text-color: #333;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --button-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            --background-color: #f0f2f5;
+            --container-bg: #fff;
+            --modal-bg: #fff;
+            --toast-bg: var(--primary-color);
+            --toast-text: #fff;
+            --nav-bg: #fff;
+            --option-bg: #fff;
+            --option-border: var(--border-color);
+            --option-text: var(--primary-color);
+            --active-bg: var(--primary-color);
+            --active-text: #fff;
+            --slider-bg: #ddd;
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+
+            /* Personal Tariff Colors */
+            --brand-green: #00B956;
+            --brand-purple: #7A00B9;
+            --personal-card-bg: #ffffff;
+            --personal-border: #e0e0e0;
+            --personal-text-primary: #1a1a1a;
+            --personal-text-secondary: #6b6b6b;
+            
+            /* Skeleton Loader Colors */
+            --skeleton-bg: #e9eef2;
+            --skeleton-shimmer: #dbe3ea;
+        }
+
+        body.dark {
+            --light-gray: #2c2c2c;
+            --border-color: #444;
+            --text-color: #eee;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --button-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            --background-color: #121212;
+            --container-bg: #1e1e1e;
+            --modal-bg: #2a2a2a;
+            --toast-bg: #333;
+            --toast-text: #eee;
+            --nav-bg: #1e1e1e;
+            --option-bg: #2c2c2c;
+            --option-border: #444;
+            --option-text: #00cc55;
+            --active-bg: #00cc55;
+            --active-text: #000;
+            --slider-bg: #555;
+            --header-bg: rgba(50, 50, 50, 0.8);
+            --shadow-color: rgba(255, 255, 255, 0.1);
+
+            /* Personal Tariff Dark Colors */
+            --brand-green: #00D162;
+            --brand-purple: #9D27E6;
+            --personal-card-bg: #2a2a2a;
+            --personal-border: #444;
+            --personal-text-primary: #f0f0f0;
+            --personal-text-secondary: #a0a0a0;
+            
+            /* Skeleton Loader Dark Colors */
+            --skeleton-bg: #2d2d2d;
+            --skeleton-shimmer: #3f3f3f;
+        }
+        
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+        .skeleton-wrapper { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); }
+        .sk-item { position: relative; overflow: hidden; background-color: var(--skeleton-bg); border-radius: 12px; }
+        .sk-item::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: translateX(-100%); background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent); animation: shimmer 1.5s infinite linear; }
+        .sk-header { width: 100%; height: 150px; border-radius: 0; position: relative; margin-bottom: 0; }
+        .sk-header-buttons { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; }
+        .sk-button-group { display: flex; gap: 8px; padding: 6px; border-radius: 24px; background-color: var(--header-bg); }
+        .sk-button-sm { width: 42px; height: 32px; border-radius: 18px; }
+        .sk-nav { display: flex; justify-content: space-around; padding: 16px; gap: 16px; border-bottom: 1px solid var(--border-color); background-color: var(--nav-bg); }
+        .sk-nav-btn { flex-grow: 1; height: 40px; border-radius: 24px; }
+        .sk-content { padding: 24px; }
+        .sk-line { height: 22px; margin-bottom: 12px; border-radius: 12px; }
+        .sk-line-short { width: 45%; }
+        .sk-line-medium { width: 70%; }
+        .sk-section { margin-top: 28px; }
+        .sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 14px; margin-top: 18px; }
+        .sk-grid-item { height: 52px; border-radius: 14px; }
+        .sk-price { width: 55%; height: 32px; margin: 28px auto; border-radius: 24px; }
+        .sk-card { padding: 24px; margin-top: 24px; border-radius: 28px; background-color: var(--light-gray); }
+        .sk-card-item { display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 0; }
+        .sk-icon { width: 52px; height: 52px; border-radius: 24px; flex-shrink: 0; }
+        .sk-text-block { flex-grow: 1; }
+        .sk-text-title { height: 20px; width: 35%; margin-bottom: 10px; border-radius: 8px; }
+        .sk-text-desc { height: 16px; width: 95%; border-radius: 8px; }
+        .sk-footer-card { padding: 24px; margin-top: 24px; border-radius: 24px; }
+        .sk-copy-btn { width: 160px; height: 50px; margin: 24px auto; border-radius: 28px; }
+        body { font-family: "Manrope", sans-serif; background-color: var(--background-color); margin: 0; padding: 0; font-weight: bold; color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; background-color: var(--container-bg); box-shadow: 0 0 20px var(--shadow-color); z-index: 10; position: relative; }
+        .header { position: relative; }
+        .header img { width: 100%; height: auto; display: block; }
+        .lang-switcher, .theme-switcher { position: absolute; top: 10px; background-color: var(--header-bg); border-radius: 20px; border: 1px solid var(--primary-color); padding: 4px; display: flex; box-shadow: 0 2px 5px var(--shadow-color); z-index: 20; }
+        .lang-switcher { right: 10px; }
+        .theme-switcher { left: 10px; }
+        .lang-btn, .theme-btn { background-color: transparent; border: none; padding: 8px 16px; border-radius: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; font-size: 12px; }
+        .lang-btn.active, .theme-btn.active { background-color: var(--primary-color); color: white; }
+        .navigation { display: flex; justify-content: space-around; background-color: var(--nav-bg); padding: 10px 0; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 5px; }
+        .nav-link { text-decoration: none; font-weight: bold; font-size: 14px; padding: 8px 18px; border-radius: 20px; border: #00aa44 1px solid; transition: background-color 0.3s, color 0.3s; cursor: pointer; color: var(--text-color); }
+        .nav-link.active { background-color: var(--active-bg); color: var(--active-text); }
+        .tariff-content { display: none; }
+        .tariff-content.active { display: block; }
+        .unlimited-section { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; }
+        .unlimited-section .text, .total-price-text { flex-grow: 1; }
+        .infinity-icon { color: var(--primary-color); font-weight: bold; }
+        .tariff-section { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .tariff-section-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .tariff-section-header h3 { margin: 0; flex-grow: 1; }
+        .info-icon { color: #888; cursor: pointer; margin-left: 10px; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; }
+        .option-button { border: 1px solid var(--option-border); color: var(--option-text); background-color: var(--option-bg); padding: 8px 5px; border-radius: 12px; text-align: center; font-size: 14px; cursor: pointer; transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s; }
+        .option-button:hover { box-shadow: var(--button-shadow); border-color: var(--primary-color); }
+        .option-button.active { background-color: var(--active-bg); color: var(--active-text); border-color: var(--primary-color); }
+        .total-price-display { text-align: center; font-size: 15px; font-weight: bold; padding: 20px 15px; }
+        
+        .options-card { background-color: var(--light-gray); border-radius: 25px; margin: 20px; padding: 15px; transition: all 0.3s ease; }
+        .card-header { font-weight: bold; margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: 0; }
+        .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.4s ease-out, opacity 0.4s ease, margin-top 0.4s ease; opacity: 0; margin-top: 0; }
+        .options-card.open .accordion-content { max-height: 1000px; opacity: 1; margin-top: 15px; }
+        .options-card.open .card-header { margin-bottom: 0; }
+        .card-header::after { content: '❯'; font-size: 14px; color: var(--primary-color); transform: rotate(90deg); transition: transform 0.3s ease; }
+        .options-card.open .card-header::after { transform: rotate(-90deg); }
+
+        .card-item { display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .card-item:last-child { border-bottom: none; }
+        .item-icon img { width: 50px; height: 50px; border-radius: 20px; margin-right: 15px; }
+        .item-title { font-weight: bold; }
+        .item-description { font-size: 14px; color: #666; line-height: 1.4; }
+        
+        .footer-container { padding: 10px 20px 20px; }
+        .card { background-color: var(--light-gray); border-radius: 20px; padding: 20px; margin-top: 15px; box-shadow: var(--card-shadow); font-size: 14px; line-height: 1.5; }
+        .copy-button-card { padding: 15px; text-align: center; }
+        .copy-button { background-color: var(--option-bg); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; transition: background-color 0.2s, box-shadow 0.2s; }
+        .copy-button:hover { background-color: #f0fff8; box-shadow: var(--button-shadow); }
+        .copy-button svg { margin-right: 8px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background-color: var(--modal-bg); padding: 20px; border-radius: 15px; max-width: 80%; text-align: center; }
+        .modal-button { background-color: transparent; color: var(--primary-color); border: none; padding: 12px 24px; border-radius: 20px; cursor: pointer; font-weight: bold; width: 80%; margin-top: 15px; }
+        #toast-notification { visibility: hidden; min-width: 250px; background-color: var(--toast-bg); color: var(--toast-text); text-align: center; border-radius: 38px; padding: 16px; position: fixed; z-index: 2000; left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 15px; opacity: 0; transition: opacity 0.5s, visibility 0.5s, bottom 0.5s; }
+        #toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
+        .view-toggle { text-align: right; padding: 0 15px 10px; }
+        #view-toggle-btn { background: var(--light-gray); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 15px; font-weight: bold; cursor: pointer; color: var(--text-color); }
+        .slider-group { padding: 10px 25px 20px; }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .slider-label { font-size: 16px; }
+        .slider-value { font-size: 18px; color: var(--primary-color); font-weight: 800; }
+        .slider { -webkit-appearance: none; width: 100%; height: 8px; background: var(--slider-bg); outline: none; border-radius: 4px; opacity: 0.7; transition: opacity .2s; }
+        .slider:hover { opacity: 1; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
+        .slider::-moz-range-thumb { width: 24px; height: 24px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
+        .slider-minmax { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 5px; }
+        @media (max-width: 400px) {
+            .lang-switcher, .theme-switcher { padding: 2px; }
+            .lang-btn, .theme-btn { padding: 6px 10px; font-size: 11px; }
+            .options-grid { grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); }
+            .nav-link { font-size: 12px; padding: 8px 10px; }
+        }
+        #personal { padding: 15px; }
+        #personal .container-personal { max-width: 800px; margin: 0 auto; display: grid; gap: 25px; }
+        #personal .card { background-color: var(--personal-card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--personal-border); transition: box-shadow 0.3s ease; color: var(--personal-text-primary); margin-top: 0; }
+        #personal .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--personal-border); }
+        #personal .card-title { font-size: 20px; font-weight: 700; margin: 0; color: var(--brand-purple); }
+        #personal .configurator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        #personal .input-group { position: relative; display: flex; flex-direction: column; }
+        #personal .input-group label { font-size: 14px; font-weight: 600; color: var(--personal-text-secondary); margin-bottom: 8px; }
+        #personal .input-group input { width: 80%; padding: 12px 60px 12px 12px; border: 1px solid var(--personal-border); border-radius: 25px; font-size: 16px; font-family: 'Manrope', sans-serif; font-weight: 600; transition: all 0.2s ease; background-color: var(--personal-card-bg); color: var(--personal-text-primary); }
+        #personal .input-group input:focus { outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(0, 185, 86, 0.15); }
+        #personal .input-unit { position: absolute; right: 15px; top: 42px; color: var(--personal-text-secondary); font-size: 14px; font-weight: 600; pointer-events: none; }
+        #personal .tariff-preview-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 15px; }
+        #personal .tariff-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; padding: 10px 0; }
+        #personal .tariff-item:not(:last-child){ border-bottom: 1px solid var(--personal-border); }
+        #personal .tariff-label { color: var(--personal-text-secondary); }
+        #personal .tariff-value { font-weight: 700; font-size: 17px; }
+        #personal #historyList { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+        #personal .history-item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 12px; border-radius: 10px; background-color: var(--light-gray); border: 1px solid var(--personal-border); }
+        #personal .history-details { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--personal-text-secondary); }
+        #personal .history-values { font-weight: 600; color: var(--personal-text-primary); }
+        #personal .btn { display: flex; align-items: center; justify-content: center; width: 100%; border: none; padding: 14px; border-radius: 22px; cursor: pointer; font-size: 15px; font-weight: 700; font-family: 'Manrope', sans-serif; transition: all 0.2s ease; margin-top: 25px; }
+        #personal .btn-primary { background-color: var(--brand-green); color: white; }
+        #personal .btn-history { padding: 8px 12px; font-size: 12px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; }
+        #personal .btn-load { background-color: var(--brand-purple); color: white; }
+        #personal .btn-delete { background-color: var(--light-gray); color: var(--personal-text-primary); }
+        #personal .clear-all-btn { font-size: 13px; color: #999; background: none; border: none; cursor: pointer; padding: 0; }
+        #personal-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--brand-purple); color: white; padding: 12px 25px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
+        #personal-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px); }
+
+        /* === AI КНОПКА (DRAG & DROP) === */
+        #ai-fab {
+            position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--brand-green), #008833);
+            color: white; border-radius: 50%; border: none;
+            box-shadow: 0 6px 16px rgba(0, 170, 68, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; cursor: grab; z-index: 999; user-select: none; touch-action: none;
+            transition: transform 0.2s;
+        }
+        #ai-fab:active { cursor: grabbing; transform: scale(0.95); }
+        #ai-fab .ai-badge {
+            position: absolute; top: -2px; right: -2px; background: #ff3b30; font-size: 10px; font-weight: bold;
+            padding: 2px 6px; border-radius: 10px; border: 2px solid #fff;
+        }
+
+        /* === AI ПАНЕЛЬ === */
+        .ai-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .ai-backdrop.show { opacity: 1; visibility: visible; }
+        
+        .ai-panel {
+            position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100%;
+            background: var(--container-bg); z-index: 1001; box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+            transition: right 0.3s ease-in-out; display: flex; flex-direction: column; color: var(--text-color);
+        }
+        .ai-panel.open { right: 0; }
+        
+        .ai-header {
+            padding: 20px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; background: var(--container-bg);
+        }
+        .ai-header h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; color: var(--primary-color); margin: 0; }
+        .ai-close { background: var(--light-gray); border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 20px; cursor: pointer; color: var(--text-color); }
+        
+        /* AI Вкладки (Навигация) */
+        .ai-tabs {
+            display: flex; background: var(--light-gray); border-radius: 12px; padding: 4px;
+            margin-top: 15px; gap: 4px; border: 1px solid var(--border-color);
+        }
+        .ai-tab {
+            flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; font-weight: 800;
+            border-radius: 8px; cursor: pointer; border: none; background: transparent;
+            color: var(--text-color); transition: all 0.2s; font-family: var(--font-family);
+        }
+        .ai-tab.active { background: var(--primary-color); color: #fff; box-shadow: var(--button-shadow); }
+
+        .ai-search-box { padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .ai-search-box label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .ai-input-group { display: flex; gap: 10px; }
+        .ai-input-group input {
+            flex: 1; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 12px;
+            font-size: 16px; font-weight: 700; font-family: var(--font-family); outline: none; transition: 0.2s;
+            background: var(--light-gray); color: var(--text-color);
+        }
+        .ai-input-group input:focus { border-color: var(--primary-color); }
+        .ai-input-group button {
+            padding: 0 20px; background: var(--primary-color); color: #fff; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; font-family: var(--font-family);
+        }
+
+        .ai-results { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .ai-empty { text-align: center; color: var(--text-color); opacity: 0.6; margin-top: 40px; font-size: 14px; }
+        
+        /* AI КАРТОЧКА РЕКОМЕНДАЦИИ */
+        .ai-card { background: var(--light-gray); border-radius: 16px; padding: 16px; border: 1px solid var(--border-color); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .ai-tag { display: inline-block; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; text-transform: uppercase; }
+        .tag-price { background: rgba(0, 170, 68, 0.15); color: var(--primary-color); }
+        .tag-net { background: rgba(0, 102, 255, 0.15); color: #0066ff; }
+        .tag-bal { background: rgba(136, 0, 255, 0.15); color: #8800ff; }
+        
+        .ai-card-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .ai-card-price { color: var(--primary-color); font-size: 20px; font-weight: 800; text-align: right; line-height: 1; }
+        .ai-card-price small { font-size: 12px; opacity: 0.7; font-weight: 500; }
+        
+        .ai-stats { display: flex; gap: 8px; margin: 16px 0; }
+        .ai-stat-box { flex: 1; background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px; text-align: center; }
+        .ai-stat-val { font-weight: 800; font-size: 14px; color: var(--text-color); }
+        .ai-stat-lbl { font-size: 10px; opacity: 0.6; text-transform: uppercase; margin-top: 2px; }
+        
+        .ai-actions { display: flex; gap: 8px; }
+        .ai-btn-apply { flex: 1; background: var(--primary-color); color: #fff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .ai-btn-copy { flex: 1; background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
+    </style>
+</head>
+
+<body>
+    
+    <div id="loading-skeleton" class="skeleton-wrapper">
+        <div class="sk-item sk-header"><div class="sk-header-buttons"><div class="sk-button-group"><div class="sk-item sk-button-sm"></div><div class="sk-item sk-button-sm"></div></div><div class="sk-button-group"><div class="sk-item sk-button-sm"></div><div class="sk-item sk-button-sm"></div></div></div></div>
+        <div class="sk-nav"><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div><div class="sk-item sk-nav-btn"></div></div>
+        <div class="sk-content"><div class="sk-item sk-line sk-line-medium"></div><div class="sk-section"><div class="sk-item sk-line sk-line-short"></div><div class="sk-grid"><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div></div></div><div class="sk-section"><div class="sk-item sk-line sk-line-short"></div><div class="sk-grid"><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div><div class="sk-item sk-grid-item"></div></div></div><div class="sk-item sk-price"></div><div class="sk-card"><div class="sk-item sk-line sk-line-short"></div><div class="sk-card-item"><div class="sk-item sk-icon"></div><div class="sk-text-block"><div class="sk-item sk-text-title"></div><div class="sk-item sk-text-desc"></div></div></div><div class="sk-card-item"><div class="sk-item sk-icon"></div><div class="sk-text-block"><div class="sk-item sk-text-title"></div><div class="sk-item sk-text-desc"></div></div></div></div><div class="sk-footer-card"><div class="sk-item sk-line" style="width: 95%"></div><div class="sk-item sk-line" style="width: 80%"></div></div><div class="sk-item sk-copy-btn"></div></div>
+    </div>
+
+    
+    <div class="container" style="display: none;">
+        <div class="header">
+            <img src="" alt="Тариф">
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="tj">🇹🇯Тоҷикӣ</button>
+                <button class="lang-btn" data-lang="ru">🇷🇺Русский</button>
+            </div>
+            <div class="theme-switcher">
+                <button class="theme-btn" data-theme="light">☀️</button>
+                <button class="theme-btn" data-theme="dark">🌙</button>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a class="nav-link active" onclick="switchTab('life1')" data-translate-key="nav_life1"></a>
+            <a class="nav-link" onclick="switchTab('life2')" data-translate-key="nav_life2"></a>
+            <a class="nav-link" onclick="switchTab('personal')" data-translate-key="nav_personal"></a>
+            <a class="nav-link" id="templates-link" href="#" data-translate-key="nav_templates">Шаблоны</a>
+        </div>
+
+        <div id="life1" class="tariff-content active">
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes1')">ⓘ</span></div><div class="options-grid" id="minutes-options1"></div></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms1')">ⓘ</span></div><div class="options-grid" id="sms-options1"></div></div>
+            <div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet1')">ⓘ</span></div><div class="options-grid" id="internet-options1"></div></div>
+            <div class="total-price-display"><span id="total-price1"></span> <span data-translate-key="currency"></span></div>
+            
+            <div class="options-card" onclick="toggleAccordion(this)">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="accordion-content">
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div>
+                </div>
+            </div>
+            <div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container1"></div></div><div class="card copy-button-card"><button id="copy-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container1" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text1"></p></div><div class="card copy-button-card"><button id="copy-bonus-button1" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div>
+        </div>
+
+        <div id="life2" class="tariff-content">
+            <div class="unlimited-section"><span>📞</span><span class="text" data-translate-key="unlimited_in_network">&nbsp;</span><span class="infinity-icon">∞</span></div>
+            <div class="view-toggle"><button id="view-toggle-btn" data-translate-key="view_toggle_grid"></button></div>
+            <div id="grid-view-life2"><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="minutes_rt"></h3><span class="info-icon" onclick="showModal('modal-minutes2')">ⓘ</span></div><div class="options-grid" id="minutes-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="sms"></h3><span class="info-icon" onclick="showModal('modal-sms2')">ⓘ</span></div><div class="options-grid" id="sms-options2"></div></div><div class="tariff-section"><div class="tariff-section-header"><h3 data-translate-key="internet"></h3><span class="info-icon" onclick="showModal('modal-internet2')">ⓘ</span></div><div class="options-grid" id="internet-options2"></div></div></div>
+            <div id="slider-view-life2" style="display: none;"><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="internet"></span><span class="slider-value" id="internet-slider-value"></span></div><input type="range" id="internet-slider" class="slider" step="1"><div class="slider-minmax"><span id="internet-slider-min"></span><span id="internet-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="minutes_rt"></span><span class="slider-value" id="minutes-slider-value"></span></div><input type="range" id="minutes-slider" class="slider" step="1"><div class="slider-minmax"><span id="minutes-slider-min"></span><span id="minutes-slider-max"></span></div></div><div class="slider-group"><div class="slider-header"><span class="slider-label" data-translate-key="sms"></span><span class="slider-value" id="sms-slider-value"></span></div><input type="range" id="sms-slider" class="slider" step="1"><div class="slider-minmax"><span id="sms-slider-min"></span><span id="sms-slider-max"></span></div></div></div>
+            <div class="total-price-display"><span id="total-price2"></span> <span data-translate-key="currency"></span></div>
+            
+            <div class="options-card" onclick="toggleAccordion(this)">
+                <div class="card-header" data-translate-key="additional_options"></div>
+                <div class="accordion-content">
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/internet.png" alt="Night icon"></div><div class="item-details"><div class="item-title" data-translate-key="night_unlimited"></div><div class="item-description" data-translate-key="night_unlimited_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/call.png" alt="Call icon"></div><div class="item-details"><div class="item-title" data-translate-key="in_network_calls"></div><div class="item-description" data-translate-key="in_network_calls_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/oilatvicon.png" alt="TV icon"></div><div class="item-details"><div class="item-title" data-translate-key="oila_tv"></div><div class="item-description" data-translate-key="oila_tv_desc"></div></div></div>
+                    <div class="card-item"><div class="item-icon"><img src="https://shop-megafontj.github.io/tariff/iviicon.png" alt="IVI icon"></div><div class="item-details"><div class="item-title" data-translate-key="ivi_cinema"></div><div class="item-description" data-translate-key="ivi_cinema_desc"></div></div></div>
+                </div>
+            </div>
+            <div class="footer-container"><div class="card footer-text-card"><div id="footer-text-container2"></div></div><div class="card copy-button-card"><button id="copy-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div><div id="bonus-container2" style="display: none;" class="footer-container"><div class="card"><p id="bonus-text2"></p></div><div class="card copy-button-card"><button id="copy-bonus-button2" class="copy-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1zM9.5 1h-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5zM4 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/></svg><span data-translate-key="copy_button"></span></button></div></div>
+        </div>
+
+        <div id="personal" class="tariff-content"><div class="container-personal"><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_config_title"></h2></div><div class="configurator-grid"><div class="input-group"><label for="price" data-translate-key="personal_price_label"></label><input type="number" id="price" value="" step="0.01"><span class="input-unit" data-translate-key="personal_price_unit"></span></div><div class="input-group"><label for="minutes" data-translate-key="personal_minutes_label"></label><input type="number" id="minutes" value=""><span class="input-unit" data-translate-key="personal_minutes_unit"></span></div><div class="input-group"><label for="gigabytes" data-translate-key="personal_gb_label"></label><input type="number" id="gigabytes" value=""><span class="input-unit" data-translate-key="personal_gb_unit"></span></div><div class="input-group"><label for="sms" data-translate-key="personal_sms_label"></label><input type="number" id="sms" value=""><span class="input-unit" data-translate-key="personal_sms_unit"></span></div></div></div><div class="card"><div class="card-header"><h2 class="card-title" data-translate-key="personal_preview_title"></h2><img src="https://raw.githubusercontent.com/shop-megafontj/bisozz/refs/heads/main/icon.jpg" alt="Megafon Logo" style="height: 30px; border-radius: 50%;"></div><ul class="tariff-preview-list"><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_price"></span><span class="tariff-value"><span id="price-display">0</span> <span data-translate-key="personal_price_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_minutes"></span><span class="tariff-value"><span id="minutes-display">0</span> <span data-translate-key="personal_minutes_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_gb"></span><span class="tariff-value"><span id="gb-display">0</span> <span data-translate-key="personal_gb_unit"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_sms"></span><span class="tariff-value"><span id="sms-display">0</span> <span data-translate-key="personal_sms_unit_plural"></span></span></li><li class="tariff-item"><span class="tariff-label" data-translate-key="personal_preview_night"></span><span class="tariff-value" data-translate-key="personal_preview_unlimited"></span></li></ul><button class="btn btn-primary" id="copyAndSaveBtn" data-translate-key="personal_copy_save_btn"></button></div><div class="card" id="historyCard" style="display: none;"><div class="card-header"><h2 class="card-title" data-translate-key="personal_history_title"></h2><button class="clear-all-btn" id="clearAllHistoryBtn" data-translate-key="personal_history_clear"></button></div><ul id="historyList"></ul></div></div></div>
+    </div>
+
+    <!-- === AI FLOATING BUTTON === -->
+    <button id="ai-fab">
+        ✨
+        <span class="ai-badge">AI</span>
+    </button>
+
+    <!-- === AI PANEL === -->
+    <div class="ai-backdrop" id="ai-backdrop"></div>
+    <div class="ai-panel" id="ai-panel">
+        <div class="ai-header">
+            <h2>✨ AI Ассистент</h2>
+            <button class="ai-close" id="ai-close">&times;</button>
+        </div>
+        <div class="ai-search-box">
+            <label>Желаемый бюджет (сомони):</label>
+            <div class="ai-input-group">
+                <input type="number" id="ai-budget" placeholder="Например: 80">
+                <button id="ai-search-btn">Искать</button>
+            </div>
+            <p style="font-size: 11px; opacity: 0.6; margin-top: 8px;">Ищем тарифы в диапазоне ±5 сомони</p>
+            
+            <!-- AI Навигация Вкладок -->
+            <div class="ai-tabs" id="ai-filter-tabs">
+                <button class="ai-tab active" data-filter="all">Все</button>
+                <button class="ai-tab" data-filter="life1">Биё! бисоз Life</button>
+                <button class="ai-tab" data-filter="life2">Life 2.0</button>
+            </div>
+        </div>
+        <div class="ai-results" id="ai-results">
+            <div class="ai-empty">
+                Введите сумму, и искусственный интеллект подберет для вас лучшие комбинации тарифов.
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-minutes1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="minutes_rt"></h3><p data-translate-key="modal_minutes_body1"></p><button class="modal-button" onclick="hideModal('modal-minutes1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-sms1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="sms"></h3><p data-translate-key="modal_sms_body1"></p><button class="modal-button" onclick="hideModal('modal-sms1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-internet1" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="internet"></h3><p data-translate-key="modal_internet_body1"></p><button class="modal-button" onclick="hideModal('modal-internet1')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-minutes2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="minutes_rt"></h3><p data-translate-key="modal_minutes_body2"></p><button class="modal-button" onclick="hideModal('modal-minutes2')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-sms2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="sms"></h3><p data-translate-key="modal_sms_body2"></p><button class="modal-button" onclick="hideModal('modal-sms2')" data-translate-key="modal_ok"></button></div></div>
+    <div id="modal-internet2" class="modal-overlay" onclick="this.style.display='none'"><div class="modal"><h3 data-translate-key="internet"></h3><p data-translate-key="modal_internet_body2"></p><button class="modal-button" onclick="hideModal('modal-internet2')" data-translate-key="modal_ok"></button></div></div>
+
+    <div id="toast-notification"></div>
+    <div class="toast" id="personal-toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEDIJIx6gGqeLk20nJWSlTxd6tnhmSGy4",
+            authDomain: "bisoz-682b8.firebaseapp.com",
+            databaseURL: "https://bisoz-682b8-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bisoz-682b8",
+            storageBucket: "bisoz-682b8.appspot.com",
+            messagingSenderId: "90545419911",
+            appId: "1:90545419911:web:217b288ff83fa1e204ea22",
+            measurementId: "G-WYNYL1RCX2"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+        const auth = firebase.auth(); 
+        
+        // --- 2. GLOBAL VARIABLES ---
+        let translations = {};
+        let config1 = {};
+        let config2 = {};
+        let currentUserRole = null; 
+        const LOGOUT_TIME_MS = 12 * 60 * 60 * 1000; // 12 hours
+
+        // --- 3. AUTO LOGOUT LOGIC ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const loginTimeKey = 'loginTime_' + user.uid;
+                const loginTime = localStorage.getItem(loginTimeKey);
+                
+                if (!loginTime) {
+                    localStorage.setItem(loginTimeKey, Date.now());
+                } else {
+                    if (Date.now() - parseInt(loginTime) > LOGOUT_TIME_MS) {
+                        auth.signOut();
+                        localStorage.removeItem(loginTimeKey);
+                        return;
+                    }
+                }
+
+                setInterval(() => {
+                    const lt = localStorage.getItem(loginTimeKey);
+                    if (lt && (Date.now() - parseInt(lt) > LOGOUT_TIME_MS)) {
+                        auth.signOut();
+                        localStorage.removeItem(loginTimeKey);
+                        window.location.reload();
+                    }
+                }, 60000);
+
+                fetchDataAndInitialize(user);
+            } else {
+                window.location.href = 'login.html?redirect=index.html';
+            }
+        });
+
+        // --- 4. FETCH DATA & INITIALIZE APP ---
+        function fetchDataAndInitialize(user) {
+            database.ref('/users/' + user.uid).once('value').then(roleSnapshot => {
+                if (roleSnapshot.exists()) {
+                    currentUserRole = roleSnapshot.val().isAdmin ? 'admin' : 'operator';
+                }
+
+                database.ref('/').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        translations = data.translations;
+                        config1 = {
+                            ...data.tariffConfigs.life1,
+                            state: {},
+                            elements: { minutes: 'minutes-options1', sms: 'sms-options1', internet: 'internet-options1', totalPrice: 'total-price1', footerText: 'footer-text-container1' }
+                        };
+                        config2 = {
+                            ...data.tariffConfigs.life2,
+                            state: {},
+                            elements: { minutes: 'minutes-options2', sms: 'sms-options2', internet: 'internet-options2', totalPrice: 'total-price2', footerText: 'footer-text-container2' }
+                        };
+
+                        if(data.ui && data.ui.headerImageUrl) {
+                            document.querySelector('.header img').src = data.ui.headerImageUrl;
+                        }
+                        
+                        initializeAppLogic(user);
+
+                        // Убираем скелетон ПОСЛЕ успешной инициализации
+                        document.getElementById('loading-skeleton').style.display = 'none';
+                        document.querySelector('.container').style.display = 'block';
+
+                    } else {
+                        showDataError('Ошибка: База данных пуста.');
+                    }
+                }).catch(error => {
+                    console.error("Firebase DB error:", error);
+                    showDataError('Не удалось загрузить тарифы. Проверьте подключение.');
+                });
+            }).catch(error => {
+                console.error("Auth / Role error:", error);
+                auth.signOut();
+            });
+        }
+
+        function showDataError(msg) {
+            document.getElementById('loading-skeleton').innerHTML = `<p style="text-align:center; padding: 40px; color: red; font-weight: bold;">${msg}</p>`;
+        }
+        
+        // --- 5. APPLICATION LOGIC ---
+        function initializeAppLogic(user) { 
+            let currentLang = 'tj';
+            let currentTheme = 'light';
+            let life2ViewMode = 'grid';
+
+            function setLanguage(lang) {
+                currentLang = lang;
+                localStorage.setItem('language', lang);
+                document.querySelectorAll('[data-translate-key]').forEach(el => {
+                    const key = el.dataset.translateKey;
+                    if (translations[lang] && translations[lang][key]) {
+                        el.innerText = translations[lang][key];
+                    }
+                });
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                initializeTariff(config1);
+                initializeTariff(config2);
+                initializeSliders();
+                if (typeof renderPersonalHistory === "function") renderPersonalHistory();
+            }
+
+            function setTheme(theme) {
+                currentTheme = theme;
+                localStorage.setItem('theme', theme);
+                document.body.classList.toggle('dark', theme === 'dark');
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.theme === theme);
+                });
+            }
+
+            function switchTab(tabId) {
+                document.querySelectorAll('.tariff-content').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            }
+
+            window.showModal = function(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+            window.hideModal = function(modalId) { document.getElementById(modalId).style.display = 'none'; }
+            window.switchTab = switchTab;
+            
+            window.toggleAccordion = function(element) { element.classList.toggle('open'); }
+
+            function showToast(messageKey, isRawString = false) {
+                const toast = document.getElementById('toast-notification');
+                toast.innerText = isRawString ? messageKey : translations[currentLang][messageKey];
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+
+            function copyText(containerId, toastMessageKey) {
+                const textToCopy = document.getElementById(containerId).innerText;
+                navigator.clipboard.writeText(textToCopy).then(() => showToast(toastMessageKey));
+            }
+
+            function initializeTariff(config) {
+                if(!config.minutes || !config.minutes.values) return; // Защита от пустых данных
+                config.state.selectedMinutes = config.state.selectedMinutes || config.minutes.values[0];
+                config.state.selectedSms = config.state.selectedSms || config.sms.values[0];
+                config.state.selectedInternet = config.state.selectedInternet || config.internet.values[0];
+                if (config === config1 || (config === config2 && life2ViewMode === 'grid')) {
+                    createOptions(config, 'minutes');
+                    createOptions(config, 'sms');
+                    createOptions(config, 'internet');
+                }
+                updateTotal(config);
+            }
+
+            function createOptions(config, type) {
+                const container = document.getElementById(config.elements[type]);
+                if (!container) return;
+                container.innerHTML = "";
+                const data = config[type];
+                const unitKey = type === 'minutes' ? 'min_unit' : (type === 'sms' ? 'sms_unit' : 'gb_unit');
+                const unit = translations[currentLang][unitKey];
+                data.values.forEach(value => {
+                    const btn = document.createElement("div");
+                    btn.className = "option-button";
+                    if (value === config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`]) {
+                        btn.classList.add("active");
+                    }
+                    btn.innerHTML = `${value}<br><span style="font-size:12px; font-weight:normal;">${unit}</span>`;
+                    btn.addEventListener("click", () => {
+                        config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`] = value;
+                        document.querySelectorAll(`#${config.elements[type]} .option-button`).forEach(el => el.classList.remove("active"));
+                        btn.classList.add("active");
+                        updateTotal(config);
+                    });
+                    container.appendChild(btn);
+                });
+            }
+
+            function getOptionCost(data, selectedValue) {
+                if(!data || !data.values) return 0;
+                const index = data.values.indexOf(selectedValue);
+                if (index < 1) return 0;
+                return data.prices.slice(1, index + 1).reduce((acc, price) => acc + price, 0);
+            }
+
+            function updateTotal(config) {
+                const minCost = getOptionCost(config.minutes, config.state.selectedMinutes);
+                const smsCost = getOptionCost(config.sms, config.state.selectedSms);
+                const netCost = getOptionCost(config.internet, config.state.selectedInternet);
+                let total = config.basePrice + minCost + smsCost + netCost;
+                
+                if (total > config.maxTotal) total = config.maxTotal;
+                
+                total = parseFloat(total.toFixed(2));
+                document.getElementById(config.elements.totalPrice).innerText = total;
+
+                const templateKey = (config === config1) ? 'footerTemplate1' : 'footerTemplate2';
+                let footerText = translations[currentLang][templateKey] || '';
+                footerText = footerText.replace('{t}', total).replace('{m}', config.state.selectedMinutes).replace('{g}', config.state.selectedInternet).replace('{s}', config.state.selectedSms);
+                document.getElementById(config.elements.footerText).innerText = footerText;
+                
+                handleBonusDisplay(config, total);
+            }
+            
+            function handleBonusDisplay(config, total) {
+                let bonusContainerId, bonusTextId;
+                if (config === config1) { bonusContainerId = 'bonus-container1'; bonusTextId = 'bonus-text1'; } 
+                else if (config === config2) { bonusContainerId = 'bonus-container2'; bonusTextId = 'bonus-text2'; } 
+                else return;
+
+                const bonusContainer = document.getElementById(bonusContainerId);
+                const bonusTextElem = document.getElementById(bonusTextId);
+
+                if (total > 100) {
+                    const template = translations[currentLang]?.bonus_text_template || '';
+                    bonusTextElem.innerText = template.replace('{gb}', config.state.selectedInternet);
+                    bonusContainer.style.display = 'block';
+                } else {
+                    bonusContainer.style.display = 'none';
+                }
+            }
+
+            function initializeSliders() {
+                setupSlider('internet', config2);
+                setupSlider('minutes', config2);
+                setupSlider('sms', config2);
+                syncViews();
+            }
+
+            function setupSlider(type, config) {
+                const slider = document.getElementById(`${type}-slider`);
+                if (!slider || !config[type]) return;
+                const valueDisplay = document.getElementById(`${type}-slider-value`);
+                const minDisplay = document.getElementById(`${type}-slider-min`);
+                const maxDisplay = document.getElementById(`${type}-slider-max`);
+                const data = config[type].values;
+                const unit = translations[currentLang][`${type === 'internet' ? 'gb' : (type === 'minutes' ? 'min' : 'sms')}_unit`];
+                slider.min = 0;
+                slider.max = data.length - 1;
+                minDisplay.innerText = `${data[0]} ${unit}`;
+                maxDisplay.innerText = `${data[data.length - 1]} ${unit}`;
+                slider.oninput = function () {
+                    const selectedValue = data[this.value];
+                    valueDisplay.innerText = `${selectedValue} ${unit}`;
+                    config.state[`selected${type.charAt(0).toUpperCase() + type.slice(1)}`] = selectedValue;
+                    updateTotal(config);
+                };
+            }
+            
+            function syncViews() {
+                ['internet', 'minutes', 'sms'].forEach(type => {
+                    const stateKey = `selected${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                    const selectedValue = config2.state[stateKey];
+                    if (selectedValue === undefined || !config2[type]) return;
+                    
+                    const data = config2[type].values;
+                    const index = data.indexOf(selectedValue);
+                    const slider = document.getElementById(`${type}-slider`);
+                    if (slider) slider.value = index;
+
+                    const valueDisplay = document.getElementById(`${type}-slider-value`);
+                    if (valueDisplay) {
+                        const unitKey = type === 'internet' ? 'gb_unit' : (type === 'minutes' ? 'min_unit' : 'sms_unit');
+                        valueDisplay.innerText = `${selectedValue} ${translations[currentLang][unitKey]}`;
+                    }
+                    document.querySelectorAll(`#${config2.elements[type]} .option-button`).forEach((btn, i) => btn.classList.toggle('active', i === index));
+                });
+            }
+
+            function toggleLife2View() {
+                const gridView = document.getElementById('grid-view-life2');
+                const sliderView = document.getElementById('slider-view-life2');
+                const toggleBtn = document.getElementById('view-toggle-btn');
+                life2ViewMode = (life2ViewMode === 'grid') ? 'slider' : 'grid';
+                gridView.style.display = life2ViewMode === 'grid' ? 'block' : 'none';
+                sliderView.style.display = life2ViewMode === 'slider' ? 'block' : 'none';
+                toggleBtn.dataset.translateKey = `view_toggle_${life2ViewMode}`;
+                syncViews();
+                toggleBtn.innerText = translations[currentLang][toggleBtn.dataset.translateKey];
+            }
+            
+            // --- Personal Tariff Functions ---
+            let personalHistory = [];
+            function updatePersonalCard() {
+                const priceValue = parseFloat(document.getElementById('price').value);
+                document.getElementById('price-display').textContent = !isNaN(priceValue) ? priceValue.toFixed(2) : '0.00';
+                document.getElementById('minutes-display').textContent = document.getElementById('minutes').value || '0';
+                document.getElementById('gb-display').textContent = document.getElementById('gigabytes').value || '0';
+                document.getElementById('sms-display').textContent = document.getElementById('sms').value || '0';
+            }
+            function setPersonalInputs(config) {
+                document.getElementById('price').value = config.price;
+                document.getElementById('minutes').value = config.minutes;
+                document.getElementById('gigabytes').value = config.gigabytes;
+                document.getElementById('sms').value = config.sms;
+                updatePersonalCard();
+            }
+            function savePersonalHistory() { localStorage.setItem('tariffHistory', JSON.stringify(personalHistory)); }
+            function loadPersonalHistory() {
+                const savedHistory = localStorage.getItem('tariffHistory');
+                personalHistory = savedHistory ? JSON.parse(savedHistory) : [];
+            }
+            function renderPersonalHistory() {
+                const historyList = document.getElementById('historyList');
+                const historyCard = document.getElementById('historyCard');
+                historyList.innerHTML = '';
+                historyCard.style.display = personalHistory.length > 0 ? 'block' : 'none';
+                personalHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    const locale = currentLang === 'tj' ? 'tg-TJ' : 'ru-RU';
+                    li.innerHTML = `
+                        <div class="history-details">
+                            <div class="history-meta">${new Date(item.id).toLocaleString(locale, {dateStyle: 'short', timeStyle: 'short'})}</div>
+                            <div class="history-values">
+                                ${item.price || 0} ${translations[currentLang].currency} / ${item.minutes || 0} ${translations[currentLang].min_unit} / ${item.gigabytes || 0} ${translations[currentLang].gb_unit} / ${item.sms || 0} ${translations[currentLang].sms_unit}
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-history btn-load" data-id="${item.id}">${translations[currentLang].personal_history_load}</button>
+                            <button class="btn-history btn-delete" data-id="${item.id}">${translations[currentLang].personal_history_delete}</button>
+                        </div>`;
+                    historyList.appendChild(li);
+                });
+            }
+
+            // --- AI LOGIC & FUNCTIONS ---
+
+            // Generate combos from specific config dynamically (ИСПРАВЛЕННЫЙ АЛГОРИТМ)
+            function generateTariffCombosForConfig(cfg, typeName, typeId) {
+                let allTariffs = [];
+                if (!cfg || !cfg.minutes) return allTariffs;
+
+                cfg.minutes.values.forEach(min => {
+                    cfg.sms.values.forEach(sms => {
+                        cfg.internet.values.forEach(int => {
+                            let rawCost = cfg.basePrice + getOptionCost(cfg.minutes, min) + getOptionCost(cfg.sms, sms) + getOptionCost(cfg.internet, int);
+                            let finalPrice = rawCost > cfg.maxTotal ? cfg.maxTotal : rawCost;
+                            
+                            // Сохраняем rawCost, чтобы потом отбросить невыгодные тарифы
+                            // (те, где мы платим maxTotal, но получаем меньше, чем могли бы)
+                            allTariffs.push({ 
+                                min, sms, int, 
+                                price: parseFloat(finalPrice.toFixed(2)), 
+                                rawCost: parseFloat(rawCost.toFixed(2)),
+                                typeName, typeId 
+                            });
+                        });
+                    });
+                });
+                return allTariffs;
+            }
+
+            const aiFab = document.getElementById('ai-fab');
+            const aiPanel = document.getElementById('ai-panel');
+            const aiBackdrop = document.getElementById('ai-backdrop');
+            
+            function openAIPanel() { aiPanel.classList.add('open'); aiBackdrop.classList.add('show'); document.body.style.overflow = 'hidden'; }
+            function closeAIPanel() { aiPanel.classList.remove('open'); aiBackdrop.classList.remove('show'); document.body.style.overflow = ''; }
+            
+            document.getElementById('ai-close').onclick = closeAIPanel;
+            aiBackdrop.onclick = closeAIPanel;
+
+            let currentAIFilter = 'all';
+            let lastAITarget = null;
+
+            document.querySelectorAll('.ai-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentAIFilter = e.target.dataset.filter;
+                    if (lastAITarget !== null) {
+                        executeAISearch(lastAITarget);
+                    }
+                });
+            });
+
+            document.getElementById('ai-search-btn').addEventListener('click', () => {
+                const target = parseFloat(document.getElementById('ai-budget').value);
+                if(isNaN(target)) return showToast("Укажите сумму", true);
+                lastAITarget = target;
+                executeAISearch(target);
+            });
+
+            function executeAISearch(target) {
+                const resDiv = document.getElementById('ai-results');
+                resDiv.innerHTML = '<div class="ai-empty">Анализируем базу... ⏳</div>';
+
+                setTimeout(() => {
+                    let c1 = generateTariffCombosForConfig(config1, "Биё! бисоз Life", "life1");
+                    let c2 = generateTariffCombosForConfig(config2, "Life 2.0", "life2");
+                    let allT = [];
+
+                    if (currentAIFilter === 'all') allT = [...c1, ...c2];
+                    else if (currentAIFilter === 'life1') allT = [...c1];
+                    else if (currentAIFilter === 'life2') allT = [...c2];
+
+                    // Ищем в диапазоне +-5 сомони
+                    let candidates = allT.filter(t => t.price >= target - 5 && t.price <= target + 5);
+
+                    // УМНАЯ ФИЛЬТРАЦИЯ: Если цена тарифа уперлась в maxTotal,
+                    // мы должны оставить только те комбинации, которые дают максимум за эти деньги.
+                    candidates = candidates.filter(t => {
+                        if (t.price === (t.typeId === 'life1' ? config1.maxTotal : config2.maxTotal)) {
+                            // Если реальная стоимость без скидки меньше максимальной цены, значит этот конфиг невыгодный
+                            // Оставляем только те, где "сырая" стоимость превышает или равна лимиту
+                            return t.rawCost >= t.price;
+                        }
+                        return true;
+                    });
+
+                    if(candidates.length === 0) {
+                        resDiv.innerHTML = `<div class="ai-empty">В диапазоне ${target-5} - ${target+5} сомони тарифов не найдено. Попробуйте изменить сумму.</div>`;
+                        return;
+                    }
+
+                    // Уникальные комбинации
+                    const uniqueCandidates = [];
+                    const seen = new Set();
+                    for (const c of candidates) {
+                        const uid = `${c.typeId}-${c.min}-${c.sms}-${c.int}-${c.price}`;
+                        if (!seen.has(uid)) {
+                            seen.add(uid);
+                            uniqueCandidates.push(c);
+                        }
+                    }
+
+                    // Сортируем: сначала самые близкие по цене, затем больше интернета, затем больше минут
+                    uniqueCandidates.sort((a,b) => {
+                        let diffA = Math.abs(a.price - target);
+                        let diffB = Math.abs(b.price - target);
+                        if (diffA !== diffB) return diffA - diffB;
+                        if (b.int !== a.int) return b.int - a.int;
+                        return b.min - a.min;
+                    });
+
+                    const minPriceDiff = Math.min(...uniqueCandidates.map(c => Math.abs(c.price - target)));
+                    const maxInt = Math.max(...uniqueCandidates.map(c => c.int));
+                    const maxMin = Math.max(...uniqueCandidates.map(c => c.min));
+                    const maxSms = Math.max(...uniqueCandidates.map(c => c.sms));
+
+                    let renderedCards = '';
+                    let usedTags = new Set();
+
+                    const renderCard = (t, title, badgeCls) => {
+                        const strObj = encodeURIComponent(JSON.stringify(t));
+                        return `
+                        <div class="ai-card">
+                            <div class="ai-tag ${badgeCls}">${title}</div>
+                            <div class="ai-card-title">
+                                <span>${t.typeName}</span>
+                                <div class="ai-card-price">${t.price} <small>сом</small></div>
+                            </div>
+                            <div class="ai-stats">
+                                <div class="ai-stat-box"><div class="ai-stat-val">${t.int}</div><div class="ai-stat-lbl">ГБ</div></div>
+                                <div class="ai-stat-box"><div class="ai-stat-val">${t.min}</div><div class="ai-stat-lbl">Мин</div></div>
+                                <div class="ai-stat-box"><div class="ai-stat-val">${t.sms}</div><div class="ai-stat-lbl">SMS</div></div>
+                            </div>
+                            <div class="ai-actions">
+                                <button class="ai-btn-apply" onclick="applyAITariff('${strObj}')">Выбрать</button>
+                                <button class="ai-btn-copy" onclick="copyAITariff('${strObj}')">Скопировать</button>
+                            </div>
+                        </div>`;
+                    };
+
+                    uniqueCandidates.slice(0, 15).forEach(t => { 
+                        let badgeTitle = "Отличный выбор 👍";
+                        let badgeCls = "tag-price";
+                        let diff = Math.abs(t.price - target);
+
+                        if (diff === minPriceDiff && !usedTags.has('best_price')) {
+                            badgeTitle = diff === 0 ? "Точно в бюджет 🎯" : "Лучший по цене 🌟";
+                            badgeCls = "tag-price";
+                            usedTags.add('best_price');
+                        } else if (t.int === maxInt && !usedTags.has('max_net')) {
+                            badgeTitle = "Максимум интернета 🌐";
+                            badgeCls = "tag-net";
+                            usedTags.add('max_net');
+                        } else if (t.min === maxMin && t.min > 0 && !usedTags.has('max_min')) {
+                            badgeTitle = "Максимум минут 📞";
+                            badgeCls = "tag-bal";
+                            usedTags.add('max_min');
+                        } else if (t.sms === maxSms && t.sms > 0 && !usedTags.has('max_sms')) {
+                            badgeTitle = "Макс SMS ✉️";
+                            badgeCls = "tag-net";
+                            usedTags.add('max_sms');
+                        } else if (t.int >= 20 && t.min >= 100 && !usedTags.has('ideal')) {
+                            badgeTitle = "Идеальный баланс ⚖️";
+                            badgeCls = "tag-bal";
+                            usedTags.add('ideal');
+                        } else if (t.int > 10) {
+                            badgeTitle = "Для интернета 🚀";
+                            badgeCls = "tag-net";
+                        } else if (t.min > 100) {
+                            badgeTitle = "Для долгих разговоров 🎙️";
+                            badgeCls = "tag-bal";
+                        } else {
+                            badgeTitle = "Альтернатива ✨";
+                            badgeCls = "tag-price";
+                        }
+
+                        renderedCards += renderCard(t, badgeTitle, badgeCls);
+                    });
+
+                    resDiv.innerHTML = renderedCards;
+                }, 300);
+            }
+
+            window.applyAITariff = function(strObj) {
+                const t = JSON.parse(decodeURIComponent(strObj));
+                const targetConfig = t.typeId === 'life1' ? config1 : config2;
+                
+                targetConfig.state.selectedMinutes = t.min;
+                targetConfig.state.selectedSms = t.sms;
+                targetConfig.state.selectedInternet = t.int;
+                
+                initializeTariff(targetConfig);
+                if (t.typeId === 'life2') syncViews();
+                
+                switchTab(t.typeId);
+                closeAIPanel();
+                showToast("Тариф применен в конструкторе!", true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            window.copyAITariff = function(strObj) {
+                const t = JSON.parse(decodeURIComponent(strObj));
+                let nightTxt = currentLang === 'tj' ? " ва интернети шабона дорад, ки аз 00:00 то 6:59 интернети бемаҳдудро пешниҳод мекунад." : " и включает безлимитный ночной интернет с 00:00 до 6:59.";
+                let tariffName = t.typeId === 'life1' ? "Биё! бисоз Life" : "Биё! бисоз Life 2.0";
+
+                let textToCopy = currentLang === 'tj' 
+                    ? `Тарофаи "${tariffName}" бо нархи ${t.price} сомонӣ💸, дар худ ${t.min} дақиқа ба дигар шабакаҳои ҶТ📞, ${t.int} ГБ🌐, ${t.sms} СМС✉️${nightTxt}`
+                    : `Тариф "${tariffName}" за ${t.price} сомони💸, включает ${t.min} минут по РТ📞, ${t.int} ГБ🌐, ${t.sms} СМС✉️${nightTxt}`;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => showToast("copied_toast"));
+            };
+
+            let isDragging = false, isMoved = false;
+            let startX, startY, initialX, initialY;
+
+            aiFab.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            aiFab.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                if(e.type === 'touchstart') e.preventDefault();
+                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                
+                const rect = aiFab.getBoundingClientRect();
+                aiFab.style.right = 'auto'; aiFab.style.bottom = 'auto';
+                aiFab.style.left = rect.left + 'px'; aiFab.style.top = rect.top + 'px';
+                
+                initialX = rect.left; initialY = rect.top;
+                startX = clientX; startY = clientY;
+                isDragging = true; isMoved = false;
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                if(e.type === 'touchmove') e.preventDefault();
+                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                
+                const dx = clientX - startX, dy = clientY - startY;
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isMoved = true;
+
+                let nx = initialX + dx, ny = initialY + dy;
+                nx = Math.max(10, Math.min(nx, window.innerWidth - 70));
+                ny = Math.max(10, Math.min(ny, window.innerHeight - 70));
+
+                aiFab.style.left = nx + 'px'; aiFab.style.top = ny + 'px';
+            }
+
+            function dragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                if (!isMoved) openAIPanel();
+            }
+
+            // --- Event Listeners Initialization ---
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
+            const savedLang = localStorage.getItem('language') || 'tj';
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+            setLanguage(savedLang);
+
+            document.getElementById('view-toggle-btn').addEventListener('click', toggleLife2View);
+            document.getElementById('copy-button1').addEventListener('click', () => copyText('footer-text-container1', 'copied_toast'));
+            document.getElementById('copy-button2').addEventListener('click', () => copyText('footer-text-container2', 'copied_toast'));
+            document.getElementById('copy-bonus-button1').addEventListener('click', () => copyText('bonus-text1', 'copied_toast'));
+            document.getElementById('copy-bonus-button2').addEventListener('click', () => copyText('bonus-text2', 'copied_toast'));
+
+            document.querySelectorAll('#personal .input-group input').forEach(input => input.addEventListener('input', updatePersonalCard));
+            document.getElementById('copyAndSaveBtn').addEventListener('click', () => {
+                const toast = document.getElementById('personal-toast');
+                const price = document.getElementById('price-display').textContent;
+                const minutes = document.getElementById('minutes-display').textContent;
+                const gb = document.getElementById('gb-display').textContent;
+                const sms = document.getElementById('sms-display').textContent;
+                let cardText = translations[currentLang].personal_copy_template.replace('{p}', price).replace('{m}', minutes).replace('{g}', gb).replace('{s}', sms);
+                navigator.clipboard.writeText(cardText);
+                personalHistory.unshift({ id: Date.now(), price: document.getElementById('price').value, minutes: document.getElementById('minutes').value, gigabytes: document.getElementById('gigabytes').value, sms: document.getElementById('sms').value });
+                savePersonalHistory();
+                renderPersonalHistory();
+                toast.innerText = translations[currentLang].personal_toast_saved;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            });
+            document.getElementById('historyList').addEventListener('click', e => {
+                if (!e.target.dataset.id) return;
+                const id = parseInt(e.target.dataset.id, 10);
+                if (e.target.classList.contains('btn-load')) {
+                    const itemToLoad = personalHistory.find(item => item.id === id);
+                    if (itemToLoad) {
+                        setPersonalInputs(itemToLoad);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+                if (e.target.classList.contains('btn-delete')) {
+                    personalHistory = personalHistory.filter(item => item.id !== id);
+                    savePersonalHistory();
+                    renderPersonalHistory();
+                }
+            });
+            document.getElementById('clearAllHistoryBtn').addEventListener('click', () => {
+                if (confirm(translations[currentLang].personal_confirm_clear)) {
+                    personalHistory = [];
+                    savePersonalHistory();
+                    renderPersonalHistory();
+                }
+            });
+            
+            document.getElementById('templates-link').addEventListener('click', (e) => {
+                e.preventDefault(); 
+                if (currentUserRole === 'admin') {
+                    window.open('admin.html', '_blank');
+                } else if (currentUserRole === 'operator') {
+                    window.open('operator.html', '_blank');
+                } else {
+                    console.warn('Role not determined, redirecting to login.');
+                    auth.signOut();
+                }
+            });
+
+            loadPersonalHistory();
+            renderPersonalHistory();
+            updatePersonalCard();
+        }
+    });
+
+    // 6. SERVICE WORKER CACHE CLEAR (УДАЛЕНИЕ СЛОМАННОГО КЭША)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                // Принудительно отключаем SW, чтобы он перестал блокировать Firebase LP
+                registration.unregister();
+            }
+        });
+        // Новую регистрацию лучше добавить только тогда, когда ты поправишь сам sw.js
+        // window.addEventListener('load', () => {
+        //     navigator.serviceWorker.register('/sw.js');
+        // });
+    }
+    </script>
+</body>
+</html>
